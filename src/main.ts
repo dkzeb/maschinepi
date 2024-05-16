@@ -1,20 +1,24 @@
-import { QMainWindow } from '@nodegui/nodegui';
+import { QMainWindow } from "@nodegui/nodegui";
 import WidgetRouter from "./classes/router";
-import mainPage from './pages/main.page';
-import sourceMapSupport from 'source-map-support';
+import mainPage from "./pages/main.page";
 
-declare var global: { win: QMainWindow};
-sourceMapSupport.install();
+declare const global: { win: QMainWindow, router: WidgetRouter };
+
 const win = new QMainWindow();
 export const router = new WidgetRouter(win);
-export const APP_NAME = 'MaschinePI';
-function main(): void {
-  win.setWindowTitle(APP_NAME);
-  win.setFixedSize(800, 472);
-  
-  router.addRoute('main', mainPage);
 
+function main() {
+  console.log('MaschinePI Starting...');
+  win.setWindowTitle("MaschinePI");
+  
+  win.setFixedSize(800, 480);
+
+  router.addRoute('main', mainPage);
+  
   win.show();
+
   global.win = win;
+  global.router = router;
 }
+
 main();

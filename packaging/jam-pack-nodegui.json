@@ -35,7 +35,7 @@
       "Section": "x11",
       "Maintainer": "ZEB",
       "Priority": "optional",
-      "Description": "Maschine MK3 Standalone Performer"
+      "Description": "Maschine MK3 Standalone App"
     },
     "prePack": [
       "cd $debianStep_debianSourceDirectory && mkdir -p usr/share/applications",
@@ -53,16 +53,16 @@
   },
   "nsis": {
     "skip": false,
-    "description": "MK3 Performer",
+    "description": "Maschine Standalone App",
     "detailColors": "3db54a 000000",
-    "appTitle": "MK3 Performer",
+    "appTitle": "MaschinePI",
     "installerIcon": "$pruneStep_trashDirectory/packaging/windows/nodeguiapp.ico",
     "uninstallerIcon": "$pruneStep_trashDirectory/packaging/windows/nodeguiapp.ico"
   },
   "dmg" : {
     "applicationIcon": "$pruneStep_trashDirectory/packaging/macos/nodeguiapp.icns",
-    "applicationTitle": "MK3 Performer",
-    "nsHumanReadableCopyright": "Copyright 2023 Someone",
+    "applicationTitle": "MaschinePI",
+    "nsHumanReadableCopyright": "Copyright 2024 ZEBWare",
     "cfBundleIdentifier": "com.zebware.mk3performer",
     "prePack": [
       "mv $dmgStep_dmgResourcesDirectory/nodeguiapp $dmgStep_dmgMacOSDirectory/"

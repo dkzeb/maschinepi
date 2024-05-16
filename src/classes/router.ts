@@ -1,6 +1,6 @@
 import { QMainWindow, QWidget } from "@nodegui/nodegui";
 
-import { APP_NAME } from "src/main";
+//import { APP_NAME } from "src/main";
 import { Page } from "./page";
 
 class WidgetRouter {        
@@ -19,8 +19,7 @@ class WidgetRouter {
     }
 
     navigate(route: string): void {
-        this.win.centralWidget()?.delete();
-        this.win.setWindowTitle(APP_NAME + ' | ' + this.routes[route].title);
+        this.win.centralWidget()?.delete();        
         this.win.setCentralWidget(this.routes[route]);
     }
 }

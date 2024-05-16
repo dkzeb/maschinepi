@@ -12,7 +12,7 @@ class MainPage extends Page {
         this.setObjectName("main");
         const welcomeLabel = new QLabel();
         welcomeLabel.setObjectName("logo");
-        const imagePath = path.join(process.cwd(), 'assets', 'Logo.png');
+        const imagePath = path.join(process.cwd(), 'assets', 'images', 'Logo.png');
         const logoImg = new QPixmap();
         logoImg.load(imagePath);
         welcomeLabel.setPixmap(logoImg);
