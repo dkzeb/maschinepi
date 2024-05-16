@@ -1,8 +1,7 @@
 import { FlexLayout, QLabel, QPixmap, QPushButton, QWidget } from "@nodegui/nodegui";
-
-import { Page } from "src/classes/page";
+import { Page } from "../classes/page";
 import path from 'node:path';
-import { router } from "src/main";
+import WidgetRouter from '../classes/router';
 
 class MainPage extends Page {    
 
@@ -35,12 +34,15 @@ class MainPage extends Page {
         newBtn.setText('New Project');
         newBtn.setObjectName('newButton');
         buttonsLayout.addWidget(newBtn);
+        newBtn.addEventListener('clicked', () => {            
+            WidgetRouter.navigate('project');
+        });
 
         const openBtn = new QPushButton();
         openBtn.setText('Open Project');
         openBtn.setObjectName('openButton');
         openBtn.addEventListener('clicked', () => {
-            console.log('open project');
+            WidgetRouter.navigate('open-project');
         });
         buttonsLayout.addWidget(openBtn);
 
