@@ -31,13 +31,9 @@
     "@elemaudio/core": "^3.2.1",
     "@elemaudio/offline-renderer": "^3.2.2",
     "@nodegui/nodegui": "^0.61.0",
-    "@nodeml/audio": "^2.0.0",
     "@prisma/client": "^5.14.0",
-    "audify": "^1.9.0",
-    "audio-buffer": "^5.0.0",
     "better-sqlite3": "^10.0.0",
-    "naudiodon2": "^2.4.0",
-    "node-crunker": "^0.0.4",
+    "ni-controllers-lib": "^1.2.3",    
     "node-hid": "^3.0.0",
     "node-wav": "^0.0.2",
     "prisma": "^5.14.0",
@@ -45,8 +41,6 @@
     "source-map-support": "^0.5.21",
     "speaker": "^0.5.5",
     "usb": "^2.12.1",
-    "wav-blob-util": "^1.0.21",
-    "wav-file-encoder": "^1.0.4",
     "wavefile": "^11.0.0"
   }
 }

@@ -1,0 +1,673 @@
+diff --git a/node_modules/speaker/build/Release/binding.exp b/node_modules/speaker/build/Release/binding.exp
+index 65ed03c..e0bd46e 100644
+Binary files a/node_modules/speaker/build/Release/binding.exp and b/node_modules/speaker/build/Release/binding.exp differ
+diff --git a/node_modules/speaker/build/Release/binding.iobj b/node_modules/speaker/build/Release/binding.iobj
+index 6513200..3dbb88a 100644
+Binary files a/node_modules/speaker/build/Release/binding.iobj and b/node_modules/speaker/build/Release/binding.iobj differ
+diff --git a/node_modules/speaker/build/Release/binding.ipdb b/node_modules/speaker/build/Release/binding.ipdb
+index eb08fdc..42959e9 100644
+Binary files a/node_modules/speaker/build/Release/binding.ipdb and b/node_modules/speaker/build/Release/binding.ipdb differ
+diff --git a/node_modules/speaker/build/Release/binding.node b/node_modules/speaker/build/Release/binding.node
+index 1e5ad46..c953fff 100644
+Binary files a/node_modules/speaker/build/Release/binding.node and b/node_modules/speaker/build/Release/binding.node differ
+diff --git a/node_modules/speaker/build/Release/binding.pdb b/node_modules/speaker/build/Release/binding.pdb
+index a55a9f1..f1e25df 100644
+Binary files a/node_modules/speaker/build/Release/binding.pdb and b/node_modules/speaker/build/Release/binding.pdb differ
+diff --git a/node_modules/speaker/build/Release/liboutput.lib b/node_modules/speaker/build/Release/liboutput.lib
+index 608a202..e20c514 100644
+Binary files a/node_modules/speaker/build/Release/liboutput.lib and b/node_modules/speaker/build/Release/liboutput.lib differ
+diff --git a/node_modules/speaker/build/Release/obj/binding/binding.node.recipe b/node_modules/speaker/build/Release/obj/binding/binding.node.recipe
+index 3766245..0617ae0 100644
+--- a/node_modules/speaker/build/Release/obj/binding/binding.node.recipe
++++ b/node_modules/speaker/build/Release/obj/binding/binding.node.recipe
+@@ -2,7 +2,7 @@
+ <Project>
+   <ProjectOutputs>
+     <ProjectOutput>
+-      <FullPath>C:\Users\sehi\AppData\Local\Temp\tmp-9920eD19PsN6M8nN\node_modules\speaker\build\Release\binding.node</FullPath>
++      <FullPath>C:\Users\sehi\dev\maschinepi\node_modules\speaker\build\Release\binding.node</FullPath>
+     </ProjectOutput>
+   </ProjectOutputs>
+   <ContentFiles />
+diff --git a/node_modules/speaker/build/Release/obj/binding/binding.tlog/CL.command.1.tlog b/node_modules/speaker/build/Release/obj/binding/binding.tlog/CL.command.1.tlog
+index ee1c898..dc41dee 100644
+Binary files a/node_modules/speaker/build/Release/obj/binding/binding.tlog/CL.command.1.tlog and b/node_modules/speaker/build/Release/obj/binding/binding.tlog/CL.command.1.tlog differ
+diff --git a/node_modules/speaker/build/Release/obj/binding/binding.tlog/CL.read.1.tlog b/node_modules/speaker/build/Release/obj/binding/binding.tlog/CL.read.1.tlog
+index aec98a0..915159b 100644
+Binary files a/node_modules/speaker/build/Release/obj/binding/binding.tlog/CL.read.1.tlog and b/node_modules/speaker/build/Release/obj/binding/binding.tlog/CL.read.1.tlog differ
+diff --git a/node_modules/speaker/build/Release/obj/binding/binding.tlog/CL.write.1.tlog b/node_modules/speaker/build/Release/obj/binding/binding.tlog/CL.write.1.tlog
+index 9c32768..b5f2a70 100644
+Binary files a/node_modules/speaker/build/Release/obj/binding/binding.tlog/CL.write.1.tlog and b/node_modules/speaker/build/Release/obj/binding/binding.tlog/CL.write.1.tlog differ
+diff --git a/node_modules/speaker/build/Release/obj/binding/binding.tlog/Cl.items.tlog b/node_modules/speaker/build/Release/obj/binding/binding.tlog/Cl.items.tlog
+index a246080..878802e 100644
+--- a/node_modules/speaker/build/Release/obj/binding/binding.tlog/Cl.items.tlog
++++ b/node_modules/speaker/build/Release/obj/binding/binding.tlog/Cl.items.tlog
+@@ -1,2 +1,2 @@
+-C:\Users\sehi\AppData\Local\Temp\tmp-9920eD19PsN6M8nN\node_modules\speaker\src\binding.c;C:\Users\sehi\AppData\Local\Temp\tmp-9920eD19PsN6M8nN\node_modules\speaker\build\Release\obj\binding\src\binding.obj
+-C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src\win_delay_load_hook.cc;C:\Users\sehi\AppData\Local\Temp\tmp-9920eD19PsN6M8nN\node_modules\speaker\build\Release\obj\binding\win_delay_load_hook.obj
++C:\Users\sehi\dev\maschinepi\node_modules\speaker\src\binding.c;C:\Users\sehi\dev\maschinepi\node_modules\speaker\build\Release\obj\binding\src\binding.obj
++C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src\win_delay_load_hook.cc;C:\Users\sehi\dev\maschinepi\node_modules\speaker\build\Release\obj\binding\win_delay_load_hook.obj
+diff --git a/node_modules/speaker/build/Release/obj/binding/binding.tlog/binding.lastbuildstate b/node_modules/speaker/build/Release/obj/binding/binding.tlog/binding.lastbuildstate
+index 756b340..36d23d1 100644
+--- a/node_modules/speaker/build/Release/obj/binding/binding.tlog/binding.lastbuildstate
++++ b/node_modules/speaker/build/Release/obj/binding/binding.tlog/binding.lastbuildstate
+@@ -1,2 +1,2 @@
+ PlatformToolSet=v143:VCToolArchitecture=Native64Bit:VCToolsVersion=14.39.33519:TargetPlatformVersion=10.0.22000.0:
+-Release|x64|C:\Users\sehi\AppData\Local\Temp\tmp-9920eD19PsN6M8nN\node_modules\speaker\build\|
++Release|x64|C:\Users\sehi\dev\maschinepi\node_modules\speaker\build\|
+diff --git a/node_modules/speaker/build/Release/obj/binding/binding.tlog/link.command.1.tlog b/node_modules/speaker/build/Release/obj/binding/binding.tlog/link.command.1.tlog
+index 27c7e6f..833aeba 100644
+Binary files a/node_modules/speaker/build/Release/obj/binding/binding.tlog/link.command.1.tlog and b/node_modules/speaker/build/Release/obj/binding/binding.tlog/link.command.1.tlog differ
+diff --git a/node_modules/speaker/build/Release/obj/binding/binding.tlog/link.read.1.tlog b/node_modules/speaker/build/Release/obj/binding/binding.tlog/link.read.1.tlog
+index ef7e905..acb390d 100644
+Binary files a/node_modules/speaker/build/Release/obj/binding/binding.tlog/link.read.1.tlog and b/node_modules/speaker/build/Release/obj/binding/binding.tlog/link.read.1.tlog differ
+diff --git a/node_modules/speaker/build/Release/obj/binding/binding.tlog/link.secondary.1.tlog b/node_modules/speaker/build/Release/obj/binding/binding.tlog/link.secondary.1.tlog
+index bfe1a8d..9e038be 100644
+--- a/node_modules/speaker/build/Release/obj/binding/binding.tlog/link.secondary.1.tlog
++++ b/node_modules/speaker/build/Release/obj/binding/binding.tlog/link.secondary.1.tlog
+@@ -1,5 +1,5 @@
+-^C:\USERS\SEHI\APPDATA\LOCAL\TEMP\TMP-9920ED19PSN6M8NN\NODE_MODULES\SPEAKER\BUILD\RELEASE\LIBOUTPUT.LIB|C:\USERS\SEHI\APPDATA\LOCAL\TEMP\TMP-9920ED19PSN6M8NN\NODE_MODULES\SPEAKER\BUILD\RELEASE\OBJ\BINDING\SRC\BINDING.OBJ|C:\USERS\SEHI\APPDATA\LOCAL\TEMP\TMP-9920ED19PSN6M8NN\NODE_MODULES\SPEAKER\BUILD\RELEASE\OBJ\BINDING\WIN_DELAY_LOAD_HOOK.OBJ
+-C:\Users\sehi\AppData\Local\Temp\tmp-9920eD19PsN6M8nN\node_modules\speaker\build\Release\binding.LIB
+-C:\Users\sehi\AppData\Local\Temp\tmp-9920eD19PsN6M8nN\node_modules\speaker\build\Release\binding.EXP
+-C:\Users\sehi\AppData\Local\Temp\tmp-9920eD19PsN6M8nN\node_modules\speaker\build\Release\binding.IPDB
+-C:\Users\sehi\AppData\Local\Temp\tmp-9920eD19PsN6M8nN\node_modules\speaker\build\Release\binding.IOBJ
++^C:\USERS\SEHI\DEV\MASCHINEPI\NODE_MODULES\SPEAKER\BUILD\RELEASE\LIBOUTPUT.LIB|C:\USERS\SEHI\DEV\MASCHINEPI\NODE_MODULES\SPEAKER\BUILD\RELEASE\OBJ\BINDING\SRC\BINDING.OBJ|C:\USERS\SEHI\DEV\MASCHINEPI\NODE_MODULES\SPEAKER\BUILD\RELEASE\OBJ\BINDING\WIN_DELAY_LOAD_HOOK.OBJ
++C:\Users\sehi\dev\maschinepi\node_modules\speaker\build\Release\binding.LIB
++C:\Users\sehi\dev\maschinepi\node_modules\speaker\build\Release\binding.EXP
++C:\Users\sehi\dev\maschinepi\node_modules\speaker\build\Release\binding.IPDB
++C:\Users\sehi\dev\maschinepi\node_modules\speaker\build\Release\binding.IOBJ
+diff --git a/node_modules/speaker/build/Release/obj/binding/binding.tlog/link.write.1.tlog b/node_modules/speaker/build/Release/obj/binding/binding.tlog/link.write.1.tlog
+index e1678b3..c222f03 100644
+Binary files a/node_modules/speaker/build/Release/obj/binding/binding.tlog/link.write.1.tlog and b/node_modules/speaker/build/Release/obj/binding/binding.tlog/link.write.1.tlog differ
+diff --git a/node_modules/speaker/build/Release/obj/binding/src/binding.obj b/node_modules/speaker/build/Release/obj/binding/src/binding.obj
+index 4dc0f6e..24f859f 100644
+Binary files a/node_modules/speaker/build/Release/obj/binding/src/binding.obj and b/node_modules/speaker/build/Release/obj/binding/src/binding.obj differ
+diff --git a/node_modules/speaker/build/Release/obj/binding/win_delay_load_hook.obj b/node_modules/speaker/build/Release/obj/binding/win_delay_load_hook.obj
+index 1869c1f..0d16a2a 100644
+Binary files a/node_modules/speaker/build/Release/obj/binding/win_delay_load_hook.obj and b/node_modules/speaker/build/Release/obj/binding/win_delay_load_hook.obj differ
+diff --git a/node_modules/speaker/build/binding.sln b/node_modules/speaker/build/binding.sln
+index 1fae36c..06cc80d 100644
+--- a/node_modules/speaker/build/binding.sln
++++ b/node_modules/speaker/build/binding.sln
+@@ -1,11 +1,11 @@
+ Microsoft Visual Studio Solution File, Format Version 12.00
+ # Visual Studio 2015
+-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "binding", "binding.vcxproj", "{CEE482CF-F32D-F043-86F0-EFDC22F215A2}"
++Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "binding", "binding.vcxproj", "{ABDA5207-EE4D-314A-80D0-714A3D7308F4}"
+ 	ProjectSection(ProjectDependencies) = postProject
+-		{236BC296-FCC5-574C-D8CA-D944F8065744} = {236BC296-FCC5-574C-D8CA-D944F8065744}
++		{A208D645-FB05-B2C2-2CF7-DA5B5DA5A702} = {A208D645-FB05-B2C2-2CF7-DA5B5DA5A702}
+ 	EndProjectSection
+ EndProject
+-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "output", "deps\mpg123\output.vcxproj", "{236BC296-FCC5-574C-D8CA-D944F8065744}"
++Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "output", "deps\mpg123\output.vcxproj", "{A208D645-FB05-B2C2-2CF7-DA5B5DA5A702}"
+ EndProject
+ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(deps)", "..\deps", "{01DF18E8-89C6-A25E-0006-40F7C4BCED1B}"
+ EndProject
+@@ -17,20 +17,20 @@ Global
+ 		Release|x64 = Release|x64
+ 	EndGlobalSection
+ 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+-		{236BC296-FCC5-574C-D8CA-D944F8065744}.Debug|x64.ActiveCfg = Debug|x64
+-		{236BC296-FCC5-574C-D8CA-D944F8065744}.Debug|x64.Build.0 = Debug|x64
+-		{236BC296-FCC5-574C-D8CA-D944F8065744}.Release|x64.ActiveCfg = Release|x64
+-		{236BC296-FCC5-574C-D8CA-D944F8065744}.Release|x64.Build.0 = Release|x64
+-		{CEE482CF-F32D-F043-86F0-EFDC22F215A2}.Debug|x64.ActiveCfg = Debug|x64
+-		{CEE482CF-F32D-F043-86F0-EFDC22F215A2}.Debug|x64.Build.0 = Debug|x64
+-		{CEE482CF-F32D-F043-86F0-EFDC22F215A2}.Release|x64.ActiveCfg = Release|x64
+-		{CEE482CF-F32D-F043-86F0-EFDC22F215A2}.Release|x64.Build.0 = Release|x64
++		{A208D645-FB05-B2C2-2CF7-DA5B5DA5A702}.Debug|x64.ActiveCfg = Debug|x64
++		{A208D645-FB05-B2C2-2CF7-DA5B5DA5A702}.Debug|x64.Build.0 = Debug|x64
++		{A208D645-FB05-B2C2-2CF7-DA5B5DA5A702}.Release|x64.ActiveCfg = Release|x64
++		{A208D645-FB05-B2C2-2CF7-DA5B5DA5A702}.Release|x64.Build.0 = Release|x64
++		{ABDA5207-EE4D-314A-80D0-714A3D7308F4}.Debug|x64.ActiveCfg = Debug|x64
++		{ABDA5207-EE4D-314A-80D0-714A3D7308F4}.Debug|x64.Build.0 = Debug|x64
++		{ABDA5207-EE4D-314A-80D0-714A3D7308F4}.Release|x64.ActiveCfg = Release|x64
++		{ABDA5207-EE4D-314A-80D0-714A3D7308F4}.Release|x64.Build.0 = Release|x64
+ 	EndGlobalSection
+ 	GlobalSection(SolutionProperties) = preSolution
+ 		HideSolutionNode = FALSE
+ 	EndGlobalSection
+ 	GlobalSection(NestedProjects) = preSolution
+ 		{546EAFBE-7F08-4CFB-D9C6-7A771A676A95} = {01DF18E8-89C6-A25E-0006-40F7C4BCED1B}
+-		{236BC296-FCC5-574C-D8CA-D944F8065744} = {546EAFBE-7F08-4CFB-D9C6-7A771A676A95}
++		{A208D645-FB05-B2C2-2CF7-DA5B5DA5A702} = {546EAFBE-7F08-4CFB-D9C6-7A771A676A95}
+ 	EndGlobalSection
+ EndGlobal
+diff --git a/node_modules/speaker/build/binding.vcxproj b/node_modules/speaker/build/binding.vcxproj
+index 7db17ed..790f906 100644
+--- a/node_modules/speaker/build/binding.vcxproj
++++ b/node_modules/speaker/build/binding.vcxproj
+@@ -11,7 +11,7 @@
+     </ProjectConfiguration>
+   </ItemGroup>
+   <PropertyGroup Label="Globals">
+-    <ProjectGuid>{CEE482CF-F32D-F043-86F0-EFDC22F215A2}</ProjectGuid>
++    <ProjectGuid>{ABDA5207-EE4D-314A-80D0-714A3D7308F4}</ProjectGuid>
+     <Keyword>Win32Proj</Keyword>
+     <RootNamespace>binding</RootNamespace>
+     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+@@ -140,11 +140,11 @@
+     <ClCompile Include="..\src\binding.c">
+       <ObjectFileName>$(IntDir)\src\binding.obj</ObjectFileName>
+     </ClCompile>
+-    <ClCompile Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src\win_delay_load_hook.cc"/>
++    <ClCompile Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src\win_delay_load_hook.cc"/>
+   </ItemGroup>
+   <ItemGroup>
+     <ProjectReference Include="deps\mpg123\output.vcxproj">
+-      <Project>{236BC296-FCC5-574C-D8CA-D944F8065744}</Project>
++      <Project>{A208D645-FB05-B2C2-2CF7-DA5B5DA5A702}</Project>
+       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+     </ProjectReference>
+   </ItemGroup>
+diff --git a/node_modules/speaker/build/binding.vcxproj.filters b/node_modules/speaker/build/binding.vcxproj.filters
+index 5d72414..9f0ca51 100644
+--- a/node_modules/speaker/build/binding.vcxproj.filters
++++ b/node_modules/speaker/build/binding.vcxproj.filters
+@@ -16,31 +16,19 @@
+     <Filter Include="C:\Users\sehi">
+       <UniqueIdentifier>{ABC844CB-BAF4-66C1-BFF5-45CD5C0295F2}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData">
+-      <UniqueIdentifier>{F852EB63-437C-846A-220F-8D9ED6DAEC1D}</UniqueIdentifier>
++    <Filter Include="C:\Users\sehi\dev">
++      <UniqueIdentifier>{51D92A3A-C0F8-78D6-DFF5-4F152A3AB774}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming">
+-      <UniqueIdentifier>{D51E5808-912B-5C70-4BB7-475D1DBFA067}</UniqueIdentifier>
++    <Filter Include="C:\Users\sehi\dev\maschinepi">
++      <UniqueIdentifier>{A8A10A32-5736-AB1B-7793-D61D8505E4E9}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm">
+-      <UniqueIdentifier>{1B85D12A-9F9C-E0A8-F82E-74864675B527}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1">
+-      <UniqueIdentifier>{1F4242BE-5E89-5171-9E8B-250AEE66EBC0}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules">
+-      <UniqueIdentifier>{56DF7A98-063D-FB9D-485C-089023B4C16A}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm">
+-      <UniqueIdentifier>{741E0E76-39B2-B1AB-9FA1-F1A20B16F295}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules">
++    <Filter Include="C:\Users\sehi\dev\maschinepi\node_modules">
+       <UniqueIdentifier>{56DF7A98-063D-FB9D-485C-089023B4C16A}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp">
++    <Filter Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp">
+       <UniqueIdentifier>{77348C0E-2034-7791-74D5-63C077DF5A3B}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src">
++    <Filter Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src">
+       <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
+     </Filter>
+     <Filter Include="..">
+@@ -51,8 +39,8 @@
+     <ClCompile Include="..\src\binding.c">
+       <Filter>..\src</Filter>
+     </ClCompile>
+-    <ClCompile Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src\win_delay_load_hook.cc">
+-      <Filter>C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src</Filter>
++    <ClCompile Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src\win_delay_load_hook.cc">
++      <Filter>C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src</Filter>
+     </ClCompile>
+     <None Include="..\binding.gyp">
+       <Filter>..</Filter>
+diff --git a/node_modules/speaker/build/config.gypi b/node_modules/speaker/build/config.gypi
+index 1477aad..bbd9770 100644
+--- a/node_modules/speaker/build/config.gypi
++++ b/node_modules/speaker/build/config.gypi
+@@ -413,15 +413,13 @@
+     "v8_use_siphash": 1,
+     "want_separate_host_toolset": 0,
+     "nodedir": "C:\\Users\\sehi\\AppData\\Local\\node-gyp\\Cache\\20.11.1",
+-    "python": "C:\\Program Files\\Python311\\python.exe",
+     "standalone_static_library": 1,
+     "msbuild_path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\MSBuild\\Current\\Bin\\MSBuild.exe",
+     "cache": "C:\\Users\\sehi\\AppData\\Local\\npm-cache",
+-    "force": "true",
+     "globalconfig": "C:\\Program Files\\nodejs\\etc\\npmrc",
+     "global_prefix": "C:\\Program Files\\nodejs",
+     "init_module": "C:\\Users\\sehi\\.npm-init.js",
+-    "local_prefix": "C:\\Users\\sehi\\AppData\\Local\\Temp\\tmp-9920eD19PsN6M8nN",
++    "local_prefix": "C:\\Users\\sehi\\dev\\maschinepi",
+     "node_gyp": "C:\\Users\\sehi\\AppData\\Roaming\\nvm\\v20.11.1\\node_modules\\npm\\node_modules\\node-gyp\\bin\\node-gyp.js",
+     "npm_version": "10.2.4",
+     "prefix": "C:\\Program Files\\nodejs",
+diff --git a/node_modules/speaker/build/deps/mpg123/Release/obj/output/deps/mpg123/src/output/win32.obj b/node_modules/speaker/build/deps/mpg123/Release/obj/output/deps/mpg123/src/output/win32.obj
+index f16808a..9ba217a 100644
+Binary files a/node_modules/speaker/build/deps/mpg123/Release/obj/output/deps/mpg123/src/output/win32.obj and b/node_modules/speaker/build/deps/mpg123/Release/obj/output/deps/mpg123/src/output/win32.obj differ
+diff --git a/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/CL.command.1.tlog b/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/CL.command.1.tlog
+index 117eca2..a83c156 100644
+Binary files a/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/CL.command.1.tlog and b/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/CL.command.1.tlog differ
+diff --git a/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/CL.read.1.tlog b/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/CL.read.1.tlog
+index 6444c91..e92dc19 100644
+Binary files a/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/CL.read.1.tlog and b/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/CL.read.1.tlog differ
+diff --git a/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/CL.write.1.tlog b/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/CL.write.1.tlog
+index 1de1f50..3075df4 100644
+Binary files a/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/CL.write.1.tlog and b/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/CL.write.1.tlog differ
+diff --git a/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/Cl.items.tlog b/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/Cl.items.tlog
+index 588b311..a8c814e 100644
+--- a/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/Cl.items.tlog
++++ b/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/Cl.items.tlog
+@@ -1,2 +1,2 @@
+-C:\Users\sehi\AppData\Local\Temp\tmp-9920eD19PsN6M8nN\node_modules\speaker\deps\mpg123\src\output\win32.c;C:\Users\sehi\AppData\Local\Temp\tmp-9920eD19PsN6M8nN\node_modules\speaker\build\deps\mpg123\Release\obj\output\deps\mpg123\src\output\win32.obj
+-C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src\win_delay_load_hook.cc;C:\Users\sehi\AppData\Local\Temp\tmp-9920eD19PsN6M8nN\node_modules\speaker\build\deps\mpg123\Release\obj\output\win_delay_load_hook.obj
++C:\Users\sehi\dev\maschinepi\node_modules\speaker\deps\mpg123\src\output\win32.c;C:\Users\sehi\dev\maschinepi\node_modules\speaker\build\deps\mpg123\Release\obj\output\deps\mpg123\src\output\win32.obj
++C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src\win_delay_load_hook.cc;C:\Users\sehi\dev\maschinepi\node_modules\speaker\build\deps\mpg123\Release\obj\output\win_delay_load_hook.obj
+diff --git a/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/Lib-link.read.1.tlog b/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/Lib-link.read.1.tlog
+index 4d6b0d2..777eaa4 100644
+Binary files a/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/Lib-link.read.1.tlog and b/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/Lib-link.read.1.tlog differ
+diff --git a/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/Lib-link.write.1.tlog b/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/Lib-link.write.1.tlog
+index a726f91..d1e4ba4 100644
+Binary files a/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/Lib-link.write.1.tlog and b/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/Lib-link.write.1.tlog differ
+diff --git a/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/Lib.command.1.tlog b/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/Lib.command.1.tlog
+index b7572bd..3f217a4 100644
+Binary files a/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/Lib.command.1.tlog and b/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/Lib.command.1.tlog differ
+diff --git a/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/output.lastbuildstate b/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/output.lastbuildstate
+index 756b340..36d23d1 100644
+--- a/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/output.lastbuildstate
++++ b/node_modules/speaker/build/deps/mpg123/Release/obj/output/output.tlog/output.lastbuildstate
+@@ -1,2 +1,2 @@
+ PlatformToolSet=v143:VCToolArchitecture=Native64Bit:VCToolsVersion=14.39.33519:TargetPlatformVersion=10.0.22000.0:
+-Release|x64|C:\Users\sehi\AppData\Local\Temp\tmp-9920eD19PsN6M8nN\node_modules\speaker\build\|
++Release|x64|C:\Users\sehi\dev\maschinepi\node_modules\speaker\build\|
+diff --git a/node_modules/speaker/build/deps/mpg123/Release/obj/output/win_delay_load_hook.obj b/node_modules/speaker/build/deps/mpg123/Release/obj/output/win_delay_load_hook.obj
+index eb5ba36..6c40ad2 100644
+Binary files a/node_modules/speaker/build/deps/mpg123/Release/obj/output/win_delay_load_hook.obj and b/node_modules/speaker/build/deps/mpg123/Release/obj/output/win_delay_load_hook.obj differ
+diff --git a/node_modules/speaker/build/deps/mpg123/mpg123.sln b/node_modules/speaker/build/deps/mpg123/mpg123.sln
+index 650b3b7..8579538 100644
+--- a/node_modules/speaker/build/deps/mpg123/mpg123.sln
++++ b/node_modules/speaker/build/deps/mpg123/mpg123.sln
+@@ -1,17 +1,17 @@
+ Microsoft Visual Studio Solution File, Format Version 12.00
+ # Visual Studio 2015
+-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mpg123", "mpg123.vcxproj", "{0FF60782-661E-8665-2D36-E0294001DBD2}"
++Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mpg123", "mpg123.vcxproj", "{18B5A596-AD9A-5F51-4D0C-E111E3C05438}"
+ EndProject
+-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "output", "output.vcxproj", "{236BC296-FCC5-574C-D8CA-D944F8065744}"
++Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "output", "output.vcxproj", "{A208D645-FB05-B2C2-2CF7-DA5B5DA5A702}"
+ EndProject
+-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "output_test", "output_test.vcxproj", "{0D8AC725-FEE1-3346-0175-B6AFBB143DC6}"
++Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "output_test", "output_test.vcxproj", "{956F9D1D-9C3D-0E25-6D1E-2EBC143AE632}"
+ 	ProjectSection(ProjectDependencies) = postProject
+-		{236BC296-FCC5-574C-D8CA-D944F8065744} = {236BC296-FCC5-574C-D8CA-D944F8065744}
++		{A208D645-FB05-B2C2-2CF7-DA5B5DA5A702} = {A208D645-FB05-B2C2-2CF7-DA5B5DA5A702}
+ 	EndProjectSection
+ EndProject
+-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test.vcxproj", "{C42AEB44-0902-9AD0-D38D-3C0AA6E1C3FF}"
++Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test.vcxproj", "{B3FC1D77-AE74-AFF2-8DB9-E03E2BAADC1B}"
+ 	ProjectSection(ProjectDependencies) = postProject
+-		{0FF60782-661E-8665-2D36-E0294001DBD2} = {0FF60782-661E-8665-2D36-E0294001DBD2}
++		{18B5A596-AD9A-5F51-4D0C-E111E3C05438} = {18B5A596-AD9A-5F51-4D0C-E111E3C05438}
+ 	EndProjectSection
+ EndProject
+ Global
+@@ -20,22 +20,22 @@ Global
+ 		Release|x64 = Release|x64
+ 	EndGlobalSection
+ 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+-		{0D8AC725-FEE1-3346-0175-B6AFBB143DC6}.Debug|x64.ActiveCfg = Debug|x64
+-		{0D8AC725-FEE1-3346-0175-B6AFBB143DC6}.Debug|x64.Build.0 = Debug|x64
+-		{0D8AC725-FEE1-3346-0175-B6AFBB143DC6}.Release|x64.ActiveCfg = Release|x64
+-		{0D8AC725-FEE1-3346-0175-B6AFBB143DC6}.Release|x64.Build.0 = Release|x64
+-		{0FF60782-661E-8665-2D36-E0294001DBD2}.Debug|x64.ActiveCfg = Debug|x64
+-		{0FF60782-661E-8665-2D36-E0294001DBD2}.Debug|x64.Build.0 = Debug|x64
+-		{0FF60782-661E-8665-2D36-E0294001DBD2}.Release|x64.ActiveCfg = Release|x64
+-		{0FF60782-661E-8665-2D36-E0294001DBD2}.Release|x64.Build.0 = Release|x64
+-		{236BC296-FCC5-574C-D8CA-D944F8065744}.Debug|x64.ActiveCfg = Debug|x64
+-		{236BC296-FCC5-574C-D8CA-D944F8065744}.Debug|x64.Build.0 = Debug|x64
+-		{236BC296-FCC5-574C-D8CA-D944F8065744}.Release|x64.ActiveCfg = Release|x64
+-		{236BC296-FCC5-574C-D8CA-D944F8065744}.Release|x64.Build.0 = Release|x64
+-		{C42AEB44-0902-9AD0-D38D-3C0AA6E1C3FF}.Debug|x64.ActiveCfg = Debug|x64
+-		{C42AEB44-0902-9AD0-D38D-3C0AA6E1C3FF}.Debug|x64.Build.0 = Debug|x64
+-		{C42AEB44-0902-9AD0-D38D-3C0AA6E1C3FF}.Release|x64.ActiveCfg = Release|x64
+-		{C42AEB44-0902-9AD0-D38D-3C0AA6E1C3FF}.Release|x64.Build.0 = Release|x64
++		{18B5A596-AD9A-5F51-4D0C-E111E3C05438}.Debug|x64.ActiveCfg = Debug|x64
++		{18B5A596-AD9A-5F51-4D0C-E111E3C05438}.Debug|x64.Build.0 = Debug|x64
++		{18B5A596-AD9A-5F51-4D0C-E111E3C05438}.Release|x64.ActiveCfg = Release|x64
++		{18B5A596-AD9A-5F51-4D0C-E111E3C05438}.Release|x64.Build.0 = Release|x64
++		{956F9D1D-9C3D-0E25-6D1E-2EBC143AE632}.Debug|x64.ActiveCfg = Debug|x64
++		{956F9D1D-9C3D-0E25-6D1E-2EBC143AE632}.Debug|x64.Build.0 = Debug|x64
++		{956F9D1D-9C3D-0E25-6D1E-2EBC143AE632}.Release|x64.ActiveCfg = Release|x64
++		{956F9D1D-9C3D-0E25-6D1E-2EBC143AE632}.Release|x64.Build.0 = Release|x64
++		{A208D645-FB05-B2C2-2CF7-DA5B5DA5A702}.Debug|x64.ActiveCfg = Debug|x64
++		{A208D645-FB05-B2C2-2CF7-DA5B5DA5A702}.Debug|x64.Build.0 = Debug|x64
++		{A208D645-FB05-B2C2-2CF7-DA5B5DA5A702}.Release|x64.ActiveCfg = Release|x64
++		{A208D645-FB05-B2C2-2CF7-DA5B5DA5A702}.Release|x64.Build.0 = Release|x64
++		{B3FC1D77-AE74-AFF2-8DB9-E03E2BAADC1B}.Debug|x64.ActiveCfg = Debug|x64
++		{B3FC1D77-AE74-AFF2-8DB9-E03E2BAADC1B}.Debug|x64.Build.0 = Debug|x64
++		{B3FC1D77-AE74-AFF2-8DB9-E03E2BAADC1B}.Release|x64.ActiveCfg = Release|x64
++		{B3FC1D77-AE74-AFF2-8DB9-E03E2BAADC1B}.Release|x64.Build.0 = Release|x64
+ 	EndGlobalSection
+ 	GlobalSection(SolutionProperties) = preSolution
+ 		HideSolutionNode = FALSE
+diff --git a/node_modules/speaker/build/deps/mpg123/mpg123.vcxproj b/node_modules/speaker/build/deps/mpg123/mpg123.vcxproj
+index 2cfa257..e5cfb11 100644
+--- a/node_modules/speaker/build/deps/mpg123/mpg123.vcxproj
++++ b/node_modules/speaker/build/deps/mpg123/mpg123.vcxproj
+@@ -11,7 +11,7 @@
+     </ProjectConfiguration>
+   </ItemGroup>
+   <PropertyGroup Label="Globals">
+-    <ProjectGuid>{0FF60782-661E-8665-2D36-E0294001DBD2}</ProjectGuid>
++    <ProjectGuid>{18B5A596-AD9A-5F51-4D0C-E111E3C05438}</ProjectGuid>
+     <Keyword>Win32Proj</Keyword>
+     <RootNamespace>mpg123</RootNamespace>
+     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+@@ -205,7 +205,7 @@
+     <ClCompile Include="..\..\..\deps\mpg123\src\libmpg123\dct64_i386.c">
+       <ObjectFileName>$(IntDir)\deps\mpg123\src\libmpg123\dct64_i386.obj</ObjectFileName>
+     </ClCompile>
+-    <ClCompile Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src\win_delay_load_hook.cc"/>
++    <ClCompile Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src\win_delay_load_hook.cc"/>
+   </ItemGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
+   <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets"/>
+diff --git a/node_modules/speaker/build/deps/mpg123/mpg123.vcxproj.filters b/node_modules/speaker/build/deps/mpg123/mpg123.vcxproj.filters
+index 651c5e5..5e64fff 100644
+--- a/node_modules/speaker/build/deps/mpg123/mpg123.vcxproj.filters
++++ b/node_modules/speaker/build/deps/mpg123/mpg123.vcxproj.filters
+@@ -535,31 +535,19 @@
+     <Filter Include="C:\Users\sehi">
+       <UniqueIdentifier>{ABC844CB-BAF4-66C1-BFF5-45CD5C0295F2}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData">
+-      <UniqueIdentifier>{F852EB63-437C-846A-220F-8D9ED6DAEC1D}</UniqueIdentifier>
++    <Filter Include="C:\Users\sehi\dev">
++      <UniqueIdentifier>{51D92A3A-C0F8-78D6-DFF5-4F152A3AB774}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming">
+-      <UniqueIdentifier>{D51E5808-912B-5C70-4BB7-475D1DBFA067}</UniqueIdentifier>
++    <Filter Include="C:\Users\sehi\dev\maschinepi">
++      <UniqueIdentifier>{A8A10A32-5736-AB1B-7793-D61D8505E4E9}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm">
+-      <UniqueIdentifier>{1B85D12A-9F9C-E0A8-F82E-74864675B527}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1">
+-      <UniqueIdentifier>{1F4242BE-5E89-5171-9E8B-250AEE66EBC0}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules">
+-      <UniqueIdentifier>{56DF7A98-063D-FB9D-485C-089023B4C16A}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm">
+-      <UniqueIdentifier>{741E0E76-39B2-B1AB-9FA1-F1A20B16F295}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules">
++    <Filter Include="C:\Users\sehi\dev\maschinepi\node_modules">
+       <UniqueIdentifier>{56DF7A98-063D-FB9D-485C-089023B4C16A}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp">
++    <Filter Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp">
+       <UniqueIdentifier>{77348C0E-2034-7791-74D5-63C077DF5A3B}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src">
++    <Filter Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src">
+       <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
+     </Filter>
+     <Filter Include="..">
+@@ -654,8 +642,8 @@
+     <ClCompile Include="..\..\..\deps\mpg123\src\libmpg123\dct64_i386.c">
+       <Filter>..\..\..\deps\mpg123\src\libmpg123</Filter>
+     </ClCompile>
+-    <ClCompile Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src\win_delay_load_hook.cc">
+-      <Filter>C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src</Filter>
++    <ClCompile Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src\win_delay_load_hook.cc">
++      <Filter>C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src</Filter>
+     </ClCompile>
+     <None Include="..\..\..\deps\mpg123\mpg123.gyp">
+       <Filter>..\..\..\deps\mpg123</Filter>
+diff --git a/node_modules/speaker/build/deps/mpg123/output.vcxproj b/node_modules/speaker/build/deps/mpg123/output.vcxproj
+index 242f146..14ceea7 100644
+--- a/node_modules/speaker/build/deps/mpg123/output.vcxproj
++++ b/node_modules/speaker/build/deps/mpg123/output.vcxproj
+@@ -11,7 +11,7 @@
+     </ProjectConfiguration>
+   </ItemGroup>
+   <PropertyGroup Label="Globals">
+-    <ProjectGuid>{236BC296-FCC5-574C-D8CA-D944F8065744}</ProjectGuid>
++    <ProjectGuid>{A208D645-FB05-B2C2-2CF7-DA5B5DA5A702}</ProjectGuid>
+     <Keyword>Win32Proj</Keyword>
+     <RootNamespace>output</RootNamespace>
+     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+@@ -133,7 +133,7 @@
+     <ClCompile Include="..\..\..\deps\mpg123\src\output\win32.c">
+       <ObjectFileName>$(IntDir)\deps\mpg123\src\output\win32.obj</ObjectFileName>
+     </ClCompile>
+-    <ClCompile Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src\win_delay_load_hook.cc"/>
++    <ClCompile Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src\win_delay_load_hook.cc"/>
+   </ItemGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
+   <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets"/>
+diff --git a/node_modules/speaker/build/deps/mpg123/output.vcxproj.filters b/node_modules/speaker/build/deps/mpg123/output.vcxproj.filters
+index 6b70d40..f8d633c 100644
+--- a/node_modules/speaker/build/deps/mpg123/output.vcxproj.filters
++++ b/node_modules/speaker/build/deps/mpg123/output.vcxproj.filters
+@@ -31,31 +31,19 @@
+     <Filter Include="C:\Users\sehi">
+       <UniqueIdentifier>{ABC844CB-BAF4-66C1-BFF5-45CD5C0295F2}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData">
+-      <UniqueIdentifier>{F852EB63-437C-846A-220F-8D9ED6DAEC1D}</UniqueIdentifier>
++    <Filter Include="C:\Users\sehi\dev">
++      <UniqueIdentifier>{51D92A3A-C0F8-78D6-DFF5-4F152A3AB774}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming">
+-      <UniqueIdentifier>{D51E5808-912B-5C70-4BB7-475D1DBFA067}</UniqueIdentifier>
++    <Filter Include="C:\Users\sehi\dev\maschinepi">
++      <UniqueIdentifier>{A8A10A32-5736-AB1B-7793-D61D8505E4E9}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm">
+-      <UniqueIdentifier>{1B85D12A-9F9C-E0A8-F82E-74864675B527}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1">
+-      <UniqueIdentifier>{1F4242BE-5E89-5171-9E8B-250AEE66EBC0}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules">
+-      <UniqueIdentifier>{56DF7A98-063D-FB9D-485C-089023B4C16A}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm">
+-      <UniqueIdentifier>{741E0E76-39B2-B1AB-9FA1-F1A20B16F295}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules">
++    <Filter Include="C:\Users\sehi\dev\maschinepi\node_modules">
+       <UniqueIdentifier>{56DF7A98-063D-FB9D-485C-089023B4C16A}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp">
++    <Filter Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp">
+       <UniqueIdentifier>{77348C0E-2034-7791-74D5-63C077DF5A3B}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src">
++    <Filter Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src">
+       <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
+     </Filter>
+     <Filter Include="..">
+@@ -78,8 +66,8 @@
+     <ClCompile Include="..\..\..\deps\mpg123\src\output\win32.c">
+       <Filter>..\..\..\deps\mpg123\src\output</Filter>
+     </ClCompile>
+-    <ClCompile Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src\win_delay_load_hook.cc">
+-      <Filter>C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src</Filter>
++    <ClCompile Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src\win_delay_load_hook.cc">
++      <Filter>C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src</Filter>
+     </ClCompile>
+     <None Include="..\..\..\deps\mpg123\mpg123.gyp">
+       <Filter>..\..\..\deps\mpg123</Filter>
+diff --git a/node_modules/speaker/build/deps/mpg123/output_test.vcxproj b/node_modules/speaker/build/deps/mpg123/output_test.vcxproj
+index 1807750..3552147 100644
+--- a/node_modules/speaker/build/deps/mpg123/output_test.vcxproj
++++ b/node_modules/speaker/build/deps/mpg123/output_test.vcxproj
+@@ -11,7 +11,7 @@
+     </ProjectConfiguration>
+   </ItemGroup>
+   <PropertyGroup Label="Globals">
+-    <ProjectGuid>{0D8AC725-FEE1-3346-0175-B6AFBB143DC6}</ProjectGuid>
++    <ProjectGuid>{956F9D1D-9C3D-0E25-6D1E-2EBC143AE632}</ProjectGuid>
+     <Keyword>Win32Proj</Keyword>
+     <RootNamespace>output_test</RootNamespace>
+     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+@@ -135,11 +135,11 @@
+     <ClCompile Include="..\..\..\deps\mpg123\test_output.c">
+       <ObjectFileName>$(IntDir)\deps\mpg123\test_output.obj</ObjectFileName>
+     </ClCompile>
+-    <ClCompile Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src\win_delay_load_hook.cc"/>
++    <ClCompile Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src\win_delay_load_hook.cc"/>
+   </ItemGroup>
+   <ItemGroup>
+     <ProjectReference Include="output.vcxproj">
+-      <Project>{236BC296-FCC5-574C-D8CA-D944F8065744}</Project>
++      <Project>{A208D645-FB05-B2C2-2CF7-DA5B5DA5A702}</Project>
+       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+     </ProjectReference>
+   </ItemGroup>
+diff --git a/node_modules/speaker/build/deps/mpg123/output_test.vcxproj.filters b/node_modules/speaker/build/deps/mpg123/output_test.vcxproj.filters
+index b5a4a79..0632153 100644
+--- a/node_modules/speaker/build/deps/mpg123/output_test.vcxproj.filters
++++ b/node_modules/speaker/build/deps/mpg123/output_test.vcxproj.filters
+@@ -25,31 +25,19 @@
+     <Filter Include="C:\Users\sehi">
+       <UniqueIdentifier>{ABC844CB-BAF4-66C1-BFF5-45CD5C0295F2}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData">
+-      <UniqueIdentifier>{F852EB63-437C-846A-220F-8D9ED6DAEC1D}</UniqueIdentifier>
++    <Filter Include="C:\Users\sehi\dev">
++      <UniqueIdentifier>{51D92A3A-C0F8-78D6-DFF5-4F152A3AB774}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming">
+-      <UniqueIdentifier>{D51E5808-912B-5C70-4BB7-475D1DBFA067}</UniqueIdentifier>
++    <Filter Include="C:\Users\sehi\dev\maschinepi">
++      <UniqueIdentifier>{A8A10A32-5736-AB1B-7793-D61D8505E4E9}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm">
+-      <UniqueIdentifier>{1B85D12A-9F9C-E0A8-F82E-74864675B527}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1">
+-      <UniqueIdentifier>{1F4242BE-5E89-5171-9E8B-250AEE66EBC0}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules">
+-      <UniqueIdentifier>{56DF7A98-063D-FB9D-485C-089023B4C16A}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm">
+-      <UniqueIdentifier>{741E0E76-39B2-B1AB-9FA1-F1A20B16F295}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules">
++    <Filter Include="C:\Users\sehi\dev\maschinepi\node_modules">
+       <UniqueIdentifier>{56DF7A98-063D-FB9D-485C-089023B4C16A}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp">
++    <Filter Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp">
+       <UniqueIdentifier>{77348C0E-2034-7791-74D5-63C077DF5A3B}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src">
++    <Filter Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src">
+       <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
+     </Filter>
+     <Filter Include="..">
+@@ -72,8 +60,8 @@
+     <ClCompile Include="..\..\..\deps\mpg123\test_output.c">
+       <Filter>..\..\..\deps\mpg123</Filter>
+     </ClCompile>
+-    <ClCompile Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src\win_delay_load_hook.cc">
+-      <Filter>C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src</Filter>
++    <ClCompile Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src\win_delay_load_hook.cc">
++      <Filter>C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src</Filter>
+     </ClCompile>
+     <None Include="..\..\..\deps\mpg123\mpg123.gyp">
+       <Filter>..\..\..\deps\mpg123</Filter>
+diff --git a/node_modules/speaker/build/deps/mpg123/test.vcxproj b/node_modules/speaker/build/deps/mpg123/test.vcxproj
+index 7afef4d..b319706 100644
+--- a/node_modules/speaker/build/deps/mpg123/test.vcxproj
++++ b/node_modules/speaker/build/deps/mpg123/test.vcxproj
+@@ -11,7 +11,7 @@
+     </ProjectConfiguration>
+   </ItemGroup>
+   <PropertyGroup Label="Globals">
+-    <ProjectGuid>{C42AEB44-0902-9AD0-D38D-3C0AA6E1C3FF}</ProjectGuid>
++    <ProjectGuid>{B3FC1D77-AE74-AFF2-8DB9-E03E2BAADC1B}</ProjectGuid>
+     <Keyword>Win32Proj</Keyword>
+     <RootNamespace>test</RootNamespace>
+     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+@@ -135,11 +135,11 @@
+     <ClCompile Include="..\..\..\deps\mpg123\test.c">
+       <ObjectFileName>$(IntDir)\deps\mpg123\test.obj</ObjectFileName>
+     </ClCompile>
+-    <ClCompile Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src\win_delay_load_hook.cc"/>
++    <ClCompile Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src\win_delay_load_hook.cc"/>
+   </ItemGroup>
+   <ItemGroup>
+     <ProjectReference Include="mpg123.vcxproj">
+-      <Project>{0FF60782-661E-8665-2D36-E0294001DBD2}</Project>
++      <Project>{18B5A596-AD9A-5F51-4D0C-E111E3C05438}</Project>
+       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+     </ProjectReference>
+   </ItemGroup>
+diff --git a/node_modules/speaker/build/deps/mpg123/test.vcxproj.filters b/node_modules/speaker/build/deps/mpg123/test.vcxproj.filters
+index e99c779..69e91e3 100644
+--- a/node_modules/speaker/build/deps/mpg123/test.vcxproj.filters
++++ b/node_modules/speaker/build/deps/mpg123/test.vcxproj.filters
+@@ -25,31 +25,19 @@
+     <Filter Include="C:\Users\sehi">
+       <UniqueIdentifier>{ABC844CB-BAF4-66C1-BFF5-45CD5C0295F2}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData">
+-      <UniqueIdentifier>{F852EB63-437C-846A-220F-8D9ED6DAEC1D}</UniqueIdentifier>
++    <Filter Include="C:\Users\sehi\dev">
++      <UniqueIdentifier>{51D92A3A-C0F8-78D6-DFF5-4F152A3AB774}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming">
+-      <UniqueIdentifier>{D51E5808-912B-5C70-4BB7-475D1DBFA067}</UniqueIdentifier>
++    <Filter Include="C:\Users\sehi\dev\maschinepi">
++      <UniqueIdentifier>{A8A10A32-5736-AB1B-7793-D61D8505E4E9}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm">
+-      <UniqueIdentifier>{1B85D12A-9F9C-E0A8-F82E-74864675B527}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1">
+-      <UniqueIdentifier>{1F4242BE-5E89-5171-9E8B-250AEE66EBC0}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules">
+-      <UniqueIdentifier>{56DF7A98-063D-FB9D-485C-089023B4C16A}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm">
+-      <UniqueIdentifier>{741E0E76-39B2-B1AB-9FA1-F1A20B16F295}</UniqueIdentifier>
+-    </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules">
++    <Filter Include="C:\Users\sehi\dev\maschinepi\node_modules">
+       <UniqueIdentifier>{56DF7A98-063D-FB9D-485C-089023B4C16A}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp">
++    <Filter Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp">
+       <UniqueIdentifier>{77348C0E-2034-7791-74D5-63C077DF5A3B}</UniqueIdentifier>
+     </Filter>
+-    <Filter Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src">
++    <Filter Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src">
+       <UniqueIdentifier>{8CDEE807-BC53-E450-C8B8-4DEBB66742D4}</UniqueIdentifier>
+     </Filter>
+     <Filter Include="..">
+@@ -72,8 +60,8 @@
+     <ClCompile Include="..\..\..\deps\mpg123\test.c">
+       <Filter>..\..\..\deps\mpg123</Filter>
+     </ClCompile>
+-    <ClCompile Include="C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src\win_delay_load_hook.cc">
+-      <Filter>C:\Users\sehi\AppData\Roaming\nvm\v20.11.1\node_modules\npm\node_modules\node-gyp\src</Filter>
++    <ClCompile Include="C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src\win_delay_load_hook.cc">
++      <Filter>C:\Users\sehi\dev\maschinepi\node_modules\node-gyp\src</Filter>
+     </ClCompile>
+     <None Include="..\..\..\deps\mpg123\mpg123.gyp">
+       <Filter>..\..\..\deps\mpg123</Filter>
+diff --git a/node_modules/speaker/index.d.ts b/node_modules/speaker/index.d.ts
+index 0f99eca..aad3f6c 100644
+--- a/node_modules/speaker/index.d.ts
++++ b/node_modules/speaker/index.d.ts
+@@ -7,6 +7,8 @@ declare namespace Speaker {
+         readonly sampleRate?: number;
+         readonly lowWaterMark?: number;
+         readonly highWaterMark?: number;
++        readonly samplesPerFrame?: number;
++        readonly device?: string;
+     }
+ 
+     interface Format {

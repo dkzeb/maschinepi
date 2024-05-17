@@ -1,13 +1,10 @@
+import { Pad } from "src/classes/pad";
 import { Page } from "src/classes/page";
-import { QGridLayout, QPushButton } from "@nodegui/nodegui";
-import { PrismaClient, Sample } from "@prisma/client";
-import soundEngine from "src/classes/soundEngine";
-const prisma = new PrismaClient();
+import { QGridLayout } from "@nodegui/nodegui";
 
 export class ProjectPage extends Page {
 
-    pads: QPushButton[];
-    padSamples: Sample[];
+    pads: Pad[];
 
     protected createLayout() {
         this.pageLayout = new QGridLayout();
@@ -15,9 +12,8 @@ export class ProjectPage extends Page {
         this.setObjectName('projectPage')
         this.pads = [];
         for(let i = 0; i < 16; i++) {
-            this.pads[i] = new QPushButton();
+            this.pads[i] = new Pad("pad"+i);
             this.pads[i].setText("Pad " + (i + 1));
-            this.pads[i].addEventListener('clicked', () => this.handlePad(i));
         }
         this.pageLayout.addWidget(this.pads[12], 0, 0, 1, 1);
         this.pageLayout.addWidget(this.pads[13], 0, 1, 1, 1);
@@ -47,39 +43,7 @@ export class ProjectPage extends Page {
                 height: 100px;
             }
         `);
-
-        (async () => {
-            // load in some samples for testing
-            const kick = await prisma.sample.findFirst({
-                where: {
-                    name: 'kick 03.wav'
-                }
-            });
-            const hat = await prisma.sample.findFirst({
-                where: {
-                    name: 'hat 10.wav'
-                }
-            });
-            const snare = await prisma.sample.findFirst({
-                where: {
-                    name: 'snare 09.wav'
-                }
-            });
-
-            this.padSamples = [];
-
-            this.padSamples[0] = kick;
-            this.padSamples[1] = snare;
-            this.padSamples[2] = hat;
-            
-        })()
     }
-
-    handlePad(padNumber: number) {
-        console.log('Handle pad', padNumber);
-        soundEngine.playSound(this.padSamples[padNumber].data);
-    }    
-
 }
 
 export default new ProjectPage("ProjectPage");
