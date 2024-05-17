@@ -10,5 +10,7 @@ export abstract class Page extends QWidget {
     }
     protected abstract createLayout();
 
+    public onLoad(){};
+
     public destroyPage() {};
 }

@@ -19,8 +19,7 @@ class SoundEngine {
         this.output = new Speaker({
             channels: 2,
             bitDepth: 16,
-            sampleRate: 44100,
-            samplesPerFrame: 64
+            sampleRate: 44100
         });        
     }
     

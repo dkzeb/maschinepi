@@ -1,10 +1,15 @@
+import { PrismaClient, Sample } from "@prisma/client";
+import { QAction, QGridLayout, QMainWindow, QMenu, QMenuBar } from "@nodegui/nodegui";
+
 import { Pad } from "src/classes/pad";
 import { Page } from "src/classes/page";
-import { QGridLayout } from "@nodegui/nodegui";
+import router from "src/classes/router";
 
 export class ProjectPage extends Page {
 
     pads: Pad[];
+    samples: Sample[];
+    prisma: PrismaClient;
 
     protected createLayout() {
         this.pageLayout = new QGridLayout();
@@ -43,6 +48,36 @@ export class ProjectPage extends Page {
                 height: 100px;
             }
         `);
+        
+    }
+
+    public override onLoad(): void {
+        console.log('we just loaded this page');
+        const menuBar = new QMenuBar();
+        const fileMenu = new QMenu();
+
+        const closeAction = new QAction();
+        closeAction.setText('Close Project');
+        closeAction.addEventListener('triggered', () => {
+            router.navigate('main');            
+        });
+        fileMenu.addAction(closeAction);
+        fileMenu.setTitle("File");
+        menuBar.addMenu(fileMenu);
+        const sampleMenu = new QMenu();
+        sampleMenu.setTitle("Samples");
+        sampleMenu.addAction("Set Load Mode");
+        menuBar.addMenu(sampleMenu);
+        (this.window() as QMainWindow).setMenuBar(menuBar);
+    }
+
+    async loadSampleToPad(sampleName, pad: Pad) {
+        const sample = await this.prisma.sample.findFirstOrThrow({
+            where: {
+                name: sampleName
+            }
+        });
+        pad.sample = sample;
     }
 }
 

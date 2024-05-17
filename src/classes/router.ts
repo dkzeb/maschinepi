@@ -1,7 +1,9 @@
 import { QMainWindow, QStackedWidget, QWidget } from "@nodegui/nodegui";
 
-//import { APP_NAME } from "src/main";
 import { Page } from "./page";
+
+//import { APP_NAME } from "src/main";
+
 
 class WidgetRouter {        
     private static _instance: WidgetRouter;
@@ -40,7 +42,8 @@ class WidgetRouter {
             if(newRouteIdx !== this.stack.currentIndex()) {
                 this.pageRef[this.stack.currentIndex()].destroyPage();
             }
-            this.stack.setCurrentIndex(newRouteIdx)
+            this.stack.setCurrentIndex(newRouteIdx);
+            this.pageRef[this.stack.currentIndex()].onLoad();
         } else {
             throw new Error("NO ROUTE FOUND WITH NAME: " + route);
         }
