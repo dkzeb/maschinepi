@@ -18,13 +18,13 @@ class WidgetRouter {
 
     public stack: QStackedWidget;
     routes: Record<string, number> = {};
+    pageRef: Record<number, Page> = {}
 
     addRoute(route: string, widget: Page) {
-        const newIndex = this.stack.count();
-        console.log('adding new route', route, newIndex);
+        const newIndex = this.stack.count();        
         this.stack.addWidget(widget);
         this.routes[route] = newIndex;
-        console.log('theese routes')
+        this.pageRef[newIndex] = widget;
         if(Object.entries(this.routes).length === 1) {
             this.navigate(route);
         }
@@ -37,6 +37,9 @@ class WidgetRouter {
 
         const newRouteIdx = this.routes[route];
         if(newRouteIdx != null) {
+            if(newRouteIdx !== this.stack.currentIndex()) {
+                this.pageRef[this.stack.currentIndex()].destroyPage();
+            }
             this.stack.setCurrentIndex(newRouteIdx)
         } else {
             throw new Error("NO ROUTE FOUND WITH NAME: " + route);

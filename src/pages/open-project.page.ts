@@ -4,6 +4,7 @@ import WidgetRouter from '../classes/router';
 
 class OpenProjectPage extends Page {
 
+    
     protected createLayout() {
         this.pageLayout = new FlexLayout();
         this.setLayout(this.pageLayout);
@@ -11,7 +12,7 @@ class OpenProjectPage extends Page {
         const openLabel = new QLabel();
         openLabel.setText("Open Project");
         this.pageLayout.addWidget(openLabel);
-
+        
         const backButton = new QPushButton();
         backButton.setText("Back");
         backButton.addEventListener('clicked', () => {
@@ -21,6 +22,9 @@ class OpenProjectPage extends Page {
         
     }
     
+    override destroyPage() {
+        console.log('OpenProject Page Destroyed');
+    }
 }
 
 export default new OpenProjectPage("OpenProject"); 

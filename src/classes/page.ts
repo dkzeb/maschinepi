@@ -9,4 +9,6 @@ export abstract class Page extends QWidget {
         this.createLayout();
     }
     protected abstract createLayout();
+
+    public destroyPage() {};
 }

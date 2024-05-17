@@ -44,7 +44,7 @@ class MainPage extends Page {
         openBtn.addEventListener('clicked', () => {
             WidgetRouter.navigate('open-project');
         });
-        buttonsLayout.addWidget(openBtn);
+        buttonsLayout.addWidget(openBtn);        
 
         this.pageLayout.addWidget(buttonsContainer);
 
@@ -68,6 +68,10 @@ class MainPage extends Page {
             background-color: 'black';
         }
         `);
+    }
+
+    override destroyPage(): void {
+        console.log('Main Page Destroyed');        
     }
 }
 
