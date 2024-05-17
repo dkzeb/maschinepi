@@ -1,7 +1,8 @@
 import { FlexLayout, QLabel, QPixmap, QPushButton, QWidget } from "@nodegui/nodegui";
+
 import { Page } from "../classes/page";
-import path from 'node:path';
 import WidgetRouter from '../classes/router';
+import path from 'node:path';
 
 class MainPage extends Page {    
 
@@ -68,10 +69,6 @@ class MainPage extends Page {
             background-color: 'black';
         }
         `);
-    }
-
-    override destroyPage(): void {
-        console.log('Main Page Destroyed');        
     }
 }
 

@@ -3,7 +3,7 @@ import { QAction, QGridLayout, QMainWindow, QMenu, QMenuBar } from "@nodegui/nod
 
 import { Pad } from "src/classes/pad";
 import { Page } from "src/classes/page";
-import router from "src/classes/router";
+import WidgetRouter from '../classes/router';
 
 export class ProjectPage extends Page {
 
@@ -52,14 +52,13 @@ export class ProjectPage extends Page {
     }
 
     public override onLoad(): void {
-        console.log('we just loaded this page');
         const menuBar = new QMenuBar();
         const fileMenu = new QMenu();
 
         const closeAction = new QAction();
         closeAction.setText('Close Project');
         closeAction.addEventListener('triggered', () => {
-            router.navigate('main');            
+            WidgetRouter.navigate('main');            
         });
         fileMenu.addAction(closeAction);
         fileMenu.setTitle("File");

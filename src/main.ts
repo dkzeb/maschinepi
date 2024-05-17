@@ -20,6 +20,8 @@ class Main {
     return this._instance;
   }
 
+  public router = WidgetRouter;
+
   init() {
     console.log('Starting MaschinePI');
     this._win = new QMainWindow();
@@ -29,11 +31,11 @@ class Main {
     const controller = new MaschineMk3(createNodeHidAdapter, createNodeUsbAdapter);  
     //controller.setLCDString("Hello from MaschinePI");
     
-    WidgetRouter.addRoute('main', mainPage);
-    WidgetRouter.addRoute('open-project', openProjectPage);
-    WidgetRouter.addRoute('project', projectPage);
+    this.router.addRoute('main', mainPage);
+    this.router.addRoute('open-project', openProjectPage);
+    this.router.addRoute('project', projectPage);
 
-    this._win.setCentralWidget(WidgetRouter.stack);
+    this._win.setCentralWidget(this.router.stack);
     
     this._win.show();
     

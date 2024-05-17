@@ -27,6 +27,7 @@ class WidgetRouter {
         this.stack.addWidget(widget);
         this.routes[route] = newIndex;
         this.pageRef[newIndex] = widget;
+        console.log('routes', this.routes);
         if(Object.entries(this.routes).length === 1) {
             this.navigate(route);
         }
@@ -45,6 +46,7 @@ class WidgetRouter {
             this.stack.setCurrentIndex(newRouteIdx);
             this.pageRef[this.stack.currentIndex()].onLoad();
         } else {
+            console.log('routes', this.routes);
             throw new Error("NO ROUTE FOUND WITH NAME: " + route);
         }
 
