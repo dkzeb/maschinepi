@@ -1,13 +1,13 @@
 {
   "name": "maschinepi",
-  "version": "1.0.0",
+  "version": "0.1.0-alpha",
   "description": "A Maschine MK3 Standalone App",
   "scripts": {
     "build": "npm run build-code && npm run build-bundle",
     "postbuild": "node install-prebuilds.js",
     "build-code": "tsc",
     "postinstall": "patch-package",
-    "build-bundle": "esbuild build/main.js --sourcemap --bundle --outfile=dist/main.cjs --platform=node --format=cjs --external:@nodegui/nodegui \"--external:nodegui-plugin-*\"",
+    "build-bundle": "esbuild build/main.js --sourcemap --bundle --outfile=dist/main.cjs --platform=node --format=cjs --external:canvas --external:@nodegui/nodegui \"--external:nodegui-plugin-*\"",
     "clean": "rimraf build dist tmp-jam-pack-nodegui",
     "package": "jam-pack-nodegui --config packaging/jam-pack-nodegui.json",
     "run": "qode --force-node-api-uncaught-exceptions-policy=true dist/main.cjs",
@@ -28,12 +28,15 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "@canvas-fonts/impact": "^1.0.4",
     "@elemaudio/core": "^3.2.1",
     "@elemaudio/offline-renderer": "^3.2.2",
     "@nodegui/nodegui": "^0.61.0",
     "@prisma/client": "^5.14.0",
     "better-sqlite3": "^10.0.0",
-    "ni-controllers-lib": "^1.2.3",    
+    "canvas": "^2.11.2",
+    "jpeg-js": "^0.4.4",
+    "ni-controllers-lib": "^1.2.3",
     "node-hid": "^3.0.0",
     "node-wav": "^0.0.2",
     "prisma": "^5.14.0",
