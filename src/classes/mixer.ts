@@ -1,11 +1,14 @@
 import { DevPad } from "src/dev";
 import { Sequence } from "./sequence";
 import { Writable } from "stream";
+import soundEngine from "./webaudioSE";
 
 export class Mixer {
     bufferSize: number = 128;
-    groups: GroupOutput[];
+    groups: GroupOutput[];    
     buffer: Buffer;
+    pendingChunks: Buffer[][];
+
     mergeGroups(sequence: number[]) {
         const tempBuffer = Buffer.alloc(128);
         this.groups.forEach(g => {
@@ -13,8 +16,7 @@ export class Mixer {
             for(let i = 0; i < this.bufferSize; i++) {
                 tempBuffer[i] += groupBuffer[i];
             }
-        });
-        this.buffer = tempBuffer; // assign the mixed groups buffer to the mixer
+        });                
     }
 
     constructor(bufferSize?: number) {
@@ -23,13 +25,16 @@ export class Mixer {
         } else {
             this.bufferSize = 128;
         }
-        this.buffer = Buffer.alloc(bufferSize);
+        this.buffer = Buffer.alloc(bufferSize);      
     }
 
-    playTick(outStream: Writable, buffers: Buffer[]) {        
-        //this.mergeGroups();      
-        outStream.write(this.buffer);
+    playTick(sampleNames: string[]) {       
+        if(!sampleNames) {
+            return;
+        }                
+        soundEngine.playSamples(sampleNames);
     }
+
 }
 
 export class GroupOutput {

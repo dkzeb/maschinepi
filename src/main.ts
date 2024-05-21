@@ -41,8 +41,8 @@ class Main {
       const mk3Gfx = new MK3GraphicsController(controller);
       mk3Gfx.sendImage(welcomeSplash.data, Mk3Display.left);    
       mk3Gfx.showVersion();
-      mk3Gfx.padIntro();
-      
+      mk3Gfx.padIntro();            
+      projectPage.controller = controller;
     }
     this.router.addRoute('main', mainPage);
     this.router.addRoute('open-project', openProjectPage);

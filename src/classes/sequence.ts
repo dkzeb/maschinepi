@@ -10,7 +10,7 @@ export class Sequence {
         return this.seq[0].length;
     }
 
-    tick(): number[] {
+    tick(): number[] {        
         const slice = [];
         this.seq.forEach(s => {
             slice.push(s[this._currentIndex])

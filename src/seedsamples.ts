@@ -23,14 +23,13 @@ async function seed() {
                 console.log('Sample', f, 'has already been seeded, skipping...');
             } else {
                 const waveFileData = fs.readFileSync(path.join(sampleRoot, f));
-                const wav = new WaveFile(waveFileData);            
-                wav.toBitDepth("16");
+                const wav = new WaveFile(waveFileData);                          
                 wav.toSampleRate(44100);
                 console.log('f', f);
                 await prisma.sample.create({
                     data: {
                         name: f,
-                        data: Buffer.from(wav.toBuffer()).subarray(44)
+                        data: Buffer.from(wav.toBuffer())
                     }
                 });
             }            

@@ -1,9 +1,7 @@
-import * as Speaker from 'speaker';
-
 import { GroupOutput, Mixer, PadOutput } from './classes/mixer';
 import { PrismaClient, Sample } from '@prisma/client';
-
 import { Sequence } from './classes/sequence';
+import soundEngine from './classes/webaudioSE';
 
 export class DevPad {
   sample: Sample;
@@ -15,21 +13,26 @@ export class DevPad {
 
 export class Dev {
 
+  seq: Sequence;
+  g1: GroupOutput;
+  g2: GroupOutput;
+  m: Mixer;
+
   async dev() {
     // make 1 mixer
-    const m = new Mixer(128);
+    this.m = new Mixer(128);
     // create 2 groups
-    const g1 = new GroupOutput();
-    const g2 = new GroupOutput();
+    this.g1 = new GroupOutput();
+    this.g2 = new GroupOutput();
     // create 2 pads for each group
     const g1p1 = new PadOutput();
     const g1p2 = new PadOutput();
     const g2p1 = new PadOutput();
     const g2p2 = new PadOutput();
 
-    g1.pads = [g1p1, g1p2];
-    g2.pads = [g2p1, g2p2];
-    m.groups = [g1, g2];
+    this.g1.pads = [g1p1, g1p2];
+    this.g2.pads = [g2p1, g2p2];
+    this.m.groups = [this.g1, this.g2];
 
     const prisma = new PrismaClient();
     // load in some samples
@@ -43,22 +46,18 @@ export class Dev {
         name: 'snare 02.wav'
       }
     });
+
+    soundEngine.addSource(kick.name, kick.data);
+    soundEngine.addSource(snare.name, snare.data);
+
     g1p1.pad = new DevPad("p1");
     g1p2.pad = new DevPad("p2");
     g1p1.pad.sample = kick;
     g1p2.pad.sample = snare;
     g1p1.padBuffer = kick.data;    
     g1p2.padBuffer = snare.data;
-
-
-    const spk = new Speaker({
-      channels: 2,
-      bitDepth: 16,
-      sampleRate: 44100,
-      samplesPerFrame: 128
-    });
     
-    const seq = new Sequence(
+    this.seq = new Sequence(
       [[1, 1, 1, 1, 1, 1, 1, 1],
       [0, 0, 1, 0, 0, 0, 1, 0]]
     );    
@@ -66,21 +65,22 @@ export class Dev {
     // bpmInSec = 60 / bpm
     const bpm = 60 / 120; // hiphop, yeah!
           
-    setInterval(() => {                        
-      console.log('tick');
-      const seqSlices = seq.tick();
-      // we only have 1 group (right now), so the sequence is valid for that group, now check the indexes and see if a sample should play
-      const sliceBuffers = [];
-      seqSlices.forEach((shouldPlay, idx) => {
-        // if slice index (si) is 1 we should play the pad for the corresponding index
-        if(shouldPlay) {
-          console.log('play', g1.pads[idx].pad.sample.name)
-          sliceBuffers.push(g1.pads[idx].padBuffer);
-        }
-      });
-      console.log('--- end tick ---');
-      
-    }, (bpm * 1000));    
+    setInterval(() => {                              
+      this.processTick();
+    }, (bpm * 1000) / 2);    
+  }
+
+  processTick() {
+    const seqSlices = this.seq.tick();
+    // we only have 1 group (right now), so the sequence is valid for that group, now check the indexes and see if a sample should play    
+    // TODO: make sequences part of groups, so we can run through each group and prcoess the sequence tick  
+    const samplesToPlay: string[] = [];
+    seqSlices.forEach((shouldPlay, idx) => {
+      if(shouldPlay === 1) {
+        samplesToPlay.push(this.g1.pads[idx].pad.sample.name);
+      }
+    });    
+    soundEngine.playSamples(samplesToPlay);
   }
 }
 
