@@ -43,10 +43,24 @@ class Main {
       mk3Gfx.showVersion();
       mk3Gfx.padIntro();            
       projectPage.controller = controller;
+
+      // build op the main start menu
+      mk3Gfx.buildMenu([
+        {
+          label: 'New Project',
+          action: () => {}
+        },
+        {
+          label: 'Open Project',
+          action: () => {}
+        }
+      ]);
     }
     this.router.addRoute('main', mainPage);
     this.router.addRoute('open-project', openProjectPage);
     this.router.addRoute('project', projectPage);
+
+    
 
     this._win.setCentralWidget(this.router.stack);
     

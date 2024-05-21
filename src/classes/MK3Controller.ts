@@ -82,6 +82,25 @@ export class MK3GraphicsController {
         this.pushCanvas(Mk3Display.right);
     }
 
+    buildMenu(
+        options: {
+            label: string;
+            action: () => void
+        }[]
+    ) {
+        // clear the top rect
+        this.ctx.clearRect(0, 0, 480, 30);        
+        // option width:
+        const menuOptionWidth = 480 / 4;  
+        
+        options.forEach((opt, idx) => {
+            this.ctx.rect(menuOptionWidth * idx, 0, menuOptionWidth, 30);
+            this.ctx.font = '16px "Impact"';
+            this.ctx.fillText(opt.label, (menuOptionWidth * idx) + (menuOptionWidth / 2) - 5, 16+2, menuOptionWidth);
+        });
+        this.pushCanvas(Mk3Display.left);
+    }
+
     padIntro() {
         //  1  2  3  4
         //  5  6  7  8
