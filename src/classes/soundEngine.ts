@@ -1,84 +1,50 @@
 //import { AudioIO, SampleFormat16Bit, IoStreamWrite, getDevices, SampleFormat24Bit, SampleFormatFloat32 } from "naudiodon2";
 
-/*import * as Speaker from "speaker";
+import { AudioBuffer, AudioContext, GainNode } from 'node-web-audio-api';
 
-class SoundEngine {
+export class SoundEngine {
 
-    private static _instance: SoundEngine;
-    public static get instance(): SoundEngine
-    {
-        if(!this._instance) {
-            this._instance = new SoundEngine();
-        }
+    ctx: AudioContext = new AudioContext({ latencyHint: 'interactive', sampleRate: 44100 });
+    sources: Record<string, AudioBuffer> = {};
+    outNode: GainNode; // = new GainNode(this.ctx);    
 
-        return this._instance;
-    }
-    output: Speaker;
-    outputBuffer: Buffer;
-    samplesPerFrame: number = 128;
-    chunks: Buffer[][] = [];
-
-    private constructor() {
-        this.output = new Speaker({
-            channels: 2,
-            bitDepth: 16,
-            sampleRate: 44100,
-            samplesPerFrame: this.samplesPerFrame
-        });        
-        this.output.on('drain', () => {
-            this.outputBuffer.fill(0x00);
-            this.chunks.forEach((chunkArray, idx) => {
-                const c = chunkArray.shift();        
-                if(c) {
-                    c.forEach((bytes, idx) => {
-                        this.outputBuffer[idx] += bytes;
-                    })
-                } else {
-                    this.chunks.splice(idx, 1);
-                }
-            });            
-            this.output.write(this.outputBuffer);
-        });
-        this.outputBuffer = Buffer.alloc(128);        
+    constructor() {        
+        this.sources = {};
+        this.outNode = new GainNode(this.ctx);
+        this.outNode.connect(this.ctx.destination);
     }
     
-    async playSound(buffer: Buffer) {                
-        // we got a buffer in that we should play
-        // first check if it is longer than current buffer
-        if(buffer.length > this.outputBuffer.length) {
-            // split the incomming buffer into chunks of 128
-            const numberOfChunks = Math.ceil(buffer.length / this.outputBuffer.length);
-            const buffChunks: Buffer[] = [];
-            for(let i = 0; i < numberOfChunks; i++) {
-                buffChunks.push(buffer.subarray(i * this.outputBuffer.length, i * this.outputBuffer.length + this.outputBuffer.length));
-            }
-            this.chunks.push(buffChunks);
-            console.log('chunks', this.chunks.length);
-        } else {
-            this.chunks.push([buffer]);
+    async addSource(name: string, data: Buffer) {        
+        if(this.sources[name]) {
+            throw new Error("Source already exists!");
+        } else {            
+            this.sources[name] = await this.ctx.decodeAudioData(data.buffer);
         }
-        
-        this.output.write([0x00]); // run it
-        //this.output.write(this.outputBuffer);
     }
 
-    /*
-
-    private processChunks() {
-        this.buffer.fill(0x00); // empty out the buffer, then rebuild it
-        this.pendingChunks.forEach((c, idx) => {
-            const chunk = c.shift();
-            if(c.length === 0) {
-                this.pendingChunks.slice(idx, 1); // remove the chunk array if empty
-            }
-            for(let i = 0; i < this.bufferSize; i++) {
-                this.buffer[i] += chunk[i];
-            }
+    async playSamples(sampleNames: string[]) {
+        const buffers: AudioBufferSourceNode[] = [];        
+        sampleNames.forEach(sn => {
+            const output = this.ctx.createBufferSource();
+            output.buffer = this.sources[sn];
+            output.connect(this.outNode);
+            output.onended = () => output.disconnect();
+            buffers.push(output);
         });
-        console.log('play buffer', this.buffer);
+        buffers.forEach(output => output.start());
+    
     }
-    */
-
-//}
-
-//export default SoundEngine.instance;
+    
+    async play(name: string) {
+        if(!this.sources[name]) {
+            console.log('sources', this.sources);
+            throw new Error("No source found with name: " + name);
+        }
+        const smpl = this.sources[name];
+        const smplSource = this.ctx.createBufferSource();
+        smplSource.buffer = smpl;
+        smplSource.connect(this.outNode);
+        smplSource.onended = () => smplSource.disconnect();
+        smplSource.start();
+    }
+}

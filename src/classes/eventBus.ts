@@ -1,22 +1,26 @@
 import { Subject } from "rxjs";
 
-type InputEvent = {
-    id: string;
-    data?: Buffer;
+export type MPIEvent = {
+    name?: string;
+    type: EventType;
+    data?: any;
 }
+type EventType = "PadInput" | "ButtonInput" | "TouchInput" | "Init" | 'UpdateDisplay';
 
-class EventBus {
-    public static get instance(): EventBus {
-        if(!this._instance) {
-            this._instance = new EventBus();
-        }
-        return this._instance;
+export class EventBus {
+    events: Subject<MPIEvent>;
+    eventHistory: MPIEvent[] = [];
+
+    constructor() {
+        this.events = new Subject();
     }
-    private static _instance: EventBus;
-    private constructor() {
-        this.events$ = new Subject();
+
+    processEvent(ev: MPIEvent) {
+        this.eventHistory.push(ev);
+        this.events.next(ev);
     }
-    public events$: Subject<InputEvent>;
+
+    getByType(type: EventType): MPIEvent[] {
+        return this.eventHistory.filter((e => e.type === type));
+    }
 }
-
-export default EventBus.instance;
