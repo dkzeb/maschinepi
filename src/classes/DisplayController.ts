@@ -1,10 +1,9 @@
 import * as r from 'raylib';
 
-import { EventBus } from "./EventBus";
-import { filter } from 'rxjs';
+import { EventBus, MPIEvent } from "./EventBus";
 
-const SCREENWIDTH = 480;
-const SCREENHEIGHT = 240;
+import { MaschineMk3 } from 'ni-controllers-lib';
+import { filter } from 'rxjs';
 
 type OutputDisplay = {
     name: string;
@@ -12,13 +11,24 @@ type OutputDisplay = {
     height: number;
     init: () => void;
     deInit: () => void;
-    update: () => void;
+    update: (...args: unknown[]) => void;
+}
+
+type UpdateDisplayEventData = {
+    target: string;
+    payload: any;
+}
+
+interface UpdateDisplayEvent extends MPIEvent {
+    data?: UpdateDisplayEventData;
 }
 
 export class DisplayController {
 
     displays: OutputDisplay[] = [
-        new MainDisplay()
+        new MainDisplay(),
+        new MK3DevDisplay('MKLeft', MK3Displays.LEFT),
+        new MK3DevDisplay('MKLeft', MK3Displays.RIGHT),
     ]
     ebus: EventBus;
 
@@ -28,8 +38,12 @@ export class DisplayController {
             d.init();
         })
 
-        this.ebus.events.pipe(filter(t => t.type === 'UpdateDisplay')).subscribe(() => {
-            this.displays.forEach(d => d.update());
+        this.ebus.events.pipe(filter(t => t.type === 'UpdateDisplay')).subscribe((ev: UpdateDisplayEvent) => {
+            if(ev.data) {
+                this.displays.find(d => d.name === ev.data?.target)?.update(ev.data.payload);
+            } else {
+                this.displays.forEach(d => d.update());
+            }
         });
     }
     
@@ -41,13 +55,13 @@ export class DisplayController {
 }
 
 class MainDisplay implements OutputDisplay {
-    name: string = 'MainDisplay'
-    width: number = 840;
-    height: number = 420;
+    name: string = 'MainDisplay';
+    width: number = 800;
+    height: number = 480;
 
     init() {
+        r.SetTargetFPS(30);
         r.InitWindow(this.width, this.height, 'MaschinePI');
-        r.SetTargetFPS(30);   
     }
 
     deInit() {
@@ -62,5 +76,42 @@ class MainDisplay implements OutputDisplay {
             r.DrawText("MaschinePI", 100, 100, 50, r.WHITE);
             r.EndDrawing();
         }
+    }
+}
+
+export enum MK3Displays {
+    LEFT,
+    RIGHT
+}
+
+export class MK3Display implements OutputDisplay {
+    width = 480;
+    height = 272;
+    name: string;
+    targetDisplayIndex: MK3Displays;
+
+    constructor(name: string, target: MK3Displays) {
+        this.name = name;
+        this.targetDisplayIndex = target;
+    }
+
+    update(payload?: any) {
+        if(payload) {
+
+        }
+    }
+
+    init() {
+
+    }
+
+    deInit() {
+        // clear out the display
+    }
+}
+
+export class MK3DevDisplay extends MK3Display {
+    init(): void {
+     
     }
 }
