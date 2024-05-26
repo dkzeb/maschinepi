@@ -4,6 +4,7 @@ import { EventBus, MPIEvent } from "./EventBus";
 
 import { MaschineMk3 } from 'ni-controllers-lib';
 import { filter } from 'rxjs';
+import { Worker } from 'node:worker_threads';
 
 type OutputDisplay = {
     name: string;
@@ -12,6 +13,7 @@ type OutputDisplay = {
     init: () => void;
     deInit: () => void;
     update: (...args: unknown[]) => void;
+    renderRoutine?: string | ((...args) => string);
 }
 
 type UpdateDisplayEventData = {
@@ -25,18 +27,28 @@ interface UpdateDisplayEvent extends MPIEvent {
 
 export class DisplayController {
 
-    displays: OutputDisplay[] = [
-        new MainDisplay(),
-        new MK3DevDisplay('MKLeft', MK3Displays.LEFT),
-        new MK3DevDisplay('MKLeft', MK3Displays.RIGHT),
-    ]
+    displays: OutputDisplay[];
     ebus: EventBus;
+    controller?: MaschineMk3;
 
-    constructor(ebus: EventBus) {
+    constructor(ebus: EventBus, controller?: MaschineMk3) {
         this.ebus = ebus;
+        this.controller = controller;
+
+        this.displays = [
+            new MainDisplay(),
+            //!!this.controller ? [new MK3DevDisplay('MKLeft', MK3Displays.LEFT, this.controller), new MK3DevDisplay('MKRight', MK3Displays.RIGHT, this.controller)] : []
+        ]
+
         this.displays.forEach(d => {
             d.init();
-        })
+        });
+
+        setInterval(() => {
+            this.displays.forEach(d => {
+                d.update();
+            })
+        }, 1000/60);
 
         this.ebus.events.pipe(filter(t => t.type === 'UpdateDisplay')).subscribe((ev: UpdateDisplayEvent) => {
             if(ev.data) {
@@ -57,26 +69,43 @@ export class DisplayController {
 class MainDisplay implements OutputDisplay {
     name: string = 'MainDisplay';
     width: number = 800;
-    height: number = 480;
+    height: number = 480;    
+    displayWorker: Worker = new Worker('./src/classes/renderWorker.js', {        
+        name: 'mainDisplayWorker',                    
+    });
+    
+    renderRoutine = (f: () => void) => {
+        return f.toString();
+    }    
 
-    init() {
-        r.SetTargetFPS(30);
-        r.InitWindow(this.width, this.height, 'MaschinePI');
+    init() {        
+        const initMethod = () => {
+            console.log('init main display');
+            r.SetTargetFPS(60);
+            r.InitWindow(800, 480, 'MaschinePI');            
+        };        
+        this.displayWorker.postMessage(initMethod.toString());
     }
 
-    deInit() {
+    deInit() {                
         r.CloseWindow();
     }
 
     update() {
-        if(!r.WindowShouldClose()) {
-            r.BeginDrawing();
-            // update with something right here - not sure what yet, for now - set some text :) 
-            r.ClearBackground(r.BLACK);
-            r.DrawText("MaschinePI", 100, 100, 50, r.WHITE);
-            r.EndDrawing();
-        }
+        // just a main screen for now
+        const routine = () => {
+            if(!r.WindowShouldClose()) {
+                r.BeginDrawing();
+                r.ClearBackground(r.BLACK);
+                r.DrawText("MaschinePI", 10, 10, 16, r.WHITE);
+
+                r.EndDrawing();            
+            }
+        };
+        this.displayWorker.postMessage(routine.toString());
     }
+    
+    
 }
 
 export enum MK3Displays {
@@ -89,16 +118,19 @@ export class MK3Display implements OutputDisplay {
     height = 272;
     name: string;
     targetDisplayIndex: MK3Displays;
+    controller: MaschineMk3;
+    buffer: ArrayBuffer;
 
-    constructor(name: string, target: MK3Displays) {
+
+    constructor(name: string, target: MK3Displays, controller: MaschineMk3) {
         this.name = name;
+        this.controller = controller;
         this.targetDisplayIndex = target;
+        this.buffer = this.controller.displays!.createDisplayBuffer();
     }
 
     update(payload?: any) {
-        if(payload) {
-
-        }
+        //this.controller.displays?.paintDisplay(this.targetDisplayIndex, payload, this.buffer);        
     }
 
     init() {

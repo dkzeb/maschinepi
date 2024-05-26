@@ -13,9 +13,7 @@ export class AudioController {
                 return ev.type === 'PadInput'
             }))    
         ).subscribe((ev => {
-            if(ev.data) {
-                this.soundEngine.play(ev.data.sampleName);
-            }
+            console.log('evpadinput', ev);
         }));
     }
 

@@ -3,10 +3,10 @@
       "strict": true,
       "allowSyntheticDefaultImports": true,
       "forceConsistentCasingInFileNames": true,
-      "target": "esnext",
-      "module": "ES2020",
+      "target": "ES2022",
+      "module": "NodeNext",
       "declaration": true,
-      "moduleResolution": "node",
+      "moduleResolution": "NodeNext",
       "noImplicitAny": false,
       "noImplicitThis": true,
       "noImplicitReturns": true,
@@ -17,12 +17,13 @@
       "baseUrl": ".",
       "emitDecoratorMetadata": true,
       "resolveJsonModule": true,
+      "resolvePackageJsonImports": true,
       "outDir": "dist",
       "rootDir": "src"
   },
   "include": [
       "./src/**/*.ts"
-  ],
+,    "src/classes/renderWorker.js"  ],
   "ts-node": {
       // these options are overrides used only by ts-node
       // same as the --compilerOptions flag and the TS_NODE_COMPILER_OPTIONS environment variable
