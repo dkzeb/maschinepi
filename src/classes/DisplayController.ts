@@ -1,4 +1,5 @@
 import * as r from 'raylib';
+import * as path from 'node:path';
 
 import { EventBus, MPIEvent } from "./EventBus";
 
@@ -70,7 +71,7 @@ class MainDisplay implements OutputDisplay {
     name: string = 'MainDisplay';
     width: number = 800;
     height: number = 480;    
-    displayWorker: Worker = new Worker('./src/classes/renderWorker.js', {        
+    displayWorker: Worker = new Worker(path.join(__dirname, `renderWorker.${__filename.split('.')[1]}`), {        
         name: 'mainDisplayWorker',                    
     });
     
@@ -78,7 +79,7 @@ class MainDisplay implements OutputDisplay {
         return f.toString();
     }    
 
-    init() {        
+    init() {                
         const initMethod = () => {
             console.log('init main display');
             r.SetTargetFPS(60);

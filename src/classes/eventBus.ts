@@ -5,7 +5,7 @@ export type MPIEvent = {
     type: EventType;
     data?: any;
 }
-type EventType = "PadInput" | "ButtonInput" | "TouchInput" | "Init" | 'UpdateDisplay' | 'ChangeMode' | 'KnobInput';
+type EventType = "PadInput" | "ButtonInput" | "TouchInput" | "Init" | 'UpdateDisplay' | 'ChangeMode' | 'KnobInput' | 'LoadWidget';
 
 export class EventBus {
     events: Subject<MPIEvent>;

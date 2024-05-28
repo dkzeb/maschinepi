@@ -77,6 +77,12 @@ export class PadMode<PadConfig> implements Mode {
             this.state.activePadIdx = idx;
 
             // load the sample loader widget thing
+            this.ebus.processEvent({
+                type: 'LoadWidget',
+                data: {
+                    widgetName: 'FileList'
+                }
+            });
             
         } else {
             this.state.activePadIdx = -1;

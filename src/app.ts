@@ -7,6 +7,7 @@ import { SoundEngine } from "./classes/SoundEngine";
 import { StorageController } from "./classes/StorageController";
 import { MK3GraphicsController } from "./classes/MK3Controller";
 import { ModeController } from "./classes/Modes/ModeController";
+import { UIController } from "./classes/UI/UIController";
 
 export const ebus = new EventBus();
 
@@ -33,6 +34,11 @@ export const quitApplication = () => {
         console.error('controller init', e);
         maschine = undefined;
 
+    }
+
+    if(maschine) {
+        const gfxController = new MK3GraphicsController(maschine);
+        const uiCtrl = new UIController(ebus, gfxController);
     }
 
     const inputController = new InputController(ebus, maschine);

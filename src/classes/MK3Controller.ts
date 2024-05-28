@@ -209,8 +209,11 @@ export class MK3GraphicsController {
         this.mk3.displays!.paintDisplay(display, imgData, display === Mk3Display.left ? this.bufLeft : this.bufRight);
     }    
 
-    private pushCanvas(display: Mk3Display) {
-        this.canvas.toBuffer((err, buff) => {
+    pushCanvas(display: Mk3Display, canvas?: Canvas) {
+        if(!canvas) {
+            canvas = this.canvas;
+        }
+        canvas.toBuffer((err, buff) => {
             if(err) {
                 throw err;
             }

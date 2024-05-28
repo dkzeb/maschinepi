@@ -3,7 +3,7 @@ require('ts-node').register();
 const { parentPort } = require('node:worker_threads');
 const r = require('raylib');
 
-let jobs = [];
+let jobs: string[] = [];
 let isBusy = false;
 
 parentPort.on('message', (msg) => {        

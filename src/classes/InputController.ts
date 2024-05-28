@@ -51,9 +51,7 @@ export class InputController {
                     this.ebus.processEvent({
                         type: 'KnobInput',
                         name: key,
-                        data: {
-                            value: v
-                        }
+                        data: {...v}
                     })
                 });
             });
@@ -62,7 +60,7 @@ export class InputController {
                     type: 'KnobInput',
                     name: 'navStep',
                     data: {
-                        direction: dir
+                        ...dir
                     }
                 })
             });
