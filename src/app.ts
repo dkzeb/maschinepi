@@ -1,5 +1,4 @@
 import { MaschineMk3, createNodeHidAdapter, createNodeUsbAdapter } from "ni-controllers-lib";
-import { AudioController } from "./classes/AudioController";
 import { DisplayController } from "./classes/DisplayController";
 import { EventBus } from "./classes/EventBus";
 import { InputController } from "./classes/InputController";
@@ -36,23 +35,21 @@ export const quitApplication = () => {
 
     }
 
+    const soundEngine = new SoundEngine();    
     if(maschine) {
         const gfxController = new MK3GraphicsController(maschine);
-        const uiCtrl = new UIController(ebus, gfxController);
+        const uiCtrl = new UIController(ebus, gfxController, soundEngine);
     }
 
     const inputController = new InputController(ebus, maschine);
     const displayController = new DisplayController(ebus, maschine);    
-    const soundEngine = new SoundEngine();
-    const audioController = new AudioController(ebus, soundEngine);
     const storageController = new StorageController(ebus, soundEngine);
     const modeController = new ModeController(ebus, maschine, displayController);
 
     // to avoid GC add controllers to the global scope
     global.inputController = inputController;
     global.displayController = displayController;
-    global.modeController = modeController;
-    global.audioController = audioController;
+    global.modeController = modeController;    
     global.storageController = storageController;
 
     ebus.processEvent({

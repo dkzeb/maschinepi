@@ -213,6 +213,7 @@ export class MK3GraphicsController {
         if(!canvas) {
             canvas = this.canvas;
         }
+        console.log('pushing canvas to buffer', display, canvas);
         canvas.toBuffer((err, buff) => {
             if(err) {
                 throw err;

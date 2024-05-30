@@ -1,6 +1,7 @@
 //import { AudioIO, SampleFormat16Bit, IoStreamWrite, getDevices, SampleFormat24Bit, SampleFormatFloat32 } from "naudiodon2";
 
 import { AudioBuffer, AudioContext, GainNode } from 'node-web-audio-api';
+import { CanvasRenderingContext2D } from 'canvas';
 
 export class SoundEngine {
 
@@ -46,5 +47,28 @@ export class SoundEngine {
         smplSource.connect(this.outNode);
         smplSource.onended = () => smplSource.disconnect();
         smplSource.start();
+    }
+
+    async drawAudioBuffer(canvas2d: CanvasRenderingContext2D, buffer: Buffer, height: number, width: number, x = 0, y = 0, color?: string) {
+        if(color) {
+            canvas2d.fillStyle = color;
+        }
+        const audioBuffer = await this.ctx.decodeAudioData(buffer.buffer);
+        const data = audioBuffer.getChannelData(0);
+        const step = Math.ceil(data.length / width);
+        const amp = height / 2;
+        for(let i = 0; i < width; i++) {
+            let min = 1.0, max = -1.0;
+            for(let j = 0; j < step; j++) {
+                const datum = data[(i * step) + j];
+                if(datum < min) {
+                    min = datum;
+                }
+                if(datum > max) {
+                    max = datum;
+                }
+                canvas2d.fillRect(x + i, y + ((1+min)*amp),1, Math.max(1, (max-min)*amp));
+            }
+        }
     }
 }

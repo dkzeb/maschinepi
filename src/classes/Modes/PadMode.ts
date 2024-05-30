@@ -63,8 +63,7 @@ export class PadMode<PadConfig> implements Mode {
 
         this.ebus.events.pipe(filter((e => {
             return e.type === 'PadInput'
-        }))).subscribe(ev => {            
-            console.log('ev', ev, 'state', this.state);
+        }))).subscribe(ev => {                        
             if(this.state.isLoadingPadSample) {
                 this.loadPad(ev.name!.split(':')[0]);
             }        
@@ -83,7 +82,9 @@ export class PadMode<PadConfig> implements Mode {
                     widgetName: 'FileList'
                 }
             });
-            
+            this.ebus.events.pipe(filter(e => e.type === 'WidgetResult' && e.data.selectedSample)).subscribe((e) => {
+                console.log('load sample with name', e.data.selectedSample, 'to pad', idx);
+            });
         } else {
             this.state.activePadIdx = -1;
         }
