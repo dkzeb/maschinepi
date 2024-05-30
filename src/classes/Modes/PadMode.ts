@@ -79,7 +79,7 @@ export class PadMode<PadConfig> implements Mode {
             this.ebus.processEvent({
                 type: 'LoadWidget',
                 data: {
-                    widgetName: 'FileList'
+                    widgetName: 'Load Sample'
                 }
             });
             this.ebus.events.pipe(filter(e => e.type === 'WidgetResult' && e.data.selectedSample)).subscribe((e) => {
@@ -94,7 +94,6 @@ export class PadMode<PadConfig> implements Mode {
         this.activeControls = controls;
         for(let btn of this.activeControls) {            
             this.controller?.setLED(btn, 255);
-
         }
     }
 

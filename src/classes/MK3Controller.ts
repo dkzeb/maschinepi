@@ -73,6 +73,10 @@ export class MK3GraphicsController {
         this.sendImage(splash, Mk3Display.left);
     }
 
+    setLED(which: string, strenght: number) {
+        this.mk3.setLED(which, strenght);
+    }
+
     showVersion() {
         this.ctx.fillStyle = 'black';
         this.ctx.fillRect(0, 0, 480, 272);
