@@ -3,15 +3,47 @@ import { Mode, ModeType } from "./ModeController";
 import { BaseController } from "ni-controllers-lib/dist/lib/base_controller";
 import { EventBus } from "../EventBus";
 import { filter } from "rxjs";
+import { Group, Mixer } from "../Mixer";
+import { Sample } from "@prisma/client";
+import { SoundEngine } from "../SoundEngine";
+import { GainNode } from "node-web-audio-api";
 
 type ModeConfig = {
     leds: (keyof BaseController['config']['output']['leds'])
 }
 
-type Pad = {
-    color: any,
-    pIdx: string,
+export class Pad {
+    color: string;
+    pIdx: string;
     selected: boolean;
+    gainNode: GainNode;
+    group: Group;
+    sampleName?: string;
+
+    constructor(color: string, pIdx: string, selected: boolean, group: Group, private soundEngine: SoundEngine) {
+        this.color = color;
+        this.pIdx = pIdx;
+        this.selected = selected;
+        this.group = group;
+        this.gainNode = new GainNode(this.soundEngine.ctx);
+        this.gainNode.connect(this.group.groupNode);
+    }
+
+    loadSample(name:string){
+        this.sampleName = name;
+    }
+
+    play() {
+        if(!this.sampleName) {
+            return;
+        }
+        const sampleSource = this.soundEngine.ctx.createBufferSource();
+        const sample = this.soundEngine.sources[this.sampleName];
+        sampleSource.buffer = sample;
+        sampleSource.connect(this.gainNode);
+        sampleSource.onended = () => sampleSource.disconnect();
+        sampleSource.play();
+    }
 }
 
 export class PadMode<PadConfig> implements Mode {
@@ -20,17 +52,17 @@ export class PadMode<PadConfig> implements Mode {
     ebus: EventBus;
     pads: Pad[];
     
-    constructor(ebus: EventBus, controller: MaschineMk3) {
+    constructor(ebus: EventBus, controller: MaschineMk3, mixer: Mixer) {
         this.controller = controller;
         this.ebus = ebus;        
 
+        // get the first group from the mixer
+        const group = mixer.groups[0];
+
         this.pads = [];
         for(let i = 1; i < 17; i++) {
-            this.pads.push({
-                pIdx: 'p' + i,
-                color: 'white',
-                selected: false
-            });
+            const p = new Pad('white', 'p'+i, false, group, mixer.soundEngine);            
+            this.pads.push(p);
         }
 
         if(this.setup)
@@ -79,7 +111,7 @@ export class PadMode<PadConfig> implements Mode {
             this.ebus.processEvent({
                 type: 'LoadWidget',
                 data: {
-                    widgetName: 'Load Sample'
+                    widgetName: 'FileList'
                 }
             });
             this.ebus.events.pipe(filter(e => e.type === 'WidgetResult' && e.data.selectedSample)).subscribe((e) => {
@@ -93,7 +125,7 @@ export class PadMode<PadConfig> implements Mode {
     setActiveButtons(controls: string[]) {
         this.activeControls = controls;
         for(let btn of this.activeControls) {            
-            this.controller?.setLED(btn, 255);
+            this.controller?.setLED(btn, 10000);
         }
     }
 

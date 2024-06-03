@@ -24,6 +24,7 @@
     "jpeg-js": "^0.4.4",
     "ni-controllers-lib": "^1.2.3",
     "node-framebuffer": "^1.1.0",
+    "node-mrswatson": "^1.0.3",
     "node-web-audio-api": "^0.21.0",
     "prisma": "^5.14.0",
     "raylib": "^0.14.0",

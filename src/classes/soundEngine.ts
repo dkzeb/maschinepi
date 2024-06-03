@@ -50,7 +50,9 @@ export class SoundEngine {
     }
 
     async drawAudioBuffer(canvas2d: CanvasRenderingContext2D, buffer: Buffer, height: number, width: number, x = 0, y = 0, color?: string) {
+        let origColor;
         if(color) {
+            origColor = canvas2d.fillStyle;
             canvas2d.fillStyle = color;
         }
         const audioBuffer = await this.ctx.decodeAudioData(buffer.buffer);
@@ -69,6 +71,9 @@ export class SoundEngine {
                 }
                 canvas2d.fillRect(x + i, y + ((1+min)*amp),1, Math.max(1, (max-min)*amp));
             }
+        }
+        if(color) {
+            canvas2d.fillStyle = origColor; 
         }
     }
 }

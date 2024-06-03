@@ -21,8 +21,8 @@ export class UIController {
         });
 
         this.activeWidgets = [
-            new FileList("Load Sample", 480, 272, this, this.ebus, this.soundEngine),
-            new SampleDisplay("SampleDisplay", 480, 272, this, this.soundEngine)
+            new FileList("FileList", 480, 272, this, this.ebus, this.soundEngine),
+            new SampleDisplay("SampleDisplay", 480, 272, this, this.soundEngine, this.ebus)
         ];
 
     }
@@ -57,6 +57,7 @@ type WidgetOption = {
 export abstract class Widget {
     controller: UIController;
     name: string;
+    title: string = '';
     ctx: CanvasRenderingContext2D;    
     width: number;
     options: WidgetOption[] = [];
@@ -124,6 +125,8 @@ export abstract class Widget {
     }    
 
     private drawMenuOption(o: WidgetOption, x, y, w, h) {
+        const origFont = this.ctx.font;
+        this.ctx.font = '12px sans-serif';
         if(o.active) {
             this.ctx.fillStyle = 'white';
             this.ctx.fillRect(x, y, w, h);
@@ -134,10 +137,15 @@ export abstract class Widget {
             this.ctx.strokeRect(x, y, w, h);
             this.ctx.fillText(o.label, x + (w / 2), 15);
         }
+        this.ctx.font = origFont;
     }
 
     drawTitleBar() {
+        if(!this.title) {
+            this.title = this.name;
+        }
         const titlebarStart = 30;
+        const origFont = this.ctx.font;
         const titlebarHeight = 20;
         this.ctx.beginPath();
         this.ctx.strokeStyle = 'white';
@@ -150,7 +158,8 @@ export abstract class Widget {
 
         this.ctx.fillStyle = 'white';
         this.ctx.font = '14px sans-serif';
-        this.ctx.fillText(this.name, 20, titlebarStart + (titlebarHeight - 5));
+        this.ctx.fillText(this.title, 20, titlebarStart + (titlebarHeight - 5));
+        this.ctx.font = origFont;
 
     }
 
@@ -161,6 +170,7 @@ export class FileList extends Widget {
     prisma: PrismaClient;
     files: Sample[] = [];
     highlighted: number = -1;
+    title = 'Load Sample';
     previewEnabled: boolean = false;
     page = 1;
     maxLinesPrPage = 10;
@@ -176,13 +186,6 @@ export class FileList extends Widget {
             action: (o: WidgetOption) => {
                 this.previewEnabled = !this.previewEnabled;
                 o.active = this.previewEnabled;
-                /*
-                if(this.previewEnabled) {
-                    this.previewEnabled = false;
-                } else {
-                    this.previewEnabled = true;
-                }                
-                console.log('preview?', this.previewEnabled);*/
             }
         }
     ]
@@ -298,11 +301,32 @@ export class SampleDisplay extends Widget {
     data: { sample?: Sample, preview?: boolean } = {};
     didAddSource: boolean = false;
     drawCB?: () => void;
+    options: WidgetOption[] = [
+        {
+            label: 'Preview',
+            button: 'd7',
+            action: () => this.playPreview()
+        },
+        {
+            label: 'Load Sample',
+            button: 'd8',
+            action: (o: WidgetOption) => {
+                console.log('woop woop', 'load it')
+            }
+        }
+    ]
+    eventBus: EventBus;
     
-    constructor(name: string, w: number, h: number, controller: UIController, soundEngine: SoundEngine) {
+    constructor(name: string, w: number, h: number, controller: UIController, soundEngine: SoundEngine, ebus: EventBus) {
         super(name, w, h, controller);
         this.soundEngine = soundEngine;        
+        this.eventBus = ebus;      
     }    
+
+    playPreview() {
+        if(this.data && this.data.sample)
+            this.soundEngine.play(this.data.sample.name);
+    }
 
     async draw(cb?: (() => void) | undefined) {
 
@@ -312,30 +336,24 @@ export class SampleDisplay extends Widget {
         console.log('we drawing', this.data);
         if(!this.data.sample) {
             return;
-        } else {
-
-            if(this.data.preview) {
-                console.log('we previewing');
-                /*if(!this.didAddSource) {
-                    this.didAddSource = true;
-                    this.soundEngine.addSource(this.data.sample.name, this.data.sample.data);
-                }*/
-                this.soundEngine.play(this.data.sample.name);
+        } else {            
+            if(this.data.preview) {                
+                this.playPreview();
             }
-
-            this.ctx.fillStyle = 'black';
-            this.ctx.fillRect(0, 0, this.width, this.height);
-            this.ctx.fillStyle = 'white';
-            this.ctx.font = "16px Impact";
-            this.ctx.fillText(`${this.data.sample?.name} (Preview)`, 10, 15);
-
             
+            this.ctx.fillStyle = 'black';
+            this.ctx.fillRect(0,0,this.width,this.height);
+            this.ctx.fillStyle = 'white';
+            
+            this.title = this.data.sample.name;
+            this.drawMenu();
+            this.drawTitleBar();
+
             // hookup the options buttons
-            this.controller.mk3.setLED('d7', 10000);
-            this.ctx.fillText("Play Preview", this.width - 200, 15);
+            this.controller.mk3.setLED('d7', 10000);            
             this.controller.mk3.setLED('d8', 10000);
 
-            await this.soundEngine.drawAudioBuffer(this.ctx, this.data.sample.data, 200, 480, 0, 50);
+            await this.soundEngine.drawAudioBuffer(this.ctx, this.data.sample.data, 190, 480, 0, 65);
         }
 
         if(this.drawCB) {

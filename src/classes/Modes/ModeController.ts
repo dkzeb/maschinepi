@@ -2,6 +2,7 @@ import { MaschineMk3 } from "ni-controllers-lib";
 import { DisplayController } from "../DisplayController";
 import { EventBus } from "../EventBus";
 import { PadMode } from "./PadMode";
+import { Mixer } from "../Mixer";
 
 export type ModeType = 'PadMode' | 'LiveMode';
 export interface Mode {
@@ -16,14 +17,16 @@ export class ModeController {
     mk3?: MaschineMk3;
     ebus: EventBus;
     display?: DisplayController;
-    constructor(ebus: EventBus, controller?: MaschineMk3, displayController?: DisplayController) {
+    mixer: Mixer;
+    constructor(ebus: EventBus, mixer: Mixer, controller?: MaschineMk3, displayController?: DisplayController) {
         this.ebus = ebus;
+        this.mixer = mixer;
         if(displayController) {
             this.display = displayController;
         }
         if(controller) {
             this.mk3 = controller;            
-            this.addMode(new PadMode(this.ebus, this.mk3));
+            this.addMode(new PadMode(this.ebus, this.mk3, this.mixer));
         }        
     }
 
