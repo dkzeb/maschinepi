@@ -1,9 +1,11 @@
-import { MaschineMk3 } from "ni-controllers-lib";
+import { MaschineMk3, createNodeHidAdapter, createNodeUsbAdapter } from "ni-controllers-lib";
 import * as jpeg from 'jpeg-js';
 import { Canvas, CanvasRenderingContext2D, registerFont } from "canvas";
 import * as pkg from '../../package.json';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { container, singleton } from "tsyringe";
+import { EventBus } from "./EventBus";
 
 export const PadColor = {    
     orange: 0,
@@ -334,3 +336,85 @@ function clock(canvas, ctx) {
   
     ctx.restore();      
   }
+
+
+@singleton()
+export class MK3Controller {
+    mk3: MaschineMk3;
+    initialized: boolean = false;
+    ebus: EventBus;
+    constructor() {        
+        this.mk3 = new MaschineMk3(createNodeHidAdapter, createNodeUsbAdapter);          
+        this.ebus = container.resolve(EventBus);
+    }
+
+    async init() {
+        await this.mk3.init();
+        this.setupEvents();
+        this.initialized = true;
+    }
+
+    allLEDsOff() {
+        Object.keys(this.mk3.leds).forEach(k => {
+            this.mk3.setLED(k, 0);
+        });
+        Object.keys(this.mk3.indexed_leds).forEach(il => {            
+            this.mk3.indexed_leds[il].setOff();
+        });        
+    }
+
+    setupEvents() {        
+        Object.keys(this.mk3.buttons).forEach(key => {                
+            this.mk3?.on(key +':pressed', (ev?: any) => {                
+                if(ev) {
+                    this.ebus.processEvent({
+                        type: 'PadInput',
+                        name: key+':pressed',
+                        data: {
+                            pressure: ev
+                        }
+                    });
+                } else {
+                    this.ebus.processEvent({
+                        type: 'ButtonInput',
+                        name: key+':pressed',                            
+                    });
+                }
+            });
+            this.mk3?.on(key +':released', (ev?: any) => {
+                if(ev) {
+                    this.ebus.processEvent({
+                        type: 'PadInput',
+                        name: key+':released',
+                        data: {
+                            pressure: ev
+                        }
+                    });
+                } else {
+                    this.ebus.processEvent({
+                        type: 'ButtonInput',
+                        name: key+':released',                            
+                    });
+                }
+            });
+        });
+        Object.keys(this.mk3.knobs).forEach(key => {
+            this.mk3?.on(key+':changed', (v) => {
+                this.ebus.processEvent({
+                    type: 'KnobInput',
+                    name: key,
+                    data: {...v}
+                })
+            });
+        });
+        this.mk3.on('stepper:step', (dir) => {
+            this.ebus.processEvent({
+                type: 'KnobInput',
+                name: 'navStep',
+                data: {
+                    ...dir
+                }
+            })
+        });
+    }
+}

@@ -2,7 +2,9 @@
 
 import { AudioBuffer, AudioContext, GainNode } from 'node-web-audio-api';
 import { CanvasRenderingContext2D } from 'canvas';
+import { singleton } from 'tsyringe';
 
+@singleton()
 export class SoundEngine {
 
     ctx: AudioContext = new AudioContext({ latencyHint: 'interactive', sampleRate: 44100 });

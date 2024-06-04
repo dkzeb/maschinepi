@@ -1,53 +1,20 @@
-import { MaschineMk3 } from "ni-controllers-lib";
-import { DisplayController } from "../DisplayController";
-import { EventBus } from "../EventBus";
 import { PadMode } from "./PadMode";
-import { Mixer } from "../Mixer";
-
-export type ModeType = 'PadMode' | 'LiveMode';
-export interface Mode {
-    type: ModeType;
-    setup?: () => void;
-}
-
+import { singleton } from "tsyringe";
+import { Mode } from "./Mode";
+@singleton()
 export class ModeController {
-        
-    currentMode?: Mode;
-    modes: Mode[] = [];
-    mk3?: MaschineMk3;
-    ebus: EventBus;
-    display?: DisplayController;
-    mixer: Mixer;
-    constructor(ebus: EventBus, mixer: Mixer, controller?: MaschineMk3, displayController?: DisplayController) {
-        this.ebus = ebus;
-        this.mixer = mixer;
-        if(displayController) {
-            this.display = displayController;
-        }
-        if(controller) {
-            this.mk3 = controller;            
-            this.addMode(new PadMode(this.ebus, this.mk3, this.mixer));
-        }        
+
+    modes: Mode[];
+
+    constructor() {
+        this.modes = [];
     }
 
-    addMode(m: Mode) {
-        if(!this.modes) {
-            this.modes = [m];
-            this.setMode(this.modes[0].type);
-        } else {
-            this.modes.push(m);
+    loadDefault() {
+        if(!this.modes || this.modes.length === 0) {
+            this.modes = [new PadMode()]
         }
 
+        this.modes[0].setup();
     }
-    setMode(mode: ModeType) {
-        const m = this.modes.find(m => m.type === mode);
-        if(m?.setup) {            
-            m.setup();
-        } else {
-            console.error("UNKNOWN MODE: " + mode);
-        }
-    }
-    
 }
-
-

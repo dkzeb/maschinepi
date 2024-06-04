@@ -1,5 +1,6 @@
 import { GainNode } from "node-web-audio-api";
 import { SoundEngine } from "./SoundEngine";
+import { container } from "tsyringe";
 
 const NUM_CHANNELS = 8;
 
@@ -8,13 +9,11 @@ export class Mixer {
     groups: Group[] = [];
     soundEngine: SoundEngine;
 
-    constructor(soundEngine: SoundEngine) {
-        this.soundEngine = soundEngine;
+    constructor() {
+        this.soundEngine = container.resolve(SoundEngine);
         for(let i = 0; i < NUM_CHANNELS; i++) {
-            this.groups.push(new Group(i, soundEngine));
-        }
-
-        console.log('set up', this.groups.length, 'groups',);
+            this.groups.push(new Group(i, this.soundEngine));
+        }        
     }
 
 }

@@ -1,4 +1,5 @@
 import { Subject } from "rxjs";
+import { singleton } from "tsyringe";
 
 export type MPIEvent = {
     name?: string;
@@ -7,6 +8,7 @@ export type MPIEvent = {
 }
 type EventType = "PadInput" | "ButtonInput" | "TouchInput" | "Init" | 'UpdateDisplay' | 'ChangeMode' | 'KnobInput' | 'LoadWidget' | 'WidgetResult';
 
+@singleton()
 export class EventBus {
     events: Subject<MPIEvent>;
     eventHistory: MPIEvent[] = [];

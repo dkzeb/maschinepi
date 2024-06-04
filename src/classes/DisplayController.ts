@@ -37,9 +37,12 @@ export class DisplayController {
         this.controller = controller;
 
         this.displays = [
-            new MainDisplay(),
-            //!!this.controller ? [new MK3DevDisplay('MKLeft', MK3Displays.LEFT, this.controller), new MK3DevDisplay('MKRight', MK3Displays.RIGHT, this.controller)] : []
-        ]
+            //new MainDisplay(),            
+        ];
+        if(this.controller) {
+            this.displays.push(new MK3DevDisplay('MKLeft', MK3Displays.LEFT, this.controller));
+            this.displays.push(new MK3DevDisplay('MKLeft', MK3Displays.RIGHT, this.controller));
+        }
 
         this.displays.forEach(d => {
             d.init();

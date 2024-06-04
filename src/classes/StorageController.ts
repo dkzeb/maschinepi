@@ -1,6 +1,7 @@
 import { EventBus } from "./EventBus";
 import { PrismaClient } from "@prisma/client";
 import {SoundEngine} from "./SoundEngine";
+import { container } from "tsyringe";
 
 export class StorageController {
 
@@ -8,10 +9,10 @@ export class StorageController {
     ebus: EventBus;
     soundEngine: SoundEngine;
 
-    constructor(ebus: EventBus, soundEngine: SoundEngine) {
+    constructor() {
         this.prisma = new PrismaClient();
-        this.ebus = ebus;
-        this.soundEngine = soundEngine;
+        this.ebus = container.resolve(EventBus);
+        this.soundEngine = container.resolve(SoundEngine);
         this.loadAllSamples();
     }
 
