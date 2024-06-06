@@ -3,6 +3,10 @@ import { EventBus } from "../EventBus";
 import { MK3Controller } from "../MK3Controller";
 import { Mixer } from "../Mixer";
 import { Subscription, filter } from "rxjs";
+import { UIController } from "../UI/UIController";
+import { SampleDisplay } from "../UI/widgets/sampleDisplay.widget";
+import { PadModeWidgetLeft, PadModeWidgetRight } from "../UI/widgets/padMode.widget";
+import { SampleList } from "../UI/widgets/fileList.widget";
 
 export type ModeType = 'PadMode' | 'LiveMode';
 export abstract class Mode {
@@ -12,11 +16,18 @@ export abstract class Mode {
     ebus: EventBus;
     mixer: Mixer;
     controllerSubs: Subscription[] = [];
+    ui: UIController;
 
     constructor() {
         this.controller = container.resolve(MK3Controller);
         this.ebus = container.resolve(EventBus);        
         this.mixer = new Mixer();        
+        this.ui = new UIController([            
+            new SampleList({ name: "FileList" }),
+            new SampleDisplay({ name: "SampleDisplay" }),
+            new PadModeWidgetLeft({ name: 'PadModeWidgetLeft' }),
+            new PadModeWidgetRight({ name: 'PadModeWidgetRight' })            
+        ]);
     }
 
     abstract setup();

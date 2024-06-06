@@ -1,6 +1,6 @@
 import { Sample } from "@prisma/client";
-import { EventBus } from "src/classes/EventBus";
-import { SoundEngine } from "src/classes/SoundEngine";
+import { EventBus } from "../../EventBus";
+import { SoundEngine } from "../../SoundEngine";
 import { UIController } from "../UIController";
 import { Widget, WidgetConfig, WidgetOption } from "./widget";
 import { container } from "tsyringe";
@@ -15,13 +15,19 @@ export class SampleDisplay extends Widget {
         {
             label: 'Preview',
             button: 'd7',
-            action: () => this.playPreview()
+            action: (action) => {
+                if(action) {
+                    this.playPreview();
+                }                
+            }
         },
         {
             label: 'Load Sample',
             button: 'd8',
-            action: () => {
-                //this.resolve
+            action: (action) => {
+                if(action) {
+                    this.result();
+                }
             }
         }
     ]
@@ -40,6 +46,12 @@ export class SampleDisplay extends Widget {
 
     result() {
         console.log('we have a result');
+        this.ebus.processEvent({
+            type: 'WidgetResult',
+            data: {
+                resultData: { sample: this.data.sample}
+            }
+        })
     }
 
     async draw(cb?: (() => void) | undefined) {

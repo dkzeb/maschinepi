@@ -2,8 +2,8 @@ import { Canvas, CanvasRenderingContext2D } from "canvas";
 import { Subscription, filter } from "rxjs";
 import { UIController } from "../UIController";
 import { container } from "tsyringe";
-import { EventBus } from "src/classes/EventBus";
-import { MK3Controller } from "src/classes/MK3Controller";
+import { EventBus } from "../../EventBus";
+import { MK3Controller } from "../../MK3Controller";
 
 export type WidgetOption = {
     button: 'd1' | 'd2' | 'd3' | 'd4' | 'd5' | 'd6' | 'd7' | 'd8';
@@ -14,8 +14,9 @@ export type WidgetOption = {
 
 export type WidgetConfig = {
     name: string;
-    width: number;
-    height: number;
+    width?: number;
+    height?: number;
+    isModeRootWidget?: boolean;
 }
 
 export abstract class Widget {    
@@ -23,20 +24,25 @@ export abstract class Widget {
     title: string = '';
     mk3Controller: MK3Controller;
     ctx: CanvasRenderingContext2D;    
-    width: number;
     options: WidgetOption[] = [];
-    height: number;
+    width: number = 480;
+    height: number = 272;
     gfx: Canvas;
     data?: unknown; 
     menuWasInit: boolean = false;
-
+    isModeRootWidget: boolean = false;
     widgetSubscriptions: Subscription[] = [];
     ebus: EventBus;
 
     constructor(config: WidgetConfig) {
         this.name = config.name;
-        this.width = config.width;
-        this.height = config.height;
+        if(config.height && config.width) {
+            this.width = config.width;
+            this.height = config.height;
+        }
+        if(config.isModeRootWidget) {
+            this.isModeRootWidget = config.isModeRootWidget
+        }
 
         this.ebus = container.resolve(EventBus);
         this.mk3Controller = container.resolve(MK3Controller);

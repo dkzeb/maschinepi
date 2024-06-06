@@ -6,6 +6,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { container, singleton } from "tsyringe";
 import { EventBus } from "./EventBus";
+import { UIController } from "./UI/UIController";
 
 export const PadColor = {    
     orange: 0,
@@ -18,6 +19,8 @@ export const PadColor = {
     blue: 10,
 
 }
+
+
 
 export enum Mk3Display {
     "left",
@@ -343,15 +346,17 @@ export class MK3Controller {
     mk3: MaschineMk3;
     initialized: boolean = false;
     ebus: EventBus;
+    gfx!: MK3GraphicsController;
     constructor() {        
         this.mk3 = new MaschineMk3(createNodeHidAdapter, createNodeUsbAdapter);          
-        this.ebus = container.resolve(EventBus);
+        this.ebus = container.resolve(EventBus);        
     }
-
+    
     async init() {
         await this.mk3.init();
         this.setupEvents();
         this.initialized = true;
+        this.gfx = new MK3GraphicsController(this.mk3);
     }
 
     allLEDsOff() {

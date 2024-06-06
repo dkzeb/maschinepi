@@ -57,6 +57,8 @@ export class PadMode extends Mode {
             this.toggleSampleLoading(released);
         });*/
 
+        this.loadModeUI();
+
         this.ebus.events.pipe(filter((e => {
             return e.type === 'PadInput'
         }))).subscribe(ev => {                        
@@ -72,7 +74,7 @@ export class PadMode extends Mode {
             type: 'LoadWidget',
             data: {
                 widgetName: 'PadModeWidgetLeft',
-                target: Mk3Display.left
+                targetMK3Display: Mk3Display.left                    
             }
         });
 
@@ -80,7 +82,7 @@ export class PadMode extends Mode {
             type: 'LoadWidget',
             data: {
                 widgetName: 'PadModeWidgetRight',
-                target: Mk3Display.right
+                targetMK3Display: Mk3Display.right                    
             }
         });
     }
@@ -97,8 +99,12 @@ export class PadMode extends Mode {
                     widgetName: 'FileList'
                 }
             });
-            this.ebus.events.pipe(filter(e => e.type === 'WidgetResult' && e.data.selectedSample)).subscribe((e) => {
-                console.log('load sample with name', e.data.selectedSample, 'to pad', idx);
+            this.ebus.events.pipe(filter(e => e.type === 'WidgetResult' && e.data.resultData.sample)).subscribe((e) => {
+                console.log('load sample with name', e.data.resultData.sample.name, 'to pad', idx);
+                const pad = this.pads.find(p => p.pIdx === idx);
+                if(pad) {
+                    pad.sampleName = e.data.resultData.sample.name;
+                }
             });
         } else {
             this.state.activePadIdx = -1;

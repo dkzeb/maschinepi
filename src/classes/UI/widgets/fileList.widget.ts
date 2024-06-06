@@ -7,7 +7,7 @@ import { SoundEngine } from "../../SoundEngine";
 import { UIController } from "../UIController";
 import { container } from "tsyringe";
 
-export class FileList extends Widget {    
+export class SampleList extends Widget {    
     prisma: PrismaClient;
     files: Sample[] = [];
     highlighted: number = -1;
@@ -57,7 +57,7 @@ export class FileList extends Widget {
         this.widgetSubscriptions.push(knobEv);
 
         const navPress = this.ebus.events.pipe(filter(e => e.type === 'ButtonInput' && e.name === 'navPush:pressed')).subscribe(e => {            
-            this.result();
+            this.loadSampleDisplay();
         });
         this.widgetSubscriptions.push(navPress);
         
@@ -74,7 +74,7 @@ export class FileList extends Widget {
                 },
                 targetMK3Display: Mk3Display.right
             }
-        });
+        });        
     }    
 
     result(): void {
