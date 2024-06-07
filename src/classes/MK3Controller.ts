@@ -24,7 +24,8 @@ export const PadColor = {
 
 export enum Mk3Display {
     "left",
-    "right"
+    "right",
+    'both'
 }
 
 export class MK3GraphicsController {

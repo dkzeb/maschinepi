@@ -11,17 +11,24 @@ export class UIController {
     activeWidgets: Widget[] = [];
     ebus: EventBus;
     soundEngine: SoundEngine;
-    widgetLayersRight: Widget[] = [];
-    widgetLayersLeft: Widget[] = [];    
+    left: WidgetLayers = new WidgetLayers();
+    right: WidgetLayers = new WidgetLayers();
 
     constructor(widgets?: Widget[]) {
         this.soundEngine = container.resolve(SoundEngine);
         this.mk3 = container.resolve(MK3Controller);
         this.ebus = container.resolve(EventBus);
 
-        this.ebus.events.pipe(filter(e => e.type === 'LoadWidget')).subscribe(async e => {          
-            console.log('Load Widget', e);  
-            this.loadWidget(e.data.widgetName, e.data.widgetData ?? {}, e.data.targetMK3Display ?? Mk3Display.left);
+        this.ebus.events.pipe(filter(e => e.type === 'LoadWidget')).subscribe(async e => {            
+            await this.loadWidget(e.data.widgetName, e.data.widgetData ?? {}, e.data.targetMK3Display ?? Mk3Display.left);
+        });
+
+        this.ebus.events.pipe(filter(e => e.type === 'CloseWidget')).subscribe(async e => {                                  
+            await this.closeWidget(e.data.targetMK3Display);
+        });
+
+        this.ebus.events.pipe(filter(e => e.type === 'UpdateWidget')).subscribe(async e => {
+            await this.tick();
         });
 
         if(widgets) {
@@ -29,19 +36,40 @@ export class UIController {
         }        
 
     }
-    async loadWidget(widgetName: string, data: any = {}, target: Mk3Display = Mk3Display.left, cb?: () => void) {
-        const w = this.activeWidgets.find(w => w.name === widgetName);                
-        if(w) {
-            console.log('w', 'draw', data);
+    async loadWidget(widgetName: string, data: any = {}, target: Mk3Display = Mk3Display.left) {        
+        const w = this.activeWidgets.find(w => w.name === widgetName);     
+        if(w) {            
             w.data = data;
-            await w.draw(() => {  
-                console.log('we are pushing', target);           
-                this.mk3.gfx.pushCanvas(target, w.ctx.canvas);
-            });
+            if(target == Mk3Display.left) {
+                this.left.addWidget(w);    
+            } else if(target === Mk3Display.right) {                
+                this.right.addWidget(w);
+            }
+            w.init();
+            await w.update();
         } else {
             throw new Error("NO WIDGET NAMED " + widgetName);
+        }        
+    }
+
+    async closeWidget(target: Mk3Display) {        
+        if(target === Mk3Display.both) {
+            await this.closeWidget(Mk3Display.left);
+            await this.closeWidget(Mk3Display.right);
+        } else {
+            if(target === Mk3Display.left) {            
+                this.left.removeWidget();                                
+            } else {
+                this.right.removeWidget();                
+            }        
+            await this.tick();
         }
-        
+
+    }    
+
+    async tick() {
+        await this.left.update();
+        await this.right.update();
     }
 }
 
@@ -67,5 +95,40 @@ export namespace UI.Utils {
                 ctx.fillRect(i, (1+min)*amp,1, Math.max(1, (max-min)*amp));
             }
         }
+    }
+}
+
+
+class WidgetLayers {
+    widgets: Widget[] = [];
+
+    addWidget(w: Widget) {
+        if(this.widgets.length > 0) {
+            // if same type, replace
+            const top = this.widgets[this.widgets.length - 1];
+            if(w.name === top.name) {
+                this.widgets.pop();            
+            }        
+            this.widgets.push(w);        
+        } else {
+            this.widgets.push(w);
+        }
+    }
+
+    removeWidget() {
+        if(this.widgets.length > 1) {
+            const w = this.widgets.pop();
+            console.log('closing', w?.name);
+            w?.destroy();
+            console.log('active widget', this.getTopWidget().name);
+        }
+    }
+
+    getTopWidget() {
+        return this.widgets[this.widgets.length - 1];
+    }
+
+    async update() {
+        await this.getTopWidget().update();
     }
 }

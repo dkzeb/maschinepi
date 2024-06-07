@@ -4,7 +4,7 @@ import { SoundEngine } from "./SoundEngine";
 import { GainNode } from "node-web-audio-api";
 
 export class Pad {
-    color: string;
+    color?: number[];
     pIdx: string;
     selected: boolean;
     gainNode: GainNode;
@@ -12,8 +12,7 @@ export class Pad {
     sampleName?: string;
     soundEngine: SoundEngine;
 
-    constructor(color: string, pIdx: string, selected: boolean, group: Group) {
-        this.color = color;
+    constructor(pIdx: string, selected: boolean, group: Group) {        
         this.pIdx = pIdx;
         this.selected = selected;
         this.group = group;

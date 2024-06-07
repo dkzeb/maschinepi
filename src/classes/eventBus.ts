@@ -6,7 +6,9 @@ export type MPIEvent = {
     type: EventType;
     data?: any;
 }
-type EventType = "PadInput" | "ButtonInput" | "TouchInput" | "Init" | 'UpdateDisplay' | 'ChangeMode' | 'KnobInput' | 'LoadWidget' | 'WidgetResult';
+type EventType = 
+    "PadInput" | "ButtonInput" | "TouchInput" | "Init" | 'UpdateDisplay' | 'ChangeMode' | 
+    'KnobInput' | 'LoadWidget' | 'WidgetResult' | 'CloseWidget' | 'UpdateWidget';
 
 @singleton()
 export class EventBus {

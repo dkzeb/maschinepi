@@ -1,6 +1,6 @@
 import { container } from "tsyringe";
 import { EventBus } from "../EventBus";
-import { MK3Controller } from "../MK3Controller";
+import { MK3Controller, Mk3Display } from "../MK3Controller";
 import { Mixer } from "../Mixer";
 import { Subscription, filter } from "rxjs";
 import { UIController } from "../UI/UIController";
@@ -23,10 +23,10 @@ export abstract class Mode {
         this.ebus = container.resolve(EventBus);        
         this.mixer = new Mixer();        
         this.ui = new UIController([            
-            new SampleList({ name: "FileList" }),
-            new SampleDisplay({ name: "SampleDisplay" }),
-            new PadModeWidgetLeft({ name: 'PadModeWidgetLeft' }),
-            new PadModeWidgetRight({ name: 'PadModeWidgetRight' })            
+            new SampleList({ name: "FileList", targetDisplay: Mk3Display.left, hasMenu: true, hasTitlebar: true }),
+            new SampleDisplay({ name: "SampleDisplay", targetDisplay: Mk3Display.right, hasMenu: true, hasTitlebar: true }),
+            new PadModeWidgetLeft({ name: 'PadModeWidgetLeft', targetDisplay: Mk3Display.left}),
+            new PadModeWidgetRight({ name: 'PadModeWidgetRight', targetDisplay: Mk3Display.right })            
         ]);
     }
 

@@ -19,27 +19,39 @@ export class SampleList extends Widget {
         {
             label: 'Back',
             button: 'd1',
-            action: () => console.log('back back')
+            action: (action) => {
+                console.log('action',action);
+                if(action) {
+                    this.ebus.processEvent({
+                        type: 'CloseWidget',
+                        data: {
+                            targetMK3Display: Mk3Display.both
+                        }
+                    })
+                }
+            }
         },
         {
             label: 'Live Preview',
             button: 'd4',
             action: (o: WidgetOption) => {
                 this.previewEnabled = !this.previewEnabled;
-                o.active = this.previewEnabled;
+                o.active = this.previewEnabled;                           
             }
         }
     ]
-    ebus: EventBus;
-    drawCB?: () => void;
+    ebus: EventBus;    
     soundEngine: SoundEngine;    
 
     constructor(config: WidgetConfig) {
         super(config);
         this.soundEngine = container.resolve(SoundEngine);
         this.prisma = new PrismaClient();
-        this.ebus = container.resolve(EventBus);
+        this.ebus = container.resolve(EventBus);                
+    }
 
+    setup() {
+        this.previewEnabled = false;
         const knobEv = this.ebus.events.pipe(filter(e => e.type === 'KnobInput' && e.name === 'navStep')).subscribe(e => {
             this.highlighted += e.data.direction ?? 0;                        
             this.page = this.highlighted > 0 ? Math.ceil((this.highlighted) / this.files.length * Math.ceil(this.files.length / this.maxLinesPrPage)) : 1;
@@ -47,7 +59,7 @@ export class SampleList extends Widget {
             if(this.highlighted < 0) {
                 this.highlighted = 0;
             } else {                
-                this.draw();
+                this.update();
                 if(this.previewEnabled) {
                     this.loadSampleDisplay();
                 }
@@ -59,8 +71,7 @@ export class SampleList extends Widget {
         const navPress = this.ebus.events.pipe(filter(e => e.type === 'ButtonInput' && e.name === 'navPush:pressed')).subscribe(e => {            
             this.loadSampleDisplay();
         });
-        this.widgetSubscriptions.push(navPress);
-        
+        this.widgetSubscriptions.push(navPress);        
     }
 
     loadSampleDisplay() {
@@ -84,13 +95,9 @@ export class SampleList extends Widget {
         this.loadSampleDisplay();
     }
 
-    async draw(cb?: () => void) {        
+    async draw() {        
         if(this.highlighted < 0) {
             this.highlighted = 0;
-        }
-
-        if(!this.drawCB && cb) {
-            this.drawCB = cb;
         }
 
         this.ctx.fillStyle = 'black';
@@ -114,14 +121,7 @@ export class SampleList extends Widget {
                 this.ctx.fillStyle = 'white';
                 this.ctx.fillText(f.name, 20, heightOffset + 35 + ((i % 10) * 20));
             }
-        });      
-
-        this.drawMenu();
-        this.drawTitleBar();
-
-        if(this.drawCB) {
-            this.drawCB()
-        }
+        });              
     }
 
     private paginate(array, page_size, page_number) {

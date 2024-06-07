@@ -9,13 +9,12 @@ export class SampleDisplay extends Widget {
     name = 'SampleDisplay';
     soundEngine: SoundEngine;
     data: { sample?: Sample, preview?: boolean } = {};
-    didAddSource: boolean = false;
-    drawCB?: () => void;
+    didAddSource: boolean = false;    
     options: WidgetOption[] = [
         {
             label: 'Preview',
             button: 'd7',
-            action: (action) => {
+            action: (action) => {                
                 if(action) {
                     this.playPreview();
                 }                
@@ -24,9 +23,14 @@ export class SampleDisplay extends Widget {
         {
             label: 'Load Sample',
             button: 'd8',
-            action: (action) => {
-                if(action) {
-                    this.result();
+            action: (action) => {                
+                if(action) {                    
+                    this.ebus.processEvent({
+                        type: 'WidgetResult',
+                        data: {
+                            sample: this.data.sample
+                        }
+                    });
                 }
             }
         }
@@ -44,21 +48,10 @@ export class SampleDisplay extends Widget {
             this.soundEngine.play(this.data.sample.name);
     }
 
-    result() {
-        console.log('we have a result');
-        this.ebus.processEvent({
-            type: 'WidgetResult',
-            data: {
-                resultData: { sample: this.data.sample}
-            }
-        })
-    }
-
-    async draw(cb?: (() => void) | undefined) {
-
-        if(!this.drawCB && cb) {
-            this.drawCB = cb;
-        }        
+    setup() {}
+    
+    async draw() {
+      
         if(!this.data.sample) {
             return;
         } else {            
@@ -70,19 +63,9 @@ export class SampleDisplay extends Widget {
             this.ctx.fillRect(0,0,this.width,this.height);
             this.ctx.fillStyle = 'white';
             
-            this.title = this.data.sample.name;
-            this.drawMenu();
-            this.drawTitleBar();
-
-            // hookup the options buttons
-            this.mk3Controller.mk3.setLED('d7', 10000);            
-            this.mk3Controller.mk3.setLED('d8', 10000);
-
+            this.title = this.data.sample.name;            
             await this.soundEngine.drawAudioBuffer(this.ctx, this.data.sample.data, 190, 480, 0, 65);
         }
-
-        if(this.drawCB) {
-            this.drawCB()
-        }        
+      
     }
 }

@@ -3,7 +3,7 @@ import { Subscription, filter } from "rxjs";
 import { UIController } from "../UIController";
 import { container } from "tsyringe";
 import { EventBus } from "../../EventBus";
-import { MK3Controller } from "../../MK3Controller";
+import { MK3Controller, Mk3Display } from "../../MK3Controller";
 
 export type WidgetOption = {
     button: 'd1' | 'd2' | 'd3' | 'd4' | 'd5' | 'd6' | 'd7' | 'd8';
@@ -14,6 +14,9 @@ export type WidgetOption = {
 
 export type WidgetConfig = {
     name: string;
+    targetDisplay: Mk3Display;
+    hasMenu?: boolean;
+    hasTitlebar?: boolean;
     width?: number;
     height?: number;
     isModeRootWidget?: boolean;
@@ -29,10 +32,13 @@ export abstract class Widget {
     height: number = 272;
     gfx: Canvas;
     data?: unknown; 
+    target: Mk3Display;
     menuWasInit: boolean = false;
     isModeRootWidget: boolean = false;
     widgetSubscriptions: Subscription[] = [];
-    ebus: EventBus;
+    hasTitlebar: boolean;
+    hasMenu: boolean;
+    ebus: EventBus;    
 
     constructor(config: WidgetConfig) {
         this.name = config.name;
@@ -44,6 +50,10 @@ export abstract class Widget {
             this.isModeRootWidget = config.isModeRootWidget
         }
 
+        this.hasMenu = config.hasMenu ?? false;
+        this.hasTitlebar = config.hasTitlebar ?? false;
+        this.target = config.targetDisplay;
+
         this.ebus = container.resolve(EventBus);
         this.mk3Controller = container.resolve(MK3Controller);
         
@@ -51,19 +61,30 @@ export abstract class Widget {
         this.ctx = this.gfx.getContext('2d');
     }
 
+    /**
+     * Init method, clearing all previous subscriptions and calls setup on the widget
+     */
+    init() {
+        this.widgetSubscriptions.forEach(s => s.unsubscribe());
+        this.widgetSubscriptions = [];
+        this.menuWasInit = false;        
+        this.initMenu();
+        this.setup();        
+    }
+
     initMenu() {
-        if(!this.menuWasInit) {
+        if(!this.menuWasInit) {            
             this.options.forEach(o => {             
                 // hookup the button
                 const pressSub = this.ebus.events.pipe(filter(e => e.type === 'ButtonInput' && e.name === o.button + ':pressed')).subscribe(() => {
                     o.action(o);
                     this.mk3Controller.mk3.setLED(o.button, 10000);
-                    this.draw();
+                    this.update();
                 });
     
                 const releaseSub = this.ebus.events.pipe(filter(e => e.type === 'ButtonInput' && e.name === o.button + ':released')).subscribe(() => {
                     this.mk3Controller.mk3.setLED(o.button, 255);
-                    this.draw();
+                    this.update();
                 });
                 this.mk3Controller.mk3.setLED(o.button, 255);            
                 this.widgetSubscriptions.push(pressSub);
@@ -75,8 +96,9 @@ export abstract class Widget {
 
     destroy() {
         this.widgetSubscriptions.forEach(s => {
-            s.unsubscribe();
+            s.unsubscribe();            
         });
+        this.widgetSubscriptions = [];
     }
 
     drawMenu() {
@@ -100,9 +122,7 @@ export abstract class Widget {
             } else if(o.button === 'd4' || o.button === 'd8') {
                 this.drawMenuOption(o, optionWidth * 3, 0, optionWidth, menuHeight);                
             }            
-        });
-
-        this.initMenu();
+        });        
         // reset alignment
         this.ctx.textAlign = 'start';
     }    
@@ -144,14 +164,20 @@ export abstract class Widget {
         this.ctx.fillText(this.title, 20, titlebarStart + (titlebarHeight - 5));
         this.ctx.font = origFont;
 
+    }   
+
+    abstract setup();
+
+    async update() {
+        await this.draw();        
+        if(this.hasTitlebar) {
+            this.drawTitleBar();
+        }
+        if(this.hasMenu) {
+            this.drawMenu();
+        }
+        this.mk3Controller.gfx.pushCanvas(this.target, this.gfx);
     }
 
-    resolve() {
-        this.result();
-        this.destroy();
-    }
-
-    abstract draw(cb?: () => void);
-
-    abstract result();
+    abstract draw();
 }
