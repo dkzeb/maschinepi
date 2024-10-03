@@ -21,6 +21,7 @@
     "@canvas-fonts/impact": "^1.0.4",
     "@prisma/client": "^5.14.0",
     "canvas": "^2.11.2",
+    "dotenv": "^16.4.5",
     "jpeg-js": "^0.4.4",
     "ni-controllers-lib": "^1.2.3",
     "node-framebuffer": "^1.1.0",

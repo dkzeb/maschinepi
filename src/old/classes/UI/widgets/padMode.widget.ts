@@ -22,7 +22,7 @@ export class PadModeWidgetRight extends Widget {
 
         // calc correct width
         const rectWidth = this.width / 4;
-        // let the pad spacing take up 2/3rd of the screen
+        // let the pad spacing take up ~3/4th of the screen
         const rectHeight = (this.height * .77) / 4;
 
         let activeI, activeJ;
