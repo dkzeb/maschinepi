@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 
 async function seed() {
     try {
-        const sampleRoot = path.join(process.cwd(), 'assets', 'samples');
+        const sampleRoot = path.join(process.cwd(), 'data', 'samples');
         const files = fs.readdirSync(sampleRoot);
         console.log(files.length, 'samples found');
 

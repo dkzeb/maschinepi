@@ -18,8 +18,8 @@
       "emitDecoratorMetadata": true,
       "resolveJsonModule": true,
       "resolvePackageJsonImports": true,
-      "outDir": "dist",
-      "rootDir": "src"
+      "outDir": "dist/",
+      "rootDir": "src/"
   },
   "include": [
       "./src/**/*.ts"

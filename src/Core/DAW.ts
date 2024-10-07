@@ -7,12 +7,22 @@ import * as path from 'path';
 import * as pkg from '../../package.json';
 import * as crypto from 'crypto';
 import { DisplayTarget } from "../Hardware/MK3Controller";
-import { Widget } from "src/Widgets/widget";
+import { Widget, WidgetOptions } from "../Widgets/Widget";
+import { StartupWidget } from "../Widgets/StartupWidget";
+import { SysInfoWidget } from "../Widgets/SysInfoWidget";
 
-export class DAWWidget extends Widget {
-    widgetId: string;    
-    render(): void {
-        
+export class DAWWidget extends Widget<unknown> {
+    discriminator: string = 'DAWWidget';    
+    widgetId?: string;
+    
+    constructor(widgetOpts: WidgetOptions) {
+        super(widgetOpts);
+        this.widgetId = crypto.randomUUID();
+    }
+
+    async render(): Promise<string> {
+        console.log("DAW Widget Rendering!", this.widgetId);
+        return '';
     }
 }
 
@@ -23,56 +33,65 @@ export class DAW {
     hardwareController: HardwareController[] = [];
     eventBus: EventBus = container.resolve(EventBus);
 
-    widgets: DAWWidget[] = [];
-
     constructor() {
         this.setProject(new Project());        
+
+        // register default widgets
+        this.UI.registerWidget(new StartupWidget({
+            eventTags: []
+        }));
+
+        this.UI.registerWidget(new SysInfoWidget({
+            eventTags: []
+        }));
     }
 
     setProject(project: Project) {
         this.currentProject = project;
         this.currentProject.loadProject();        
-    }
-
-    openWidget(w?: DAWWidget, widgetId?: string) {
-        if(widgetId) {
-            w = this.widgets.find(wd => wd.widgetId === widgetId);            
-        }
-
-        if(w) {
-            if(!widgetId) {
-                widgetId = crypto.randomUUID();       
-                const dawW = {
-                    ...w,
-                    widgetId: widgetId,
-                };                
-                this.widgets.push(dawW);
-                
-            }
-            w.render();
-        }
-    }
+    }    
 
     async init() {
         this.showBootscreen();    
+        
         setTimeout(() => {
-            
-        }, 1800);
+            this.eventBus.processEvent({
+                type: 'UIEvent',
+                data: {
+                    targetDisplay: DisplayTarget.Left,
+                    type: 'openWidget',
+                    widgetName: 'StartupWidget'
+                }
+            });
+
+            this.eventBus.processEvent({
+                type: 'UIEvent',
+                data: {
+                    targetDisplay: DisplayTarget.Right,
+                    type: 'openWidget',
+                    widgetName: 'SysInfoWidget'
+                }
+            });
+        }, 3000);
     }
 
     private showBootscreen() {        
+
+        // clear all displays
+        this.UI.displays.forEach(d => d.clear());
+
         this.eventBus.processEvent({
             type: 'UIEvent',
             data: {
-                side: 'left',   
+                targetDisplay: DisplayTarget.Left,   
                 type: 'image',
-                path: path.join(process.cwd(), 'assets','images','maschinepi-splash.jpg')
+                path: path.join(process.cwd(), 'data','images','maschinepi-splash.jpg')
             }
-        });
+        });        
         this.eventBus.processEvent({
             type: 'UIEvent',
             data: {
-                side: 'right',
+                targetDisplay: DisplayTarget.Right,
                 type: 'text',
                 position: {
                     x: 50,
@@ -80,7 +99,7 @@ export class DAW {
                 },
                 text: `Maschine PI ${pkg.version}`
             }
-        })
+        });
     }
 
 

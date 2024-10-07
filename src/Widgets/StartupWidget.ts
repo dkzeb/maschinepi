@@ -1,40 +1,52 @@
 import { Canvas, CanvasRenderingContext2D } from "canvas";
-import { EventBus } from "src/Core/EventBus";
-import { UIControl } from "src/UI/uiControl";
-import { Widget } from "./widget";
-import * as os from 'os';
+import { Widget, WidgetOptionButton, WidgetOptions } from "./Widget";
+import { DisplayTarget } from "../Hardware/MK3Controller";
 
-type WidgetPage = {};
+export class StartupWidget extends Widget<unknown> {    
+    discriminator: string = 'StartupWidget';
+    currentPageIndex = 0;    
 
-export class StartupWidget implements Widget {
-    canvas!: Canvas;
-    ctx!: CanvasRenderingContext2D;
-    controls!: UIControl[];
-    children?: Widget[] | undefined;
-    ebus!: EventBus;    
+    options = [
+        {
+            button: this.targetDisplay === 'right' ? WidgetOptionButton.d5 : WidgetOptionButton.d1,
+            label: 'New Project',
+            handler: () => {
+                console.log('New Project Was Pressed!');
+            }
+        },
+        {
+            button: this.targetDisplay === 'right' ? WidgetOptionButton.d6 : WidgetOptionButton.d2,
+            label: 'Load Project',
+            handler: () => {
+                console.log('Load Project Was Pressed!');
+            }
+        },
+    ]
 
-    currentPageIndex = 0;
-    pages: WidgetPage[] = [];
+    constructor(opts: WidgetOptions) {
+        super(opts);
+        this.canvas = new Canvas(480, 272, "image");
+        this.ctx = this.canvas.getContext("2d");                        
+    }
+    
+    async render(): Promise<string> {                        
+        const hasMenu = this.options && this.options.length > 0;
 
-    render(): void {       
-        const page = this.pages[this.currentPageIndex];
-        // do something with the page here
+        const availableHeight = this.canvas!.height - (hasMenu ? 25 : 0);
+        console.log('Widget has', availableHeight, 'available height area');
 
-        const info = this.getInfo();
-        console.dir(info);
-
+        // render the widgets ui based on the current 
+        
+        const imgData = this.canvas?.toDataURL() ?? "NO_DATA";
+        if(imgData === 'NO_DATA') {
+            throw new Error("WIDGET PRODUCED NO IMG DATA");
+        }
+        return imgData;
     }    
 
-    getInfo() {
-        const info = {
-            os: os.platform(),
-            freeMem: os.freemem(),
-            totalMem: os.totalmem(),
-            cpu: os.cpus(),
-            network: os.networkInterfaces(),
-            user: os.userInfo()
-        }
+    drawLayout = (ctx: CanvasRenderingContext2D) => {
+        this.drawMenu();
+    };
 
-        return info;
-    }
+    
 }

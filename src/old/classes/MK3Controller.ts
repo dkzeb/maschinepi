@@ -75,7 +75,7 @@ export class MK3GraphicsController {
     }
 
     showSplash() {
-        const splash = fs.readFileSync(path.join(process.cwd(), 'assets', 'images', 'maschinepi-splash.jpg'));
+        const splash = fs.readFileSync(path.join(process.cwd(), 'data', 'images', 'maschinepi-splash.jpg'));
         this.sendImage(splash, Mk3Display.left);
     }
 

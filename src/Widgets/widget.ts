@@ -1,41 +1,57 @@
 import { Canvas, CanvasRenderingContext2D } from "canvas";
 import { filter } from "rxjs";
-import { EventBus, MPIEvent } from "src/Core/EventBus";
-import { UIControl } from "src/UI/uiControl";
+import { EventBus, MPIEvent } from "../Core/EventBus";
 import { container } from "tsyringe";
 
 export type WidgetEvent = MPIEvent & {
     data: WidgetData
 }
 
+type WidgetData = any;
+
 interface IWidget {  
-  render(): void;  
+  render(): Promise<string> | string;  
   add?(widget: IWidget): void;
   remove?(widget: IWidget): void;
   getChild?(index: number): IWidget | undefined;
 };
 
-type WidgetData = {};
-type WidgetOptions = {
-    canvas: Canvas,
-    eventTags: string[],
-    controls: UIControl[],
-    children?: Widget[]
+export enum WidgetOptionButton {
+    d1, d2, d3, d4, d5, d6, d7, d8
 }
 
-export abstract class Widget implements IWidget {    
+export type WidgetOptions = {
+    canvas?: Canvas,
+    eventTags: string[],    
+    children?: Widget<any>[],
+    options?: WidgetOption[],
+    targetDisplay?: 'left' | 'right' | 'main'
+}
 
-    canvas: Canvas;
-    ctx: CanvasRenderingContext2D;
-    controls: UIControl[] = [];
-    children?: Widget[];
+export type WidgetOption = {
+    label: string;
+    handler: (...args: any[]) => void | {};
+    toggled?: boolean;
+    button: WidgetOptionButton
+}
 
-    render(): void {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.controls.forEach(ctrl => {
-            ctrl.drawGUI(this.ctx);
-        });
-    };    
+export abstract class Widget<T> implements IWidget {    
+
+    discriminator: string = 'WIDGET';
+    canvas?: Canvas;
+    ctx?: CanvasRenderingContext2D;    
+    children?: Widget<any>[];
+    pages?: any[] = [];
+    options?: WidgetOption[];
+    targetDisplay?: 'left' | 'right' | 'main'
+
+    drawLayout?: (ctx: CanvasRenderingContext2D) => void;
+
+    getImageData() {
+        return this.renderWidget();        
+    }
+
+    abstract render(): Promise<string>;
     ebus: EventBus = container.resolve(EventBus);
 
     constructor(widgetOpts: WidgetOptions) {
@@ -45,10 +61,82 @@ export abstract class Widget implements IWidget {
             });
         });
         
-        this.children = widgetOpts.children        
+        this.options = widgetOpts.options;
+        this.children = widgetOpts.children;        
+        this.canvas = widgetOpts.canvas ?? new Canvas(480, 272, 'image');    
+        this.targetDisplay = widgetOpts.targetDisplay;
+        this.ctx = this.canvas?.getContext("2d");
+    }
 
-        this.controls = widgetOpts.controls;
-        this.canvas = widgetOpts.canvas;
-        this.ctx = this.canvas.getContext("2d");
+    async renderWidget() {
+        if(this.options?.length) {
+            this.drawMenu();
+        }
+        return await this.render();
+    }
+
+    drawMenu() {        
+        if(!this.ctx || !this.options || this.options.length === 0) {
+            return;
+        }
+        const origFillStyle = this.ctx.fillStyle;
+        const origStrokeStyle = this.ctx.strokeStyle;
+        const ctxFont = this.ctx.font;
+
+        this.ctx.font = '16px "Impact"';
+
+        this.ctx.textAlign = 'center';
+        const optionWidth = this.canvas!.width/4;
+        const menuHeight = 20;
+        this.ctx.strokeStyle = 'white';
+        this.ctx.fillStyle = 'white';
+        this.options.forEach(o => {                        
+
+            if(o.button === WidgetOptionButton.d1 || o.button === WidgetOptionButton.d5) {
+                this.drawMenuOption(o, 0, 0, optionWidth, menuHeight)                                
+            } else if(o.button === WidgetOptionButton.d2 || o.button === WidgetOptionButton.d6) {                                
+                this.drawMenuOption(o, optionWidth, 0, optionWidth, menuHeight)                
+            } else if(o.button === WidgetOptionButton.d3 || o.button === WidgetOptionButton.d7) {                
+                this.drawMenuOption(o, optionWidth * 2, 0, optionWidth, menuHeight);                              
+            } else if(o.button === WidgetOptionButton.d4 || o.button === WidgetOptionButton.d8) {
+                this.drawMenuOption(o, optionWidth * 3, 0, optionWidth, menuHeight);                
+            }            
+        });        
+        // reset alignment
+        this.ctx.textAlign = 'start';
+        
+        this.ctx.fillStyle = origFillStyle;
+        this.ctx.strokeStyle = origStrokeStyle;        
+        this.ctx.font = ctxFont;
+    }    
+
+    private drawMenuOption(o: WidgetOption, x, y, w, h) {
+        if(!this.ctx) {
+            return; 
+
+        }
+        const origFont = this.ctx.font;
+        this.ctx.font = '12px sans-serif';
+        if(o.toggled) {
+            this.ctx.fillStyle = 'white';
+            this.ctx.fillRect(x, y, w, h);
+            this.ctx.fillStyle = 'black';
+            this.ctx.fillText(o.label, x + (w / 2), 15);
+            this.ctx.fillStyle = 'white';
+        } else {
+            this.ctx.strokeRect(x, y, w, h);
+            this.ctx.fillText(o.label, x + (w / 2), 15);
+        }
+        this.ctx.font = origFont;
+    }
+
+    clearScreen() {
+        if(this.ctx && this.canvas) {
+            const lastStyle = this.ctx.fillStyle;
+            this.ctx.fillStyle = 'black';
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.fill();
+            this.ctx.fillStyle = lastStyle;
+        }
     }
 }

@@ -1,11 +1,13 @@
 import { Canvas, CanvasRenderingContext2D } from 'canvas';
-import { Widget } from 'src/Widgets/widget';
+import { DisplayTarget } from 'src/Hardware/MK3Controller';
+import { Widget } from '../Widgets/Widget';
 
 export type DisplayOptions = {
     name: string;    
     height: number;
     width: number;
-    type: DisplayType;    
+    type: DisplayType;
+    displayTarget: DisplayTarget
 }
 
 export enum DisplayType {
@@ -32,7 +34,9 @@ export abstract class Display {
     cvs: Canvas;
     displayBuffer: ArrayBuffer;
 
-    widgets: Set<Widget> = new Set();
+    displayTarget: DisplayTarget;
+
+    widgets: Set<Widget<any>> = new Set();
 
     layers: UILayer[] = [];
 
@@ -60,7 +64,7 @@ export abstract class Display {
     constructor(options: DisplayOptions) {
         this.cvs = new Canvas(options.width, options.height);
         this.options = options;
-
+        this.displayTarget = options.displayTarget;
         this.displayBuffer = this.createDisplayBuffer();
     }
 
@@ -77,15 +81,14 @@ export abstract class Display {
     }
 
     draw(): void {
-        if(this.ctx && this._drawRoutine && this.shouldUpdate) {                    
+        if(this.ctx && this._drawRoutine && this.shouldUpdate) {         
+            this.clear();           
             this._drawRoutine(this.ctx);            
             this.shouldUpdate = false;
         }
     }
 
-    addWidget(w: Widget) {
-        console.log('Adding widget');
-        console.dir(w);
+    addWidget(w: Widget<unknown>) {        
         this.widgets.add(w);
     }
 
