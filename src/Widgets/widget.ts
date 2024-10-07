@@ -1,8 +1,10 @@
-import { Canvas, CanvasRenderingContext2D } from "canvas";
+import { Canvas, CanvasRenderingContext2D, Image } from "canvas";
 import { filter, Subscription } from "rxjs";
 import { EventBus, MPIEvent } from "../Core/EventBus";
 import { container } from "tsyringe";
 import { MK3Controller } from "../Hardware/MK3Controller";
+import { StorageController } from "../Core/StorageController";
+import * as zlib from 'zlib';
 
 export type WidgetEvent = MPIEvent & {
     data: WidgetData
@@ -25,6 +27,7 @@ export type WidgetOptions = {
     canvas?: Canvas,    
     children?: Widget<any>[],
     options?: WidgetOption[],
+    discriminator: string;
     targetDisplay?: 'left' | 'right' | 'main'
 }
 
@@ -35,9 +38,14 @@ export type WidgetOption = {
     button: WidgetOptionButton
 }
 
+export type UILayer = {
+    index: number;
+    data: Image
+}
+
 export abstract class Widget<T> implements IWidget {    
 
-    discriminator: string = 'WIDGET';
+    discriminator: string;
     canvas?: Canvas;
     ctx?: CanvasRenderingContext2D;    
     children?: Widget<any>[];
@@ -45,6 +53,8 @@ export abstract class Widget<T> implements IWidget {
     options?: WidgetOption[];
     optionSubscriptions?: Subscription[];
     targetDisplay?: 'left' | 'right' | 'main';        
+    uiAsset: Set<UILayer> = new Set();
+    storage: StorageController = container.resolve(StorageController);
 
     drawLayout?: (ctx: CanvasRenderingContext2D) => void;
 
@@ -57,14 +67,24 @@ export abstract class Widget<T> implements IWidget {
     controller: MK3Controller = container.resolve(MK3Controller);
 
     constructor(widgetOpts: WidgetOptions) {                
-        this.options = widgetOpts.options;
+        this.options = widgetOpts.options;        
+        this.discriminator = widgetOpts.discriminator;        
         this.children = widgetOpts.children;        
         this.canvas = widgetOpts.canvas ?? new Canvas(480, 272, 'image');    
         this.targetDisplay = widgetOpts.targetDisplay;
         this.ctx = this.canvas?.getContext("2d");
+
+        this.checkForUIAsset();
     }
 
     async renderWidget() {
+
+        if(this.uiAsset.size > 0) {
+            [...this.uiAsset].sort((a,b) => b.index - a.index).forEach(layer => {
+                this.ctx?.drawImage(layer.data, 0, 0);
+            });
+        }
+
         if(this.options?.length) {            
             this.drawMenu();
         }
@@ -122,13 +142,6 @@ export abstract class Widget<T> implements IWidget {
         this.ctx.font = ctxFont;                
     }    
 
-    private filterOptionEventState(name: string, targetName: string, targetState?: 'pressed' | 'released'): boolean {
-        console.log('filtering for', name, 'to', targetName, 'with state', targetState);
-        return targetState !== undefined ? 
-            name.indexOf(targetName) === 0 && name.indexOf(targetState) > -1 :
-            name.indexOf(targetName) === 0;
-    }
-
     private drawMenuOption(o: WidgetOption, x, y, w, h) {
         if(!this.ctx) {
             return; 
@@ -148,6 +161,12 @@ export abstract class Widget<T> implements IWidget {
         }
         this.ctx.font = origFont;
     }
+
+    private async checkForUIAsset() {
+        const assets = await this.storage.loadWidgetUI('widgets/' + this.discriminator);
+        console.log('Assets?', assets);
+        assets.forEach(a => this.uiAsset.add(a));
+    }    
 
     clearScreen() {
         if(this.ctx && this.canvas) {

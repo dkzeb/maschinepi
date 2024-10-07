@@ -4,8 +4,12 @@ import * as os from 'os';
 import * as pkg from '../../package.json';
 
 export class SysInfoWidget extends Widget<SysInfoWidget> {
-    discriminator: string = 'SysInfoWidget';
-
+    static readonly discriminator: string = 'SysInfoWidget';
+    constructor() {
+        super({
+            discriminator: SysInfoWidget.discriminator
+        })
+    }
     
     async render(): Promise<string> {
         if(this.canvas && this.ctx) {                                    

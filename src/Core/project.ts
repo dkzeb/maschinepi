@@ -5,8 +5,11 @@ export class Project {
 
     private _name: string = 'untitled';
     private _bpm: number = 120;
-
     private _plugins: Widget[] = [];
+
+    public get name(): string {
+        return this.name;
+    }
 
     constructor(name?: string, bpm?: number) {
         if(name) {
@@ -16,14 +19,7 @@ export class Project {
         if(bpm) {
             this._bpm = bpm;
         }
-    }
-
-    loadProject() {
-        // load default widgets here
-        // playlist
-        // mixer
-        // sequencer
-    }
+    }    
 
     static Parse(pdto: any): Project {
         return new Project(pdto.name, pdto.bpm);

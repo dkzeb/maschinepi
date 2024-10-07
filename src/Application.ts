@@ -29,7 +29,7 @@ class Application {
 
         // set state for init env.
         StateController.currentState.isDevMode = process.env.MPI_DEVMODE === 'true' ?? false;
-        StateController.currentState.dataDirectory = process.env.DATA_DIR ?? '';
+        StateController.currentState.dataDirectory = process.env.MPI_DATA_DIR ?? '';
 
         // Clear out the system console (for logging purposes)
         console.clear();

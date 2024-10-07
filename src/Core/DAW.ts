@@ -1,5 +1,4 @@
 import { container, singleton } from "tsyringe";
-import { Project } from "./project";
 import { UIController } from "../UI/UIController";
 import { EventBus } from "./EventBus";
 import * as path from 'path';
@@ -10,23 +9,15 @@ import { SysInfoWidget } from "../Widgets/SysInfoWidget";
 
 @singleton()
 export class DAW {
-    currentProject!: Project;
     UI: UIController = container.resolve(UIController);
     eventBus: EventBus = container.resolve(EventBus);
     MK3: MK3Controller = container.resolve(MK3Controller);
 
     constructor() {
-        this.setProject(new Project());        
-
         // register default widgets
-        this.UI.registerWidget(new StartupWidget({}));
+        this.UI.registerWidget(new StartupWidget());
 
-        this.UI.registerWidget(new SysInfoWidget({}));
-    }
-
-    setProject(project: Project) {
-        this.currentProject = project;
-        this.currentProject.loadProject();        
+        this.UI.registerWidget(new SysInfoWidget());
     }    
 
     async init() {
