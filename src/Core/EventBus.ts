@@ -19,9 +19,9 @@ export class EventBus {
         this.events = new Subject();
     }
 
-    processEvent(ev: MPIEvent) {
-        this.eventHistory.push(ev);
-        this.events.next(ev);
+    processEvent(ev: MPIEvent) {        
+        this.eventHistory.push(ev);        
+        this.events.next(ev);        
     }
 
     getByType(type: EventType): MPIEvent[] {

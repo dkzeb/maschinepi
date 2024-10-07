@@ -3,7 +3,6 @@ class HalfGainer extends AudioWorkletProcessor {
     constructor() {
         super();
         this.port.onmessage = this.handleMessage.bind(this);
-        console.log('processor?', AudioWorkletProcessor);
     }
 
     handleMessage(event) {

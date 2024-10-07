@@ -55,7 +55,7 @@ export class DevDisplay extends Display {
     }
 
     private writeToLocalFile() {
-        const b64 = this.cvs.toDataURL().split("base64,")[1];
+        const b64 = this.cvs.toDataURL("image/jpeg").split("base64,")[1];
         fs.writeFileSync(path.join(process.cwd(), '.maschinepi', 'devdisplays', this.destination), b64);        
     }
 

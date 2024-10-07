@@ -7,6 +7,10 @@ import { DevDisplay } from './devDisplay';
 import { Widget } from '../Widgets/Widget';
 import { registerFont } from 'canvas';
 
+process.env.PANGOCAIRO_BACKEND = 'fontconfig';
+// register graphik font
+registerFont(require('@canvas-fonts/impact'), { family: "Impact" });        
+
 // FPS   
 const fps = 12;
 
@@ -22,8 +26,8 @@ export class UIController {
     widgets: Set<Widget<unknown>> = new Set<Widget<unknown>>();            
 
     private activeDisplays(target: DisplayTarget): Display[] 
-    {
-        const activeDisplays = [...this.displays].filter(d => {            
+    {        
+        const activeDisplays = [...this.displays].filter(d => {                     
             return d.displayTarget === target;
         });                
         return activeDisplays;
@@ -36,18 +40,10 @@ export class UIController {
     }
 
     registerWidget(widget: Widget<unknown>) {
-        console.log('Registering Widget', widget.discriminator);
+        console.info('Registering Widget', widget.discriminator);
         this.widgets.add(widget);
     }
-
-    updateDisplays(): void {
-        this.displays.forEach(d => {    
-            console.log('drawing update for', d.options.name)   
-            d.shouldUpdate = true;     
-            d.draw();
-        });
-    }
-
+    
     updateSide(target: DisplayTarget) {
         this.displays.forEach(d => {
             if(d.displayTarget === target) {
@@ -57,7 +53,7 @@ export class UIController {
     }
 
     sendImage(fileData: any, target: DisplayTarget) {             
-        const displays = this.activeDisplays(target);                   
+        const displays = this.activeDisplays(target);        
         displays.forEach(d => {                        
             d.sendImage(fileData);
         })
@@ -75,7 +71,7 @@ export class UIController {
 
         const widgetImgData = await widget.renderWidget();                
         const displays = this.activeDisplays(widgetEvent.targetDisplay);            
-        for(let d of displays) {
+        for(let d of displays) {            
             d.sendImage(widgetImgData)
         }        
     }
@@ -87,12 +83,7 @@ export class UIController {
         });
     }
 
-    constructor() {                               
-        
-        process.env.PANGOCAIRO_BACKEND = 'fontconfig';
-        // register graphik font
-        registerFont(require('@canvas-fonts/impact'), { family: "Impact" });        
-        
+    constructor() {                                                       
         this.eventbus.events.subscribe((ev) => {
             if(ev.type === 'UIEvent') {         
                 
@@ -114,9 +105,7 @@ export class UIController {
                                 
                 if(ev.data.side) {
                     this.updateSide(ev.data.side);                
-                } else {
-                    this.updateDisplays();
-                }                                
+                }
             }
         });
     }
@@ -125,7 +114,7 @@ export class UIController {
         // create dev display
         this.registerDisplay(new DevDisplay("DevLeft", DisplayTarget.Left, "DEV1.txt"));
         this.registerDisplay(new DevDisplay("DevRight", DisplayTarget.Right, "DEV2.txt"));        
-        console.log('created dev displays');
+        console.info("Created Dev Displays");
     }
 
 }

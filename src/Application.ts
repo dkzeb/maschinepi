@@ -36,27 +36,25 @@ class Application {
         console.info("Starting MaschinePI ....");
     
         try {
-            const mk3 = container.resolve(MK3Controller);                        
+            const mk3 = container.resolve(MK3Controller);                                    
+            await mk3.init();            
             StateController.mk3 = mk3;
             StateController.currentState.hardwareConnected = true;            
-        } catch (e) {
-            console.warn('Could not INIT MK3');
+        } catch (e) {            
             StateController.currentState.hardwareConnected = false;
         }
 
         await audioEngine.initAudioEngine();
         const UI = container.resolve(UIController);
-        if(StateController.currentState.isDevMode) {
-            
-            UI.createDevDisplays();        
-                        
+        if(StateController.currentState.isDevMode) {            
+            UI.createDevDisplays();                                
             console.info('Dev Info:');
             const filteredEnvs = {};
             Object.entries(process.env).forEach((value) => {
                 if(value[0].indexOf('MPI_') === 0) {
                     filteredEnvs[value[0]] = value[1];
                 }
-            } )
+            })
             console.dir(filteredEnvs);
         }
         

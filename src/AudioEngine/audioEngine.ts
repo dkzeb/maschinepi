@@ -12,7 +12,7 @@ class AudioEngine {
 
     public static get instance(): AudioEngine {
         if(!this._instance)
-            console.log('creating new AudioEngine');
+            console.info("Creating AudioEngine");
             this._instance = new AudioEngine();
             
         return this._instance;
@@ -29,8 +29,6 @@ class AudioEngine {
     public async initAudioEngine() {                
         try {
             this.mixer = await container.resolve(Mixer).initMixer(this.getContext());
-
-
             /*
             // Load the AudioWorklet processor script
             await this.audioContext.audioWorklet.addModule('worklets/halfer-worklet.js');            
@@ -40,7 +38,7 @@ class AudioEngine {
             // Connect the worklet to the gain node
             this.workletNode.connect(this.gainNode);*/
 
-            console.log("AudioWorklet loaded and connected successfully");
+            console.info("AudioWorklet loaded and connected successfully");
         } catch (error) {
             console.error("Failed to load AudioWorklet", error);
         }        

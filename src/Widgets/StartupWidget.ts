@@ -1,6 +1,5 @@
 import { Canvas, CanvasRenderingContext2D } from "canvas";
 import { Widget, WidgetOptionButton, WidgetOptions } from "./Widget";
-import { DisplayTarget } from "../Hardware/MK3Controller";
 
 export class StartupWidget extends Widget<unknown> {    
     discriminator: string = 'StartupWidget';
@@ -31,13 +30,8 @@ export class StartupWidget extends Widget<unknown> {
     
     async render(): Promise<string> {                        
         const hasMenu = this.options && this.options.length > 0;
-
-        const availableHeight = this.canvas!.height - (hasMenu ? 25 : 0);
-        console.log('Widget has', availableHeight, 'available height area');
-
-        // render the widgets ui based on the current 
-        
-        const imgData = this.canvas?.toDataURL() ?? "NO_DATA";
+        // render the widgets ui based on the current         
+        const imgData = this.canvas?.toDataURL("image/jpeg") ?? "NO_DATA";
         if(imgData === 'NO_DATA') {
             throw new Error("WIDGET PRODUCED NO IMG DATA");
         }

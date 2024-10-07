@@ -16,7 +16,7 @@ export class EventBus {
     eventHistory: MPIEvent[] = [];
 
     constructor() {
-        this.events = new Subject();
+        this.events = new Subject();        
     }
 
     processEvent(ev: MPIEvent) {

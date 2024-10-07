@@ -57,6 +57,9 @@ export class MK3GraphicsController {
     }
 
     writeText(text: string, display: Mk3Display, font?: string) {
+
+        console.log('writetext hw called');
+
         this.ctx.fillStyle = 'black';
         this.ctx.fillRect(0, 0, 480, 272);
         this.ctx.moveTo(10, 10);

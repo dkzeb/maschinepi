@@ -1,7 +1,8 @@
 import { Canvas, CanvasRenderingContext2D } from "canvas";
-import { filter } from "rxjs";
+import { filter, Subscription } from "rxjs";
 import { EventBus, MPIEvent } from "../Core/EventBus";
 import { container } from "tsyringe";
+import { MK3Controller } from "../Hardware/MK3Controller";
 
 export type WidgetEvent = MPIEvent & {
     data: WidgetData
@@ -21,8 +22,7 @@ export enum WidgetOptionButton {
 }
 
 export type WidgetOptions = {
-    canvas?: Canvas,
-    eventTags: string[],    
+    canvas?: Canvas,    
     children?: Widget<any>[],
     options?: WidgetOption[],
     targetDisplay?: 'left' | 'right' | 'main'
@@ -43,24 +43,20 @@ export abstract class Widget<T> implements IWidget {
     children?: Widget<any>[];
     pages?: any[] = [];
     options?: WidgetOption[];
-    targetDisplay?: 'left' | 'right' | 'main'
+    optionSubscriptions?: Subscription[];
+    targetDisplay?: 'left' | 'right' | 'main';        
 
     drawLayout?: (ctx: CanvasRenderingContext2D) => void;
 
     getImageData() {
         return this.renderWidget();        
     }
-
+    
     abstract render(): Promise<string>;
     ebus: EventBus = container.resolve(EventBus);
+    controller: MK3Controller = container.resolve(MK3Controller);
 
-    constructor(widgetOpts: WidgetOptions) {
-        widgetOpts.eventTags.forEach(etag => {
-            this.ebus.events.pipe(filter(ev => ev.type === etag)).subscribe(ev => {            
-                console.log('Widget Event Caught', ev);
-            });
-        });
-        
+    constructor(widgetOpts: WidgetOptions) {                
         this.options = widgetOpts.options;
         this.children = widgetOpts.children;        
         this.canvas = widgetOpts.canvas ?? new Canvas(480, 272, 'image');    
@@ -69,7 +65,7 @@ export abstract class Widget<T> implements IWidget {
     }
 
     async renderWidget() {
-        if(this.options?.length) {
+        if(this.options?.length) {            
             this.drawMenu();
         }
         return await this.render();
@@ -78,7 +74,7 @@ export abstract class Widget<T> implements IWidget {
     drawMenu() {        
         if(!this.ctx || !this.options || this.options.length === 0) {
             return;
-        }
+        }        
         const origFillStyle = this.ctx.fillStyle;
         const origStrokeStyle = this.ctx.strokeStyle;
         const ctxFont = this.ctx.font;
@@ -90,6 +86,7 @@ export abstract class Widget<T> implements IWidget {
         const menuHeight = 20;
         this.ctx.strokeStyle = 'white';
         this.ctx.fillStyle = 'white';
+
         this.options.forEach(o => {                        
 
             if(o.button === WidgetOptionButton.d1 || o.button === WidgetOptionButton.d5) {
@@ -100,15 +97,37 @@ export abstract class Widget<T> implements IWidget {
                 this.drawMenuOption(o, optionWidth * 2, 0, optionWidth, menuHeight);                              
             } else if(o.button === WidgetOptionButton.d4 || o.button === WidgetOptionButton.d8) {
                 this.drawMenuOption(o, optionWidth * 3, 0, optionWidth, menuHeight);                
-            }            
+            }       
+            
+            // hook up the option event handler
+            this.ebus.events.pipe(filter(ev => ev.type === 'ButtonInput' && ev.name?.indexOf(WidgetOptionButton[o.button]) === 0)).subscribe((ev) => {
+                if(ev.name!.indexOf('pressed') > -1) {
+                    o.handler();
+                    o.toggled = true;
+                } else {
+                    o.toggled = false;
+                }
+            });
+
+            // set the widget option state on the controller
+            this.controller.setLED(WidgetOptionButton[o.button], 500);
+            
+            
         });        
         // reset alignment
         this.ctx.textAlign = 'start';
         
         this.ctx.fillStyle = origFillStyle;
         this.ctx.strokeStyle = origStrokeStyle;        
-        this.ctx.font = ctxFont;
+        this.ctx.font = ctxFont;                
     }    
+
+    private filterOptionEventState(name: string, targetName: string, targetState?: 'pressed' | 'released'): boolean {
+        console.log('filtering for', name, 'to', targetName, 'with state', targetState);
+        return targetState !== undefined ? 
+            name.indexOf(targetName) === 0 && name.indexOf(targetState) > -1 :
+            name.indexOf(targetName) === 0;
+    }
 
     private drawMenuOption(o: WidgetOption, x, y, w, h) {
         if(!this.ctx) {

@@ -59,7 +59,7 @@ export class SysInfoWidget extends Widget<SysInfoWidget> {
             this.ctx.fillStyle = fillStyle;            
             
 */
-            return this.canvas.toDataURL();
+            return this.canvas.toDataURL("image/jpeg");
         } else {
             throw Error("SysInfoWidget has no CVS/CTX");
         }

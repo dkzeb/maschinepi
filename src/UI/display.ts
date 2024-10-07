@@ -63,6 +63,7 @@ export abstract class Display {
 
     constructor(options: DisplayOptions) {
         this.cvs = new Canvas(options.width, options.height);
+        this.ctx = this.cvs.getContext("2d");
         this.options = options;
         this.displayTarget = options.displayTarget;
         this.displayBuffer = this.createDisplayBuffer();
