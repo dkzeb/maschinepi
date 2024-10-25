@@ -1,9 +1,13 @@
 import { Canvas, CanvasRenderingContext2D } from "canvas";
 import { Widget, WidgetOptionButton } from "./Widget";
 import { Project } from "../Core/Project";
+import { container } from "tsyringe";
+import { WidgetManager } from "../Core/WidgetManager";
+import { DisplayTarget } from "../Hardware/MK3Controller";
 
-export class StartupWidget extends Widget<unknown> {    
+export class StartupWidget extends Widget<StartupWidget> {    
     static readonly discriminator: string = 'StartupWidget';
+    widgetManager = container.resolve(WidgetManager);
     currentPageIndex = 0;        
 
     options = [
@@ -27,6 +31,22 @@ export class StartupWidget extends Widget<unknown> {
                 console.log('Load Project Was Pressed!');
             }
         },
+        {
+            button: this.targetDisplay === 'right' ? WidgetOptionButton.d8 : WidgetOptionButton.d4,
+            label: 'Testing',
+            handler: () => {
+                console.log('We are going to test!');
+                this.ebus.processEvent({
+                    type: 'WidgetEvent',
+                    data: {
+                        targetDisplay: DisplayTarget.Right,
+                        type: 'openWidget',
+                        widgetName: 'TestingWidget'
+                    }
+                })
+                
+            }
+        }
     ]
 
     constructor() {

@@ -1,7 +1,7 @@
 import { MaschineMk3, createNodeHidAdapter, createNodeUsbAdapter } from "ni-controllers-lib";
 import * as jpeg from 'jpeg-js';
 import { UIController } from "../UI/UIController";
-import { container, injectable, singleton } from "tsyringe";
+import { container, singleton } from "tsyringe";
 import { Display, DisplayType, TextOptions } from "../UI/display";
 import { Canvas, loadImage, registerFont } from "canvas";
 import { EventBus } from "../Core/EventBus";
@@ -62,24 +62,24 @@ export class HardwareDisplay extends Display {
 
     sendImage(imgData: Buffer, display: DisplayTarget, skipParse?: boolean)
     sendImage(imgData: Uint8Array, display: DisplayTarget)    
-    sendImage(imgData: Uint8Array | Buffer, display: DisplayTarget, skipParse = false) {
-
+    sendImage(imgData: Uint8Array | Buffer, display: DisplayTarget, skipParse = false) {        
         if(typeof imgData === 'string') {            
             loadImage(imgData).then((img) => {
                 this.ctx?.drawImage(img, 0, 0);
-                this.pushCanvas();
+                return this.pushCanvas();
             });
-        }
+        }                
         
         if(Buffer.isBuffer(imgData) && !skipParse) {
             const decoded = jpeg.decode(imgData, { useTArray: true, formatAsRGBA: false });
             imgData = decoded.data;
-        }
-        this.controller.displays!.paintDisplay(display, imgData, this.displayBuffer);
+        }                
+        this.controller.displays!.paintDisplay(this.displayTarget, imgData, this.displayBuffer);
     }    
 
     pushCanvas(display?: DisplayTarget, canvas?: Canvas) {
         if(!display) {
+            console.log('no display target, setting to:', this.options.displayTarget)
             display = this.options.displayTarget;
         }
         if(!canvas) {
@@ -97,10 +97,10 @@ export class HardwareDisplay extends Display {
 }
 
 @singleton()
-@injectable()
 export class MK3Controller {
 
     hardware: MaschineMk3;
+    connected: boolean = false;
     ebus: EventBus = container.resolve(EventBus);
     UI: UIController = container.resolve(UIController);
     displays: {
@@ -121,6 +121,7 @@ export class MK3Controller {
 
     async init() {        
         await this.hardware.init();        
+        this.connected = true;
         if(this.hardware.displays) {
             // create the two display instances
             this.displays.left = new HardwareDisplay("MK3Left", DisplayTarget.Left, this.hardware);
@@ -137,6 +138,7 @@ export class MK3Controller {
     }
 
     setLED(which: string, strenght: number = 63, off?: boolean) {
+        if(!this.connected) return;
 
         const led = this.hardware.leds[which];        
         if(off) {
@@ -155,6 +157,8 @@ export class MK3Controller {
         // 13 14 15 16
 
         
+        if(!this.connected) return;
+
         this.hardware.indexed_leds['p6'].setColorByNumberHelper(6, false, true);        
         setTimeout(() => {            
             this.hardware.indexed_leds['p7'].setColorByNumberHelper(6, false, true);        
@@ -195,6 +199,8 @@ export class MK3Controller {
     }
 
     allPadsOff() {        
+        if(!this.connected) return;
+
         this.hardware.indexed_leds['p1'].setOff();
         this.hardware.indexed_leds['p2'].setOff();
         this.hardware.indexed_leds['p3'].setOff();
@@ -215,6 +221,8 @@ export class MK3Controller {
 
     
     allLEDsOff() {
+        if(!this.connected) return;
+
         Object.keys(this.hardware.leds).forEach(k => {
             this.hardware.setLED(k, 0);
         });
@@ -223,9 +231,10 @@ export class MK3Controller {
         });        
     }
 
-    setupEvents() {                
+   
+    setupEvents() {        
         Object.keys(this.hardware.buttons).forEach(key => {                
-            this.hardware?.on(key +':pressed', (ev?: any) => {
+            this.hardware?.on(key +':pressed', (ev?: any) => {                                
                 if(ev) {
                     this.ebus.processEvent({
                         type: 'PadInput',
@@ -241,8 +250,8 @@ export class MK3Controller {
                     });
                 }
             });
-            this.hardware?.on(key +':released', (ev?: any) => {
-                if(ev) {
+            this.hardware?.on(key +':released', (ev?: any) => {                
+                if(ev !== undefined && ev !== null) {
                     this.ebus.processEvent({
                         type: 'PadInput',
                         name: key+':released',
@@ -259,7 +268,7 @@ export class MK3Controller {
             });
         });
         Object.keys(this.hardware.knobs).forEach(key => {
-            this.hardware?.on(key+':changed', (v) => {
+            this.hardware?.on(key+':changed', (v) => {                
                 this.ebus.processEvent({
                     type: 'KnobInput',
                     name: key,
@@ -268,6 +277,7 @@ export class MK3Controller {
             });
         });
         this.hardware.on('stepper:step', (dir) => {
+            console.log('stepper ev', dir);
             this.ebus.processEvent({
                 type: 'KnobInput',
                 name: 'navStep',

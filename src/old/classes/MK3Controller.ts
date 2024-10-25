@@ -1,7 +1,7 @@
 import { MaschineMk3, createNodeHidAdapter, createNodeUsbAdapter } from "ni-controllers-lib";
 import * as jpeg from 'jpeg-js';
 import { Canvas, CanvasRenderingContext2D, registerFont } from "canvas";
-import * as pkg from '../../package.json';
+import * as pkg from '../../../package.json';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { container, singleton } from "tsyringe";
@@ -374,7 +374,8 @@ export class MK3Controller {
 
     setupEvents() {        
         Object.keys(this.mk3.buttons).forEach(key => {                
-            this.mk3?.on(key +':pressed', (ev?: any) => {                
+            this.mk3?.on(key +':pressed', (ev?: any) => {         
+                console.log('key press event', ev);       
                 if(ev) {
                     this.ebus.processEvent({
                         type: 'PadInput',
@@ -409,6 +410,7 @@ export class MK3Controller {
         });
         Object.keys(this.mk3.knobs).forEach(key => {
             this.mk3?.on(key+':changed', (v) => {
+                console.log('knob event', key, v);
                 this.ebus.processEvent({
                     type: 'KnobInput',
                     name: key,
@@ -417,6 +419,7 @@ export class MK3Controller {
             });
         });
         this.mk3.on('stepper:step', (dir) => {
+            console.log('stepper event', dir);
             this.ebus.processEvent({
                 type: 'KnobInput',
                 name: 'navStep',

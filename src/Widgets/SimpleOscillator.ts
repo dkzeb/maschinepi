@@ -10,6 +10,8 @@ class SimpleOscillator implements Instrument {
     private channel!: Channel;
     private audioCtx!: AudioContext;
 
+    public isStarted: boolean = false;
+
     constructor() {                
     }
 
@@ -27,12 +29,18 @@ class SimpleOscillator implements Instrument {
         this.channel.connectInput(this.oscNode);
     }
 
+    public setFrequency(freq: number) {
+        this.oscNode.frequency.setValueAtTime(freq, this.audioCtx.currentTime);
+    }
+
     public start() {
         this.oscNode.start();
+        this.isStarted = true;
     }
 
     public stop() {
         this.oscNode.stop();
+        this.isStarted = false;
     }
 
     public setChannelVolume(volume: number) {     

@@ -1,4 +1,4 @@
-import { AudioContext, GainNode, AudioWorkletNode } from "node-web-audio-api";
+import { AudioContext, GainNode } from "node-web-audio-api";
 import Mixer from "./mixer";
 import { container } from "tsyringe";
 
@@ -7,7 +7,7 @@ class AudioEngine {
     private static _instance?: AudioEngine;
     private audioContext: AudioContext;
     private gainNode: GainNode;
-    private workletNode: AudioWorkletNode;
+    //private workletNode: AudioWorkletNode;
     private mixer?: Mixer;
 
     public static get instance(): AudioEngine {
@@ -24,6 +24,7 @@ class AudioEngine {
             latencyHint: 'interactive',
             sampleRate: 44100, // Set your preferred sample rate
         });                
+        this.gainNode = this.audioContext.createGain();
     }    
 
     public async initAudioEngine() {                

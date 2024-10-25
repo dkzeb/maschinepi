@@ -1,11 +1,20 @@
+import { Worker, workerData } from 'node:worker_threads';
+
 import * as fs from 'fs';
 import { container, injectable, singleton } from "tsyringe";
 import { EventBus, MPIEvent } from "../Core/EventBus";
-import { DisplayTarget } from "../Hardware/MK3Controller";
+import { DisplayTarget, MK3Controller } from "../Hardware/MK3Controller";
 import { Display, TextOptions } from "./display";
 import { DevDisplay } from './devDisplay';
 import { Widget } from '../Widgets/Widget';
 import { registerFont } from 'canvas';
+
+import * as jpeg from 'jpeg-js';
+
+import { Application, Assets, Container, Text, TextStyle } from '@pixi/node';
+import path from 'node:path';
+import { UITools } from './UITools';
+import { StateController } from 'src/Core/StateController';
 
 process.env.PANGOCAIRO_BACKEND = 'fontconfig';
 // register graphik font
@@ -21,9 +30,8 @@ export type UICommand = MPIEvent & {
 @singleton()
 @injectable()
 export class UIController {
-    eventbus: EventBus = container.resolve(EventBus);
-    displays: Set<Display> = new Set<Display>();        
-    widgets: Set<Widget<unknown>> = new Set<Widget<unknown>>();            
+    eventbus: EventBus = container.resolve(EventBus);    
+    displays: Set<Display> = new Set<Display>();    
 
     private activeDisplays(target: DisplayTarget): Display[] 
     {        
@@ -37,12 +45,7 @@ export class UIController {
         // clear out display     
         display.clear();
         this.displays.add(display);   
-    }
-
-    registerWidget(widget: Widget<unknown>) {
-        console.info('Registering Widget', widget.discriminator);
-        this.widgets.add(widget);
-    }
+    }    
     
     updateSide(target: DisplayTarget) {
         this.displays.forEach(d => {
@@ -55,24 +58,15 @@ export class UIController {
     sendImage(fileData: any, target: DisplayTarget) {             
         const displays = this.activeDisplays(target);        
         displays.forEach(d => {                        
-            d.sendImage(fileData);
+            d.sendImage(fileData, target);
         })
     }
 
-    async sendWidget(widgetEvent: {
-        widgetName: string,
-        targetDisplay: DisplayTarget        
-    }) {        
-        const widget = [...this.widgets].find(w => w.discriminator === widgetEvent.widgetName);
-        if(!widget) {
-            console.error("NO WIDGET ", widgetEvent.widgetName);
-            throw new Error("NO_WIDGET_WITH_DISCRIMINATOR");
-        }
-
+    async sendWidget(widget: Widget<unknown>, targetDisplay: DisplayTarget) {
         const widgetImgData = await widget.renderWidget();                
-        const displays = this.activeDisplays(widgetEvent.targetDisplay);            
+        const displays = this.activeDisplays(targetDisplay);            
         for(let d of displays) {            
-            d.sendImage(widgetImgData)
+            d.sendImage(widgetImgData, d.displayTarget)
         }        
     }
 
@@ -85,19 +79,15 @@ export class UIController {
 
     constructor() {                                                       
         this.eventbus.events.subscribe((ev) => {
-            if(ev.type === 'UIEvent') {         
-                
-                if(ev.data.type === 'openWidget') {                                        
-                    this.sendWidget(ev.data);
-                }
-
+            if(ev.type === 'UIEvent') {                                         
                 if(ev.data.type === 'text') {                    
                     const data = ev.data as TextOptions;                    
                     this.sendText(data, ev.data.targetDisplay)
                     return;
                 }
                 
-                if(ev.data.type === 'image') {                    
+                if(ev.data.type === 'image') {         
+                    console.log('Image Requested', ev.data);
                     const fileData = fs.readFileSync(ev.data.path);                    
                     this.sendImage(fileData, ev.data.targetDisplay);                    
                     return;

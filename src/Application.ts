@@ -8,8 +8,13 @@ import { DAW } from './Core/DAW';
 import { UIController } from './UI/UIController';
 import { MK3Controller } from './Hardware/MK3Controller';
 import { StateController } from './Core/StateController';
+import { DevController } from './Hardware/DevController';
+import { EventBus } from './Core/EventBus';
+import { filter } from 'rxjs';
 
 class Application {
+
+    static ebus: EventBus = container.resolve(EventBus);
 
     /**
      * * Core Application Loop (most outer layer) * * * * * * * * * * * * * * * * * * *
@@ -47,7 +52,8 @@ class Application {
         await audioEngine.initAudioEngine();
         const UI = container.resolve(UIController);
         if(StateController.currentState.isDevMode) {            
-            UI.createDevDisplays();                                
+            UI.createDevDisplays();             
+            const devCtrl = container.resolve(DevController);        
             console.info('Dev Info:');
             const filteredEnvs = {};
             Object.entries(process.env).forEach((value) => {
@@ -57,6 +63,13 @@ class Application {
             })
             console.dir(filteredEnvs);
         }
+
+        this.ebus.events.pipe(filter(e => e.type === 'ApplicationEvent')).subscribe((ev) => {
+            if(ev.data.command === 'QUIT') {
+                console.info("MASCHINE PI IS QUITING... PLEASE TURN OFF THE MASCHINE TO EXIT");
+                process.exit(0);                
+            }
+        })
         
         const daw = await container.resolve(DAW);
         await daw.init();

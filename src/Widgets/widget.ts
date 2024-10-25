@@ -12,11 +12,12 @@ export type WidgetEvent = MPIEvent & {
 
 type WidgetData = any;
 
-interface IWidget {  
+export interface Widget<T> {  
   render(): Promise<string> | string;  
-  add?(widget: IWidget): void;
-  remove?(widget: IWidget): void;
-  getChild?(index: number): IWidget | undefined;
+  add?(widget: Widget<T>): void;
+  remove?(widget: Widget<T>): void;
+  getChild?(index: number): Widget<T> | undefined;
+  activate?(): void;
 };
 
 export enum WidgetOptionButton {
@@ -43,7 +44,7 @@ export type UILayer = {
     data: Image
 }
 
-export abstract class Widget<T> implements IWidget {    
+export abstract class Widget<T> {    
 
     discriminator: string;
     canvas?: Canvas;
@@ -52,6 +53,7 @@ export abstract class Widget<T> implements IWidget {
     pages?: any[] = [];
     options?: WidgetOption[];
     optionSubscriptions?: Subscription[];
+    widgetSubscriptions: Subscription[] = [];
     targetDisplay?: 'left' | 'right' | 'main';        
     uiAsset: Set<UILayer> = new Set();
     storage: StorageController = container.resolve(StorageController);
@@ -61,8 +63,7 @@ export abstract class Widget<T> implements IWidget {
     getImageData() {
         return this.renderWidget();        
     }
-    
-    abstract render(): Promise<string>;
+        
     ebus: EventBus = container.resolve(EventBus);
     controller: MK3Controller = container.resolve(MK3Controller);
 
@@ -176,5 +177,11 @@ export abstract class Widget<T> implements IWidget {
             this.ctx.fill();
             this.ctx.fillStyle = lastStyle;
         }
+    }    
+    
+    deactivate(): void {
+        this.widgetSubscriptions.forEach(s => {
+            s.unsubscribe();
+        });
     }
 }

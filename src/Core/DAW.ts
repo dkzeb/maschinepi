@@ -6,28 +6,32 @@ import * as pkg from '../../package.json';
 import { DisplayTarget, MK3Controller } from "../Hardware/MK3Controller";
 import { StartupWidget } from "../Widgets/StartupWidget";
 import { SysInfoWidget } from "../Widgets/SysInfoWidget";
+import { StateController } from "./StateController";
+import { WidgetManager } from "./WidgetManager";
+import { TestingWidget } from "../Widgets/TestingWidget";
 
 @singleton()
 export class DAW {
     UI: UIController = container.resolve(UIController);
+    widgetManager: WidgetManager = container.resolve(WidgetManager);
     eventBus: EventBus = container.resolve(EventBus);
     MK3: MK3Controller = container.resolve(MK3Controller);
 
     constructor() {
         // register default widgets
-        this.UI.registerWidget(new StartupWidget());
-
-        this.UI.registerWidget(new SysInfoWidget());
+        this.widgetManager.registerWidget(new StartupWidget());
+        this.widgetManager.registerWidget(new SysInfoWidget());
+        this.widgetManager.registerWidget(new TestingWidget());
     }    
 
     async init() {
         this.showBootscreen();    
-
+        
         this.MK3.padIntro();
         
         setTimeout(() => {
             this.eventBus.processEvent({
-                type: 'UIEvent',
+                type: 'WidgetEvent',
                 data: {
                     targetDisplay: DisplayTarget.Left,
                     type: 'openWidget',
@@ -36,7 +40,7 @@ export class DAW {
             });
 
             this.eventBus.processEvent({
-                type: 'UIEvent',
+                type: 'WidgetEvent',
                 data: {
                     targetDisplay: DisplayTarget.Right,
                     type: 'openWidget',

@@ -69,7 +69,9 @@ export abstract class Display {
         this.displayBuffer = this.createDisplayBuffer();
     }
 
-    abstract sendImage(...args: any[]);
+    abstract sendImage(imgData: Buffer, display: DisplayTarget, skipParse?: boolean)
+    abstract sendImage(imgData: Uint8Array, display: DisplayTarget)    
+    abstract sendImage(imgData: Uint8Array | Buffer | string, display: DisplayTarget);      
 
     abstract sendText(textOpts: TextOptions);
 
