@@ -19,10 +19,11 @@ export type WidgetKnob = {
 
 export type PixiWidgetOptions = {
     name: string;
-    dims: Dims,
+    dims?: Dims,
     options?: WidgetOption[],
     knobs?: WidgetKnob[],
-    themeBg?: boolean
+    themeBg?: boolean,
+    modal?: boolean
 }
 
 export class PixiWidget {
@@ -42,6 +43,13 @@ export class PixiWidget {
 
     constructor(opts: PixiWidgetOptions) {
         this.opts = opts;        
+
+        if(!opts.dims) {
+            this.opts.dims = {
+                x: 0, y: 0, w: 480, h: 272
+            }
+        }
+
         console.log(`PixiWidget ${opts.name} constructed`);                
         
         this.setupBg().then(() => {
@@ -123,8 +131,8 @@ export class PixiWidget {
 
     draw(): DisplayObject {        
         const container = new Container();        
-        container.width = this.opts.dims.w;
-        container.height = this.opts.dims.h;        
+        container.width = this.opts.dims!.w;
+        container.height = this.opts.dims!.h;        
         
         /* TODO: Fix bg rendering when we figure it out
         if(this.opts.themeBg && this.bgImg) {            
