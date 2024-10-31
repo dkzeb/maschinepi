@@ -1,6 +1,8 @@
 import { CanvasRenderingContext2D } from "canvas";
-import { Graphics, Text, Container } from "@pixi/node";
+import { Graphics, Text, Container, DisplayObject, Application } from "@pixi/node";
 import { UIKnob, UIOption } from "./PIXIUIController";
+import { WidgetOption } from "src/Widgets/pixi/PixiWidget";
+import { AnalyserNode } from "node-web-audio-api";
 
 type Position = {
     x: number,
@@ -197,11 +199,15 @@ export class UITools {
          return regionRGB;
     }
 
-    public static DrawMenu(options: UIOption[]) {
+    public static DrawMenu(options: WidgetOption[]) {
         const menuContainer = new Container();
-        options.sort((a,b) => a.slot - b.slot).some(opt => {            
-            const cmp = this.DrawOption(opt);
-            cmp.x = (opt.slot) * UIConstants.option.width;            
+        options.sort((a,b) => a.ui.slot - b.ui.slot).some(opt => {      
+            if(opt.toggleable) {
+                opt.ui.toggleable = true;
+                opt.ui.activeColor = opt.toggleable.activeColor;
+            }            
+            const cmp = this.DrawOption(opt.ui);
+            cmp.x = (opt.ui.slot) * UIConstants.option.width;
             menuContainer.addChild(cmp);
         });
         return menuContainer;
@@ -228,30 +234,175 @@ export class UITools {
         return gfx;
     }
 
+    public static DrawAnalyzerWave(analyser: AnalyserNode, width: number, height: number, ): {graphics: Graphics, update: () => void} {
+        const graphics = new Graphics();        
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+      
+        graphics.lineStyle(1, 0xFFFFFF);
+        graphics.moveTo(0, height / 2);
+      
+        const step = width / bufferLength;
+      
+        function updateWaveform() {
+          console.log('upd');
+          analyser.getByteTimeDomainData(dataArray);            
+          graphics.clear();
+          graphics.lineStyle(1, 0xFFFFFF);
+          graphics.moveTo(0, height / 2);
+      
+          for (let i = 0; i < bufferLength; i++) {
+            const y = height / 2 + (dataArray[i] - 128) * (height / 256);
+            graphics.lineTo(i * step, y);
+          }
+        }
+      
+        return {
+          graphics,
+          update: updateWaveform,
+        };
+    }
+
+    static renderInterval: number = 1000 / 25;
+    static shouldRender = true;
+    static waveformGfx = new Graphics();
+    private static lastWaveformRenderTime = 0;
+    private static dataArray?: Uint8Array;
+    private static analyser?: AnalyserNode;
+
+    public static DrawAnalyzer(app: Application, analyser?: AnalyserNode) {
+
+        if(analyser) {
+            this.analyser = analyser;            
+            this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+        }        
+
+        if(this.analyser && this.dataArray) {
+            const now = performance.now();
+            if (now - this.lastWaveformRenderTime >= UITools.renderInterval) {
+                this.lastWaveformRenderTime = now;
+    
+                this.analyser.getByteTimeDomainData(this.dataArray);
+    
+                this.waveformGfx.clear();
+                this.waveformGfx.lineStyle(2, 0xFFFFFF);
+                this.waveformGfx.moveTo(0, 100);
+    
+                for (let i = 0; i < this.analyser.frequencyBinCount; i++) {
+                const value = this.dataArray[i];
+                const x = i * (800 / this.analyser.frequencyBinCount);
+                const y = 100 + value;
+                this.waveformGfx.lineTo(x, y);
+                }
+    
+                if(this.shouldRender) {
+                    app.renderer.render(app.stage);
+                }
+            }
+    
+            if(analyser) {
+                requestAnimationFrame(() => this.DrawAnalyzer(app));
+                return this.waveformGfx;
+            } else {
+                requestAnimationFrame(() => this.DrawAnalyzer(app));                
+                return;
+            }            
+        }
+        return;
+    }
+
     public static DrawOption(option: UIOption) {        
         const gfx = new Graphics();
         gfx.width = UIConstants.option.width;
         gfx.height = UIConstants.option.height;
 
         const isActive = option.active ? 'Active' : '';
-        const bgFill = UIConstants.option.colors[`bg${ isActive }`];
-        const labelColor = UIConstants.option.colors[`label${ isActive }`];
+        //const bgFill = option.toggleable ? option.activeColor : UIConstants.option.colors[`bg${ isActive }`];
+        //const labelColor = UIConstants.option.colors[`label${ isActive }`];
+
+
+        let bg: string = '#000000';
+        let labelColor: string = '#ffffff'
+        /*
+
+        if(option.active) {
+            if(option.toggleable) {
+                bg = option.activeColor ?? UIConstants.option.colors.bgActive;
+            } else {
+                bg = UIConstants.option.colors.bgActive;
+            }            
+        }*/
+        
         
         gfx.lineStyle(2, '#ffffff', 1);
-        gfx.beginFill(bgFill);
+        gfx.beginFill(bg);
         gfx.drawRect(0, 0, UIConstants.option.width, UIConstants.option.height);
         gfx.endFill();
 
+        // draw option box
+        if(option.toggleable) {
+            gfx.lineStyle(1, '#ffffff', 1);
+
+            if(option.active) {
+                gfx.beginFill(option.activeColor);
+            } else {
+                gfx.beginFill(bg);
+            }
+
+            gfx.drawRect(15, 35 / 2 - 5, 10, 10);
+            gfx.endFill();
+        }
+
         const label = new Text(option.label, {
-            fill: labelColor,
+            fill: UITools.isLight(bg) ? '#000000' : '#ffffff',
             fontSize: 12
         });
         label.anchor.set(.5, .5);
-        label.x = gfx.width / 2;
-        label.y = gfx.height / 2;
+        label.x = gfx.width / 2 + (option.toggleable ? 5 : 0);
+        label.y = gfx.height / 2 - 1;
         gfx.addChild(label);
         return gfx;
     }
+
+    public static DrawTitlebar(titlebar: {
+        color?: string;
+        title: string
+    }): DisplayObject {
+
+        const graphics = new Graphics();
+        graphics.beginFill(titlebar.color ?? '#ffffff')
+            .drawRect(0, 0, 35, 35)
+            .endFill()
+            .beginFill('#1e1d1f')
+            .drawRect(35, 0, 480 - 35, 35)
+            .endFill();
+
+        const title = new Text(titlebar.title, {
+            fill: '#ffffff',
+            fontSize: 16
+        });
+        title.x = 45;
+        title.anchor.set(0, .5);
+        title.y = 35 / 2;
+        graphics.addChild(title);
+        return graphics;
+    }
+
+    public static isLight(color: string) { //<--color in the way '#RRGGBB
+        if (color.length ==  7) {
+          const rgb = [
+            parseInt(color.substring(1, 3), 16),
+            parseInt(color.substring(3, 5), 16),
+            parseInt(color.substring(5), 16),
+          ];
+          const luminance =
+            (0.2126 * rgb[0]) / 255 +
+            (0.7152 * rgb[1]) / 255 +
+            (0.0722 * rgb[2]) / 255;
+          return luminance > 0.5;
+        }
+        return false
+      }
 }
 
 export const UIConstants = {

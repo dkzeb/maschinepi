@@ -8,7 +8,16 @@ import { PixiWidget, WidgetOption } from './Widgets/pixi/PixiWidget';
 import { EventBus } from './Core/EventBus';
 import { filter } from 'rxjs';
 import { OscillatorWidget } from './Widgets/pixi/OscillatorWidget';
+import Mixer from './AudioEngine/mixer';
 
+let exitHandler: any;
+
+process.on('SIGINT', async () => {
+    console.log('we are exitting!');
+    if(exitHandler !== undefined && typeof exitHandler === 'function') {
+        exitHandler();
+    }
+});
 
 ( async () => {
     
@@ -19,78 +28,33 @@ import { OscillatorWidget } from './Widgets/pixi/OscillatorWidget';
     const ebus = await container.resolve(EventBus);
 
     const ui = await container.resolve(PIXIUIController);
+    const mixer = await container.resolve(Mixer);
+    await mixer.initMixer();
+
+    // setup exit handler
+    exitHandler = () => {
+        console.log('Shutting down...');
+        const shuttingDown = new Text("Shutting Down...", {
+            fill: '#ffffff'
+        });
+        shuttingDown.anchor.set(.5, .5);
+        shuttingDown.x = 480 / 2;
+        shuttingDown.y = 272 / 2;
+
+        const byeBye = new Text("Bye bye!", {
+            fill: '#ffffff'
+        });
+        byeBye.anchor.set(.5, .5);
+        byeBye.x = 480 + (480 / 2);
+        byeBye.y = 272 / 2;
+
+        const container = new Container();
+        container.addChild(shuttingDown, byeBye);
+        ui.renderDisplayObject('left', container);
+    }
+
     // async main loop        
-
-    const objA = new Container();
-    objA.width = 480;
-    objA.height = 272;
-
-    const widgetOptions: WidgetOption[] = [
-        {
-            ui: {
-                label: 'Test',
-                slot: 0,
-            },
-            buttonId: 'd1',
-            cb: () => {
-            }
-        }
-    ]
-
-    /*
-    // create a new PixiWidget
-    const pw = new PixiWidget({
-        name: 'MyFirstWidget',
-        dims: {
-            x: 0, y: 0, w: 480, h: 272
-        },
-        options: widgetOptions
-    });
-
-    const dRegEx = new RegExp('d[1-8]');
-    ebus.events.pipe(filter(ev => ev.type === 'ButtonInput' && dRegEx.test(ev.name ?? ''))).subscribe(e => {        
-        const id = e.name?.substring(0, 2);
-        const action = e.name?.substring(3);        
-        const w = widgetOptions.find(w => w.buttonId === id);
-        if(w) {
-            if(action === 'pressed') {
-                w.cb();
-                w.ui.active = true;
-            } else {
-                w.ui.active = false;
-            }            
-            ui.renderDisplayObject('left', pw.draw());
-        }
-    });
-
-    ui.renderDisplayObject('left', pw.draw());    */
+    
     const oscWidget = new OscillatorWidget();
     ui.renderDisplayObject('left', oscWidget.draw());
-/*
-    // lets get a menu going
-    const menu = UITools.DrawMenu([
-        {
-            label: 'D1',
-            slot: 0
-        },
-        {
-            label: 'D2',
-            slot: 3
-        }
-    ])
-
-    menu.position.set(0, 0);
-
-    
-    const txt = new Text("Test", { fill: '#ffffff'});
-    txt.position.set(10, 60);
-
-    objA.addChild(menu, txt);        
-    ui.renderDisplayObject('left', objA);
-
-    const objB = new Container();
-    objB.width = 480;
-    objB.height = 272;
-    ui.renderDisplayObject('right', objB);
-    */
 } )();

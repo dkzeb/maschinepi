@@ -60,7 +60,7 @@ export class PIXIUIController {
        });
 
 
-       this.app.ticker.maxFPS = 30;
+       this.app.ticker.maxFPS = 12;
        
        this.containers = {
         main: new Container(),
@@ -212,7 +212,9 @@ export type UIJson = {
 export type UIOption = {        
     label: string,
     slot: number,
-    active?: boolean
+    active?: boolean,
+    activeColor?: string,
+    toggleable?: boolean
 };
 
 export type UIKnob = {        

@@ -29,7 +29,7 @@ class AudioEngine {
 
     public async initAudioEngine() {                
         try {
-            this.mixer = await container.resolve(Mixer).initMixer(this.getContext());
+            this.mixer = await container.resolve(Mixer).initMixer();
             /*
             // Load the AudioWorklet processor script
             await this.audioContext.audioWorklet.addModule('worklets/halfer-worklet.js');            

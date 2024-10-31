@@ -21,26 +21,28 @@ class Mixer {
         this._audioCtx = ctx;
     }
     public get audioCtx(): AudioContext {        
-            return this._audioCtx;
+        if(!this._audioCtx) {
+            this._audioCtx = AudioEngine.getContext();
+        }
+        return this._audioCtx;
     }
 
     constructor() {        
     }
 
-    public initMixer(audioCtx: AudioContext) {
-        this.channels = [];
-        this.audioCtx = audioCtx;
-
+    public initMixer() {
+        this.channels = [];        
         // Create a master gain node
         this._masterGain = this.audioCtx.createGain();
+
         // Create a master channel
-        this._masterChannel = new Channel(audioCtx);
+        this._masterChannel = new Channel(this.audioCtx);
         this._masterChannel.connect(this._masterGain);
         const numChannels = 8;
 
         // Create the channels and connect them to the master gain node
         for (let i = 0; i < numChannels; i++) {
-            const channel = new Channel(audioCtx);
+            const channel = new Channel(this.audioCtx);
             channel.connect(this.masterChannel.gainNode);
             this.channels.push(channel);
         }

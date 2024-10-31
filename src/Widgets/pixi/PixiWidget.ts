@@ -9,6 +9,10 @@ import * as path from 'path';
 export type WidgetOption = {
     ui: UIOption,
     buttonId: 'd1' | 'd2' | 'd3' | 'd4' | 'd5' | 'd6' | 'd7' | 'd8',
+    toggleable?: {
+        state: boolean;
+        activeColor: string;
+    };
     cb: (...args: any[]) => void | Promise<void>
 }
 
@@ -23,7 +27,11 @@ export type PixiWidgetOptions = {
     options?: WidgetOption[],
     knobs?: WidgetKnob[],
     themeBg?: boolean,
-    modal?: boolean
+    modal?: boolean,
+    titlebar?: {
+        color: string,
+        title: string
+    }
 }
 
 export class PixiWidget {
@@ -81,39 +89,29 @@ export class PixiWidget {
             this.ebus.filterEvent('ButtonInput', this.opts.name, 'd[1-8]', (ev) => {                
                 const opt = this.opts.options?.find(o => o.buttonId === ev.name?.substring(0, 2));
                 if(opt) {
-                    const action = ev.name?.substring(3);
-                    console.log('opt with act', action);
+                    const action = ev.name?.substring(3);       
 
-                    if(action === 'pressed') {
-                        opt.ui.active = true;
-                        opt.cb();
+                    if(opt.toggleable) {
+                        if(action === 'pressed') {
+                            opt.toggleable.state = !opt.toggleable.state
+                            opt.ui.active = opt.toggleable.state;
+                            console.log('toggling', opt.buttonId, 'to', opt.ui.active );
+                            opt.cb(opt);
+                        }
                     } else {
-                        opt.ui.active = false;
+                        if(action === 'pressed') {
+                            opt.ui.active = true;                            
+                            opt.cb(opt);
+                        } else {
+                            opt.ui.active = false;                        
+                        }
+                }                                           
+                    if(opt.ui.active) {                        
                     }
-
                     this.ui.renderDisplayObject('left', this.draw());
                 }
             });
 
-            /*
-            const dBtnRegEx = new RegExp('d[1-8]');
-            this.ebus.events.pipe(filter(e => e.type === 'ButtonInput' && dBtnRegEx.test(e.name ?? ''))).subscribe(ev => {
-                console.log('dBtnInput', ev);
-                const opt = this.opts.options?.find(o => o.buttonId === ev.name?.substring(0, 2));
-                if(opt) {
-                    const action = ev.name?.substring(3);
-                    console.log('opt with act', action);
-
-                    if(action === 'pressed') {
-                        opt.ui.active = true;
-                        opt.cb();
-                    } else {
-                        opt.ui.active = false;
-                    }
-
-                    this.ui.renderDisplayObject('left', this.draw());
-                }
-            });*/
         }
 
         if(this.opts.knobs) {
@@ -145,7 +143,7 @@ export class PixiWidget {
         if(this.opts.options) {
             const uiOptions = this.opts.options.map(o => o.ui);            
             this.containers.menu.removeChildren(0);
-            const menu = UITools.DrawMenu(uiOptions);
+            const menu = UITools.DrawMenu(this.opts.options);
             menu.x = 0;
             menu.y = 0;
             this.containers.menu.addChild(menu);
@@ -171,7 +169,20 @@ export class PixiWidget {
         bg.endFill();
         this.containers.main.addChildAt(bg, 0);*/
 
-        this.containers.main.y = !!this.opts.options ? UIConstants.option.height + 5 : 0;
+        let mainYOffset = !!this.opts.options ? UIConstants.option.height + 5 : 0;            
+
+        if(this.opts.titlebar) {
+            mainYOffset += 35;
+            const titleBar = UITools.DrawTitlebar({ title: this.opts.titlebar.title });
+            if(this.opts.options) {
+                titleBar.y = 35;
+            }        
+            this.containers.menu.addChild(titleBar);
+        }
+        
+        this.containers.main.y = mainYOffset;
+
+        //this.containers.main.addChildAt(0)
 
         container.addChild(this.containers.main);
 
