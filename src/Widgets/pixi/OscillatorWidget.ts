@@ -14,15 +14,15 @@ export class OscillatorWidget extends PixiWidget {
 
     synth: ThreeOSCSynth;
     mixerChannel: Channel = container.resolve(Mixer).getChannel(0);
-    mainOutputWaveform: any;
-    UITicker?: Ticker;
-    
+    mainOutputWaveform: any;            
+
     constructor() {
         super({
             name: 'OscillatorWidget',
             titlebar: {
                 color: '#ffffff',
-                title: '3xOSC Clone (Synthesizer)'
+                title: 'OSC MonoSynth',
+                icon: 'keys'
             },
             dims: {
                 x: 0, y: 0, w: 480 * 2, h: 272
@@ -82,18 +82,13 @@ export class OscillatorWidget extends PixiWidget {
         this.mixerChannel.connectInput(this.synth.out);        
 
         this.mainOutputWaveform = UITools.DrawAnalyzerWave(this.synth.mainAnalyser, 480, 200);    
-
         this.setupPadEvents();
     }
 
     toggleOscillator(idx: number, state: boolean) {
         const osc = this.synth.getOSC(idx);
         osc.on = state;
-    }
-
-    tick() {    
-        this.ui.renderDisplayObject('left', this.draw());
-    }
+    }    
 
     isPlaying = false;
     activeNotes: string[] = [];
@@ -110,30 +105,20 @@ export class OscillatorWidget extends PixiWidget {
 
             if(this.isPlaying && offNote) {
                 this.activeNotes = this.activeNotes.filter(n => n !== note);
-                console.log('Stopped playing', note, this.activeNotes);
-
+                //console.log('Stopped playing', note, this.activeNotes);
                 if(this.activeNotes.length === 0) {
                     this.isPlaying = false;
-                    console.log('Stopped playing completely');
-                    setTimeout(() => {
-                        this.UITicker?.stop();
-                    }, 100);
+                    //console.log('Stopped playing completely');                                                            
                     return;
                 }
             } else if( !this.isPlaying) {
                 this.isPlaying = true;
-                console.log('started playing', note);
-                this.activeNotes.push(note);
-
-                if(!this.UITicker) {
-                    this.UITicker = this.ui.app.ticker.add(() => this.tick());
-                } else {
-                    this.UITicker.start();
-                }
-
+                //console.log('started playing', note);
+                this.activeNotes.push(note);                
+                
             } else {                
                 this.activeNotes.push(note);
-                console.log('still playing, added', note);
+                //console.log('still playing, added', note);
             };
         });
 
@@ -141,28 +126,14 @@ export class OscillatorWidget extends PixiWidget {
 
     testDraw: any; // = new Graphics();
 
-    override draw(): DisplayObject {            
+    tickerTime = 0;
 
-        if(!this.testDraw) {
-            this.testDraw = new Graphics();
-            this.testDraw.beginFill("#FF00FF");
-            this.testDraw.drawCircle(25, 25, 25);
-            this.testDraw.endFill();
-            this.containers.main.addChild(this.testDraw);
-        }                
-
-        /*const container = this.containers.main;
-        container.removeChildren(0);
-        
-        container.addChild(this.mainOutputWaveform.graphics);
-        this.mainOutputWaveform.update();        
-
-        /*const txt = new Text("OscillatorWidget", {
-            fill: '#ffffff'
+    override draw(): DisplayObject {                            
+        this.containers.main.addChild(this.mainOutputWaveform.graphics);        
+        this.ui.app.ticker.add(() => {                                                    
+            this.mainOutputWaveform.update();
+            this.tickerTime = 0;            
         });
-        txt.x = 10;
-        txt.y = 10;
-        container.addChild(txt);*/
         return super.draw();
     }
 
@@ -258,48 +229,6 @@ class ThreeOSCSynth {
         }
     }
     
-
-    /*
-    activeNotes: string[] = [];
-
-    playNote(note: string, pIdx: number, off?: boolean): void {
-        
-        if(!off) {
-            //this.activeNotes.push(note + '_p' + pIdx);
-            this.playEvents.next("PLAY");
-        } else {
-            this.playEvents.next("STOP");
-            //this.activeNotes = this.activeNotes.filter(n => n !== note + '_p' + pIdx);
-        }
-        let noNotesPlaying = this.activeNotes.length === 0;        
-
-        const currentOctave = pIdx > 9 ? this._octave + 1 : this._octave;
-        const freq = AudioTools.NoteToFrequency(note, currentOctave);        
-
-        this._oscs.forEach((osc, idx) => {            
-
-            if(noNotesPlaying && off) {
-                osc.envelope.stop();
-                osc.gain.gain.setValueAtTime(0, this.audioCtx.currentTime);
-            } else {
-                if(osc.on) {
-                    osc.gain.gain.setValueAtTime(.5, this.audioCtx.currentTime);
-                    osc.node.frequency.exponentialRampToValueAtTime(
-                        freq,
-                        this.audioCtx.currentTime + 0.1 // Adjust the ramp time as needed
-                    );                    
-                }     
-            }            
-
-            if (!off) {
-                osc.envelope.trigger(0.5, 0.2, 0.7, 0.5); // Adjust ADSR values as needed
-            } else {
-                osc.envelope.stop();
-            }
-
-        });        
-    }*/    
-
     private createOSC(): OSC {
         const node = this.audioCtx.createOscillator();
         node.frequency.value = 440;

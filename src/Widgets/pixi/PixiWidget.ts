@@ -30,7 +30,8 @@ export type PixiWidgetOptions = {
     modal?: boolean,
     titlebar?: {
         color: string,
-        title: string
+        title: string,
+        icon?: string
     }
 }
 
@@ -93,6 +94,29 @@ export class PixiWidget {
 
                     if(opt.toggleable) {
                         if(action === 'pressed') {
+                            opt.toggleable.state = !opt.toggleable.state;
+                            this.containers.menu.getChildByName(opt.ui.slot + '_opt')!.renderable = !opt.toggleable.state;
+                            this.containers.menu.getChildByName(opt.ui.slot + '_active')!.renderable = opt.toggleable.state;
+
+                            opt.ui.active = opt.toggleable.state;
+                            opt.cb(opt);
+                        }
+                    } else {
+                        if(action === 'pressed') {
+                            this.containers.menu.getChildByName(opt.ui.slot + '_opt')!.renderable = false;
+                            this.containers.menu.getChildByName(opt.ui.slot + '_active')!.renderable = true;
+                            opt.ui.active = true;
+                            opt.cb(opt);
+                        } else {
+                            this.containers.menu.getChildByName(opt.ui.slot + '_active')!.renderable = false;
+                            this.containers.menu.getChildByName(opt.ui.slot + '_opt')!.renderable = true;
+                            opt.ui.active = false;
+                        }
+                    }
+
+
+                    /* if(opt.toggleable) {
+                        if(action === 'pressed') {
                             opt.toggleable.state = !opt.toggleable.state
                             opt.ui.active = opt.toggleable.state;
                             console.log('toggling', opt.buttonId, 'to', opt.ui.active );
@@ -105,10 +129,7 @@ export class PixiWidget {
                         } else {
                             opt.ui.active = false;                        
                         }
-                }                                           
-                    if(opt.ui.active) {                        
-                    }
-                    this.ui.renderDisplayObject('left', this.draw());
+                    } */
                 }
             });
 
@@ -140,52 +161,28 @@ export class PixiWidget {
             container.addChildAt(this.bgImg!, 0);            
         }*/
 
-        if(this.opts.options) {
-            const uiOptions = this.opts.options.map(o => o.ui);            
+        if(this.opts.options) {            
             this.containers.menu.removeChildren(0);
             const menu = UITools.DrawMenu(this.opts.options);
             menu.x = 0;
             menu.y = 0;
-            this.containers.menu.addChild(menu);
+            this.containers.menu = menu;
             container.addChild(this.containers.menu);            
         }
-    
-        /*let availableHeight = 272;
-        if(this.opts.options) {
-            availableHeight -= UIConstants.option.height;
-            this.containers.main.x = 35;
-        }
-
-        if(this.opts.options) {
-            availableHeight -= UIConstants.knob.height;        
-        }
-
-        this.containers.main.height = availableHeight;
-        this.containers.main.width = container.width;*/
-        
-        /*const bg = new Graphics();
-        bg.beginFill("#33fff6", 1);
-        bg.drawRect(0, 0, this.opts.dims.w, this.opts.dims.h - (!!this.opts.options ? 35 : 0) - (!!this.opts.knobs ? 35 : 0));
-        bg.endFill();
-        this.containers.main.addChildAt(bg, 0);*/
 
         let mainYOffset = !!this.opts.options ? UIConstants.option.height + 5 : 0;            
 
         if(this.opts.titlebar) {
             mainYOffset += 35;
-            const titleBar = UITools.DrawTitlebar({ title: this.opts.titlebar.title });
+            const titleBar = UITools.DrawTitlebar({ title: this.opts.titlebar.title, icon: this.opts.titlebar.icon });
             if(this.opts.options) {
                 titleBar.y = 35;
             }        
             this.containers.menu.addChild(titleBar);
         }
         
-        this.containers.main.y = mainYOffset;
-
-        //this.containers.main.addChildAt(0)
-
+        this.containers.main.y = mainYOffset;        
         container.addChild(this.containers.main);
-
 
         if(this.opts.knobs) {
             const uiKnobs = this.opts.knobs.map(k => k.ui);

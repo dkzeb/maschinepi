@@ -28,6 +28,9 @@ process.on('SIGINT', async () => {
     const ebus = await container.resolve(EventBus);
 
     const ui = await container.resolve(PIXIUIController);
+
+    await UITools.LoadUIAssets();
+
     const mixer = await container.resolve(Mixer);
     await mixer.initMixer();
 
@@ -49,12 +52,11 @@ process.on('SIGINT', async () => {
         byeBye.y = 272 / 2;
 
         const container = new Container();
-        container.addChild(shuttingDown, byeBye);
-        ui.renderDisplayObject('left', container);
+        container.addChild(shuttingDown, byeBye);        
     }
 
     // async main loop        
     
     const oscWidget = new OscillatorWidget();
-    ui.renderDisplayObject('left', oscWidget.draw());
+    ui.addWidget(oscWidget, 'left');
 } )();

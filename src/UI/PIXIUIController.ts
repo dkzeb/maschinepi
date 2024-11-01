@@ -4,7 +4,7 @@ import * as jpeg from 'jpeg-js';
 import { MK3Controller } from '../Hardware/MK3Controller';
 import { container, singleton } from 'tsyringe';
 import { UITools } from './UITools';
-import { StateController } from '../Core/StateController';
+import { PixiWidget } from 'src/Widgets/pixi/PixiWidget';
 
 
 @singleton()
@@ -13,45 +13,9 @@ export class PIXIUIController {
     app: Application;
     mk3: MK3Controller = container.resolve(MK3Controller);
     private containers: Record<string, Container>;
-    private displayBuffers: Record<string, ArrayBuffer>;
+    private displayBuffers: Record<string, ArrayBuffer>;                    
 
-    get main() {
-        return {
-            container: this.containers.main,
-            buffer: this.displayBuffers.main
-        }
-    }
-
-    get left() {
-        return {
-            container: this.containers.left,
-            buffer: this.displayBuffers.left
-        }
-    }
-
-    get right() {
-        return {
-            container: this.containers.right,
-            buffer: this.displayBuffers.right
-        }
-    }
-    
-    /*conversionWorker = new Worker('./src/UI/worker.js', {
-        workerData: {
-            path: './conversionWorker.ts'
-        }
-    });*/
-    shouldUpdate = false;
-    
-    set nextUI(uiJson: UIJson) {
-        console.log('updating nextUI');
-        this._nextUI = uiJson;
-        this.app.ticker.addOnce(() => {                                                
-            console.log('updating');
-            this.drawUI(this._nextUI ?? { target: 'left', controls: []});                                
-        });            
-    }
-    private _nextUI?: UIJson;
+    deltaTime: number = 0;
 
     constructor() {        
        this.app = new Application({
@@ -60,7 +24,18 @@ export class PIXIUIController {
        });
 
 
-       this.app.ticker.maxFPS = 12;
+       this.app.ticker.maxFPS = 20;
+       /*this.app.renderer.on('prerender', (arg) => {
+        console.log
+       });*/
+
+       this.app.renderer.on('postrender', () => {
+        this.deltaTime += this.app.ticker.deltaMS;
+            if(this.deltaTime > 1000 / 20) {
+                this.renderDisplays(this.app.renderer.extract.pixels() as Uint8Array);
+                this.deltaTime = 0;
+            }
+       });
        
        this.containers = {
         main: new Container(),
@@ -74,92 +49,74 @@ export class PIXIUIController {
         right: this.mk3.hardware.displays!.createDisplayBuffer(),
        }
 
-       this.main.container.x = 0;
-       this.main.container.y = 0;
+       this.containers.main.x = 0;
+       this.containers.main.y = 0;
 
-       this.left.container.x = 0;
-       this.left.container.y = 480;
+       this.containers.left.x = 0;
+       this.containers.left.y = 480;
 
-       this.right.container.x = 480;
-       this.right.container.y = 480;
+       this.containers.right.x = 480;
+       this.containers.right.y = 480;
        
        for(let c in this.containers) {        
         this.app.stage.addChild(this.containers[c]);
-       }                                 
-
-       
+       }                            
+           
        if(this.mk3.connected) {
-           for(let i = 0; i < 2; i++) {
-               this.mk3.hardware.displays!.paintDisplay(i, Uint8Array.from([0]), this.left.buffer);
+            for(let i = 0; i < 2; i++) {
+                this.mk3.hardware.displays!.paintDisplay(i, Uint8Array.from([0]), this.displayBuffers.left);
             }
-        }
-        
-        this.render();
+        }        
     }    
 
-    drawUI(elms: UIJson) {
-        const target = this.containers[elms.target];
-        elms.controls.forEach(ctrl => {
-
-            switch(ctrl.type) {
-                case 'text': 
-                break;
-                case 'option':
-                break;
-                case 'menu':
-                default:
-                    console.warn('Unrecognized type', ctrl.type);
-                    break;
-            }
-
-            if(ctrl.type === 'text' && ctrl.label) {
-                const ctrlText = new Text(ctrl.label, { fill: '#ffffff' });
-                ctrlText.position.set(ctrl.dims?.x ?? 0, ctrl.dims?.y ?? 0);
-                target.addChild(ctrlText);
-            }
-        });
-
-        if(elms.controls.length > 0) {
-            this.render();        
-        }
-    }
-
-    render(target?: TargetDisplay) {                
-        this.app.ticker.addOnce(() => {
-            this.app.render();
-            const pixels = this.app.renderer.extract.pixels();                            
-            this.renderDisplays(pixels as Uint8Array);        
-        })
-    }
-
-    renderDisplayObject(target: TargetDisplay, dispObj: DisplayObject) {        
-        const cnt = this.containers[target];
-        cnt.removeChildren();
-        cnt.addChild(dispObj);
-        this.render();
-    }
-
-    private renderDisplays(pixels: Uint8Array, displays: string[] = ['left', 'right', 'main']) {
+    private renderDisplays(pixels: Uint8Array, displays: TargetDisplay[] = ['left', 'right', 'main']) {
         displays.forEach(displayName => {
             const dims = displayName === 'main' ? { x: 0, y: 0, w: 800, h: 480 } : { x: displayName === 'left' ? 0 : 480, y: 480, w: 480, h: 272 };
             const displayRegion = UITools.ExtractRegion(dims.x, dims.y, dims.w, dims.h, pixels, 480 * 2, true);                        
             this.renderHardwareDisplays(displayName, UITools.convertToRGB(displayRegion, dims.w, dims.h));            
-            this.renderDevDisplays(displayName, dims, displayRegion);    
+            //this.renderDevDisplays(displayName, dims, displayRegion);
         });        
 
     }
+
+    addWidget(w: PixiWidget, target: TargetDisplay) {
+        const c = this.getDisplay(target);
+        c.container.removeChildren();
+        c.container.addChild(w.draw());
+    }
+
+    getDisplay(id: TargetDisplay) {
+        return {
+            container: this.containers[id],
+            buffer: this.displayBuffers[id]
+        }
+    }
+
+    isRenderingLeft = false;
+    isRenderingRight = false;
 
     private async renderHardwareDisplays(name: string, imageData: Uint8Array) {
 
         if(name === 'main') {
             // skip, TODO: Implement main display when hardware is ready            
         } else {
-            if(this.mk3.connected) {
-                await this.mk3.hardware.displays?.paintDisplay(
-                    name === 'left' ? 0 : 1,
-                    imageData,
-                    this.displayBuffers[name]
-                );
+            if(this.mk3.connected) {                
+
+                // to avoid flickering on displays, we track if we are currently painting the target display
+
+                if(name === 'left') {
+                    if(!this.isRenderingLeft) {
+                        this.isRenderingLeft = true;
+                        await this.mk3.hardware.displays?.paintDisplay(0, imageData, this.displayBuffers.left)
+                        this.isRenderingLeft = false;
+                    }
+                } else {
+                    if(!this.isRenderingRight) {
+                        this.isRenderingRight = true;
+                        await this.mk3.hardware.displays?.paintDisplay(1, imageData, this.displayBuffers.right)
+                        this.isRenderingRight = false;
+                    }
+                }                
             }
         }
 

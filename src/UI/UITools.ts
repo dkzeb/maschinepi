@@ -1,8 +1,10 @@
 import { CanvasRenderingContext2D } from "canvas";
-import { Graphics, Text, Container, DisplayObject, Application } from "@pixi/node";
+import { Graphics, Text, Container, DisplayObject, Application, Assets, Texture, Sprite } from "@pixi/node";
 import { UIKnob, UIOption } from "./PIXIUIController";
 import { WidgetOption } from "src/Widgets/pixi/PixiWidget";
 import { AnalyserNode } from "node-web-audio-api";
+import * as fs from 'fs';
+import * as path from 'path';
 
 type Position = {
     x: number,
@@ -206,9 +208,11 @@ export class UITools {
                 opt.ui.toggleable = true;
                 opt.ui.activeColor = opt.toggleable.activeColor;
             }            
-            const cmp = this.DrawOption(opt.ui);
-            cmp.x = (opt.ui.slot) * UIConstants.option.width;
-            menuContainer.addChild(cmp);
+            const cmp = this.GenerateOption(opt.ui);
+            cmp.opt.x = (opt.ui.slot) * UIConstants.option.width;
+            cmp.active.x = (opt.ui.slot) * UIConstants.option.width;
+            menuContainer.addChild(cmp.opt);
+            menuContainer.addChild(cmp.active);
         });
         return menuContainer;
     }
@@ -244,8 +248,7 @@ export class UITools {
       
         const step = width / bufferLength;
       
-        function updateWaveform() {
-          console.log('upd');
+        function updateWaveform() {          
           analyser.getByteTimeDomainData(dataArray);            
           graphics.clear();
           graphics.lineStyle(1, 0xFFFFFF);
@@ -261,6 +264,18 @@ export class UITools {
           graphics,
           update: updateWaveform,
         };
+    }
+
+    public static Icons: Map<string, Sprite> = new Map();
+
+    public static async LoadUIAssets() {
+        const iconPath = path.join(process.cwd(), 'data', 'images', 'icons');
+        // read out the list of icons
+        const icons = fs.readdirSync(iconPath);
+
+        for(let i of icons) {
+            UITools.Icons.set(i.split('.')[0], Sprite.from(await Assets.load(path.join(iconPath, i))));
+        }
     }
 
     static renderInterval: number = 1000 / 25;
@@ -364,9 +379,81 @@ export class UITools {
         return gfx;
     }
 
+    public static GenerateOption(option: UIOption) {
+        const opt = new Graphics();
+        opt.width = UIConstants.option.width;
+        opt.height = UIConstants.option.height;
+        opt.lineStyle(2, 0xFFFFFF, 1);
+        opt.beginFill(0x000000);
+        opt.drawRect(0, 0, UIConstants.option.width, UIConstants.option.height);
+        opt.endFill();        
+
+        // if toggleable, add a small box next to the label
+        if(option.toggleable) {
+            opt.lineStyle(1, 0xFFFFFF, 1);
+            opt.beginFill(0x000000);
+            opt.drawRect(15, 35 / 2 - 5, 10, 10);
+            opt.endFill();
+        }
+
+        const defaultLabel = new Text(option.label, {
+            fill: 0xFFFFFF,
+            fontSize: 12
+        });
+        defaultLabel.anchor.set(.5, .5);
+        defaultLabel.position.set(opt.width / 2, opt.height / 2);
+
+        if(option.toggleable) 
+            defaultLabel.x += 5;
+
+        opt.addChild(defaultLabel);
+        opt.cacheAsBitmap = true;
+        opt.renderable = true;
+        opt.name = option.slot + '_opt';
+
+        // active stuff
+        const active = new Graphics();
+        active.width = UIConstants.option.width;
+        active.height = UIConstants.option.height;        
+
+        active.lineStyle(2, 0xFFFFFF, 1);
+        active.beginFill(option.toggleable ? 0x000000 : 0xFFFFFF);
+        active.drawRect(0, 0, UIConstants.option.width, UIConstants.option.height);
+        active.endFill();        
+        
+        // if toggleable, add a small box next to the label
+        if(option.toggleable) {
+            active.lineStyle(1, 0xFFFFFF, 1);
+            active.beginFill(option.activeColor ?? 0xFFFFFF);
+            active.drawRect(15, 35 / 2 - 5, 10, 10);
+            active.endFill();
+        }
+
+        const activeLabel = new Text(option.label, {
+            fill: option.toggleable ? 0xFFFFFF : 0x000000,
+            fontSize: 12
+        });
+        activeLabel.anchor.set(.5, .5);
+        activeLabel.position.set(opt.width / 2, opt.height / 2);
+
+        if(option.toggleable) 
+            activeLabel.x += 5;
+
+        active.addChild(activeLabel);
+        active.cacheAsBitmap = true;
+        active.renderable = false;
+        active.name = option.slot + '_active';
+
+        return {
+            opt: opt,
+            active: active
+        }        
+    }
+
     public static DrawTitlebar(titlebar: {
         color?: string;
-        title: string
+        title: string;
+        icon?: string;
     }): DisplayObject {
 
         const graphics = new Graphics();
@@ -375,7 +462,7 @@ export class UITools {
             .endFill()
             .beginFill('#1e1d1f')
             .drawRect(35, 0, 480 - 35, 35)
-            .endFill();
+            .endFill();        
 
         const title = new Text(titlebar.title, {
             fill: '#ffffff',
@@ -385,6 +472,24 @@ export class UITools {
         title.anchor.set(0, .5);
         title.y = 35 / 2;
         graphics.addChild(title);
+
+        if(titlebar.icon) {
+            console.log('we should load our icon right here!');
+            const ico = UITools.Icons.get(titlebar.icon);
+            if(ico) {
+
+                // we have to scale the icon, so - lets get it to 30px
+
+                // get the ratio
+                const wRatio = 30 / ico.width;                
+                ico.scale.set(wRatio, wRatio);
+
+                ico.anchor.set(.5, .5);
+                ico.position.set(35 / 2, 35 / 2);
+                graphics.addChild(ico);
+            }
+        }
+
         return graphics;
     }
 
