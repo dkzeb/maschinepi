@@ -20,7 +20,7 @@ export class EventBus {
         this.events = new Subject();
     }
 
-    filterEvent(type: EventType, owner: string, regEx: string = '', cb?: (ev: MPIEvent) => void) {
+    filterEvent(type: EventType, owner: string, regEx: RegExp | string = '', cb?: (ev: MPIEvent) => void) {
         let regExFn: RegExp = regEx && regEx !== '' ? new RegExp(regEx) : new RegExp('');
 
         if(regEx && regEx !== '') {

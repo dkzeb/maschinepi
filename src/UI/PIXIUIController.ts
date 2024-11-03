@@ -5,6 +5,7 @@ import { MK3Controller } from '../Hardware/MK3Controller';
 import { container, singleton } from 'tsyringe';
 import { UITools } from './UITools';
 import { PixiWidget } from 'src/Widgets/pixi/PixiWidget';
+import { ModalWidget } from 'src/Widgets/pixi/ModalWidget';
 
 
 @singleton()
@@ -12,8 +13,11 @@ export class PIXIUIController {
 
     app: Application;
     mk3: MK3Controller = container.resolve(MK3Controller);
+    widgetMgr: WidgetManager = container.resolve(WidgetManager);
     private containers: Record<string, Container>;
     private displayBuffers: Record<string, ArrayBuffer>;                    
+
+    private modalContainer = new Container();
 
     deltaTime: number = 0;
 
@@ -53,15 +57,19 @@ export class PIXIUIController {
        this.containers.main.y = 0;
 
        this.containers.left.x = 0;
-       this.containers.left.y = 480;
+       this.containers.left.y = 485;
 
-       this.containers.right.x = 480;
-       this.containers.right.y = 480;
+       this.containers.right.x = 485;
+       this.containers.right.y = 485;
        
        for(let c in this.containers) {        
         this.app.stage.addChild(this.containers[c]);
        }                            
            
+
+       this.modalContainer.zIndex = 100;
+       this.app.stage.addChild(this.modalContainer);
+
        if(this.mk3.connected) {
             for(let i = 0; i < 2; i++) {
                 this.mk3.hardware.displays!.paintDisplay(i, Uint8Array.from([0]), this.displayBuffers.left);
@@ -71,7 +79,7 @@ export class PIXIUIController {
 
     private renderDisplays(pixels: Uint8Array, displays: TargetDisplay[] = ['left', 'right', 'main']) {
         displays.forEach(displayName => {
-            const dims = displayName === 'main' ? { x: 0, y: 0, w: 800, h: 480 } : { x: displayName === 'left' ? 0 : 480, y: 480, w: 480, h: 272 };
+            const dims = displayName === 'main' ? { x: 0, y: 0, w: 800, h: 480 } : { x: displayName === 'left' ? 0 : 480, y: 485, w: 480, h: 272 };
             const displayRegion = UITools.ExtractRegion(dims.x, dims.y, dims.w, dims.h, pixels, 480 * 2, true);                        
             this.renderHardwareDisplays(displayName, UITools.convertToRGB(displayRegion, dims.w, dims.h));            
             //this.renderDevDisplays(displayName, dims, displayRegion);
@@ -79,10 +87,22 @@ export class PIXIUIController {
 
     }
 
-    addWidget(w: PixiWidget, target: TargetDisplay) {
+    widgets: ModalWidget<unknown>[] =  [];
+
+    addModal(w: ModalWidget<unknown>) {    
+        //this.widgets.push(w);
+        this.modalContainer.addChild(w.draw());
+    }
+
+    addWidget(w: PixiWidget, target: TargetDisplay) {    
         const c = this.getDisplay(target);
         c.container.removeChildren();
         c.container.addChild(w.draw());
+        this.widgetMgr.addWidget(w);
+    }
+
+    removeWidget(w: ModalWidget<unknown>) {
+        this.widgetMgr.removeWidget(w.opts.name);
     }
 
     getDisplay(id: TargetDisplay) {
@@ -141,6 +161,48 @@ export class PIXIUIController {
             }
             
         }
+
+}
+
+@singleton()
+export class WidgetManager {
+    widgets: Map<string, PixiWidget> = new Map();
+
+    addWidget(widget: PixiWidget) {
+        this.widgets.set(widget.opts.name, widget);
+    }
+
+    removeWidget(widgetName: string) {
+        const w = this.widgets.get(widgetName);
+        if(w) {
+            w.teardown().then(() => {
+                console.log('teardown complete');
+                this.hideWidget(w.opts.name);
+                w.uiCtrl.app.ticker.addOnce(() => {
+                    this.widgets.delete(w.opts.name);
+                    console.log('succesfully removed', widgetName);
+                });
+            });
+                                    
+        }
+    }
+
+    showWidget(widgetName: string) {        
+        const w = this.widgets.get(widgetName);
+        if(w && w.widgetUi) {
+            w.widgetUi.renderable = true;
+        }
+    }
+
+    hideWidget(widgetName: string) {
+        const w = this.widgets.get(widgetName);
+        if(w && w.widgetUi) {
+            console.log('hid widget', widgetName);
+            w.widgetUi.renderable = false;
+        } else {
+            console.log('error, cant hide', widgetName, w?.widgetUi);
+        }
+    }
 
 }
 

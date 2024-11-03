@@ -450,6 +450,86 @@ export class UITools {
         }        
     }
 
+    
+    public static GenerateListPicker<T>(items: { label: string, value: T }[], height) {
+        const listContainer = new Container();        
+        listContainer.height = height;
+
+        const itemsPrPage = height / 20;
+
+        console.log('at height', height, 'we can fit', itemsPrPage);
+
+
+        const listableItems: {
+            label: string,
+            containers: {
+                inactive: Container,
+                active: Container,
+            },
+            value: T
+        }[] = [];
+        
+        items.forEach((item, idx) => {
+
+            const itemContainer = new Container();
+            itemContainer.name = idx + '_item';
+            const activeItemContainer = new Container();
+            activeItemContainer.name = idx + '_item_active';
+
+            [0, 1].forEach((i) => {
+                const bgGfx = new Graphics().beginFill(
+                    i === 0 ? 0x000000 : 0xFFFFFF
+                ).drawRect(0, 0, 480, 20);
+
+                const label = new Text(item.label, {
+                    fill: i === 0 ? 0xFFFFFF : 0x000000,
+                    fontSize: 14
+                });
+                label.anchor.set(0, .5);
+                label.y = 10;
+                if(i === 0) {
+                    itemContainer.addChild(bgGfx, label)
+                } else {
+                    activeItemContainer.addChild(bgGfx, label);
+                }
+            });    
+            
+            itemContainer.y = idx * 21;
+            activeItemContainer.y = idx * 21;
+
+            listableItems.push({
+                label: item.label,
+                containers: {
+                    active: activeItemContainer,
+                    inactive: itemContainer
+                },
+                value: item.value
+            });
+
+            listContainer.addChild(itemContainer, activeItemContainer);
+        });        
+        const setItemActive = (identifier: string | number) => {
+            const toggleItem = (i, active: boolean) => {
+                i.containers.active.renderable = active;
+                i.containers.inactive.renderable = !active;
+            }   
+            let activeIndex: number = 0;         
+            listableItems.forEach((item, index) => {
+                const isActive = typeof identifier === 'string' ? item.label === identifier : index === identifier;
+                toggleItem(item, isActive);
+                if(isActive) {
+                    activeIndex = index;
+                }
+            });                        
+            return activeIndex;
+        }
+
+        return {
+            setItemActive,
+            listContainer,
+        };
+    }
+
     public static DrawTitlebar(titlebar: {
         color?: string;
         title: string;
@@ -457,18 +537,23 @@ export class UITools {
     }): DisplayObject {
 
         const graphics = new Graphics();
-        graphics.beginFill(titlebar.color ?? '#ffffff')
-            .drawRect(0, 0, 35, 35)
-            .endFill()
-            .beginFill('#1e1d1f')
-            .drawRect(35, 0, 480 - 35, 35)
+
+        if(titlebar.icon !== 'none') {
+            graphics.beginFill(titlebar.color ?? '#ffffff')
+                .drawRect(0, 0, 35, 35)
+                .endFill()
+        }
+
+
+        graphics.beginFill('#1e1d1f')
+            .drawRect( titlebar.icon === 'none' ? 0 : 35, 0, 480 - (titlebar.icon === 'none' ? 0 : 35), 35)
             .endFill();        
 
         const title = new Text(titlebar.title, {
             fill: '#ffffff',
             fontSize: 16
         });
-        title.x = 45;
+        title.x = titlebar.icon === 'none' ? 10 : 45;
         title.anchor.set(0, .5);
         title.y = 35 / 2;
         graphics.addChild(title);
@@ -531,3 +616,5 @@ export const UIConstants = {
     }
 
 }
+
+export type ListPickerItem<T> = { label: string, value: T }

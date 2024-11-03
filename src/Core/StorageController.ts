@@ -1,14 +1,20 @@
 import { EventBus } from "./EventBus";
 import { PrismaClient } from "@prisma/client";
 //import {SoundEngine} from "./SoundEngine";
-import { container } from "tsyringe";
+import { container, singleton } from "tsyringe";
 import { StateController } from "./StateController";
 import * as path from 'path';
 import * as fs from 'fs';
 import { UILayer } from "src/Widgets/Widget";
 import { loadImage } from "canvas";
+import { Assets } from "@pixi/node";
+import AudioEngine from '../AudioEngine/audioEngine';
 
-export class StorageController {
+
+@singleton()
+export class StorageController {    
+
+    samples: string [] = [];
 
     dataDir: string;
     //prisma: PrismaClient;
@@ -31,6 +37,21 @@ export class StorageController {
         const data = fs.readFileSync(path.join(this.dataDir, filename));
         console.log('Data', data);
         return data;
+    }
+
+    async loadAudioData() {
+        console.log('datadir', this.dataDir);
+        const samples = fs.readdirSync(path.join(this.dataDir, 'samples'));
+        console.log('loaded', samples);
+
+        for(let s of samples) {
+            await AudioEngine.loadAudioBuffer(path.join(this.dataDir, 'samples', s), s);
+        }
+        this.samples = samples;
+    }
+
+    get assets() {
+        return Assets;
     }
 
     async loadWidgetUI(widgetName): Promise<UILayer[]> {

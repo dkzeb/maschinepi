@@ -4,11 +4,13 @@ import { MK3Controller } from './Hardware/MK3Controller';
 import { PIXIUIController } from './UI/PIXIUIController';
 import { UITools } from './UI/UITools';
 import { Container, Text } from '@pixi/node';
-import { PixiWidget, WidgetOption } from './Widgets/pixi/PixiWidget';
 import { EventBus } from './Core/EventBus';
-import { filter } from 'rxjs';
 import { OscillatorWidget } from './Widgets/pixi/OscillatorWidget';
 import Mixer from './AudioEngine/mixer';
+import { DAW } from './Core/DAW';
+
+import AudioEngine from './AudioEngine/audioEngine';
+import { ZPCWidget } from './Widgets/pixi/SamplerWidget';
 
 let exitHandler: any;
 
@@ -21,18 +23,21 @@ process.on('SIGINT', async () => {
 
 ( async () => {
     
+    
     // hardware
     const mk3 = await container.resolve(MK3Controller);
-    await mk3.init();
-    
+    await mk3.init();    
     const ebus = await container.resolve(EventBus);
-
     const ui = await container.resolve(PIXIUIController);
 
     await UITools.LoadUIAssets();
+    
 
     const mixer = await container.resolve(Mixer);
     await mixer.initMixer();
+    
+    const daw = new DAW();
+
 
     // setup exit handler
     exitHandler = () => {
@@ -56,7 +61,10 @@ process.on('SIGINT', async () => {
     }
 
     // async main loop        
-    
+    /*
     const oscWidget = new OscillatorWidget();
-    ui.addWidget(oscWidget, 'left');
+    ui.addWidget(oscWidget, 'left');*/
+
+    const zpcWidget = new ZPCWidget();
+    ui.addWidget(zpcWidget, 'left');
 } )();

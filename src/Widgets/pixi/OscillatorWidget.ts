@@ -1,6 +1,5 @@
-import { DisplayObject, Graphics, Ticker } from "@pixi/node";
+import { DisplayObject } from "@pixi/node";
 import { PixiWidget } from "./PixiWidget";
-import { Text } from '@pixi/node';
 import { filter, Subject } from "rxjs";
 import { AudioContext, GainNode, OscillatorNode, AnalyserNode } from "node-web-audio-api";
 import Channel from "../../AudioEngine/channel";
@@ -130,7 +129,7 @@ export class OscillatorWidget extends PixiWidget {
 
     override draw(): DisplayObject {                            
         this.containers.main.addChild(this.mainOutputWaveform.graphics);        
-        this.ui.app.ticker.add(() => {                                                    
+        this.uiCtrl.app.ticker.add(() => {                                                    
             this.mainOutputWaveform.update();
             this.tickerTime = 0;            
         });
@@ -284,4 +283,4 @@ class Envelope {
     connect(destination) {
       this.gainNode.connect(destination);
     }
-  }
+}

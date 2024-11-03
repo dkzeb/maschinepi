@@ -1,4 +1,4 @@
-import { Assets, Container, DisplayObject, Graphics, Sprite, Text } from "@pixi/node";
+import { Assets, ColorSource, Container, DisplayObject, Graphics, Sprite, Text } from "@pixi/node";
 import { Dims, PIXIUIController, UIKnob, UIOption } from "../../UI/PIXIUIController";
 import { UIConstants, UITools } from "../../UI/UITools";
 import { EventBus } from "../../Core/EventBus";
@@ -29,7 +29,7 @@ export type PixiWidgetOptions = {
     themeBg?: boolean,
     modal?: boolean,
     titlebar?: {
-        color: string,
+        color: ColorSource,
         title: string,
         icon?: string
     }
@@ -38,7 +38,8 @@ export type PixiWidgetOptions = {
 export class PixiWidget {
     opts: PixiWidgetOptions;
     ebus: EventBus = container.resolve(EventBus);
-    ui: PIXIUIController = container.resolve(PIXIUIController);
+    uiCtrl: PIXIUIController = container.resolve(PIXIUIController);
+    widgetUi: Container = new Container();
     
     containers: Record<string, Container> = {
         menu: new Container(),
@@ -78,7 +79,7 @@ export class PixiWidget {
         }
     }
 
-    teardown() {
+    async teardown() {
         // unsub to any events 
         this.ebus.clearOwnerSubscriptions(this.opts.name);
     }
@@ -148,10 +149,9 @@ export class PixiWidget {
         }
     }
 
-    draw(): DisplayObject {        
-        const container = new Container();        
-        container.width = this.opts.dims!.w;
-        container.height = this.opts.dims!.h;        
+    draw(): DisplayObject {                
+        this.widgetUi.width = this.opts.dims!.w;
+        this.widgetUi.height = this.opts.dims!.h;        
         
         /* TODO: Fix bg rendering when we figure it out
         if(this.opts.themeBg && this.bgImg) {            
@@ -167,14 +167,14 @@ export class PixiWidget {
             menu.x = 0;
             menu.y = 0;
             this.containers.menu = menu;
-            container.addChild(this.containers.menu);            
+            this.widgetUi.addChild(this.containers.menu);            
         }
 
         let mainYOffset = !!this.opts.options ? UIConstants.option.height + 5 : 0;            
 
         if(this.opts.titlebar) {
             mainYOffset += 35;
-            const titleBar = UITools.DrawTitlebar({ title: this.opts.titlebar.title, icon: this.opts.titlebar.icon });
+            const titleBar = this.drawTitlebar();
             if(this.opts.options) {
                 titleBar.y = 35;
             }        
@@ -182,19 +182,25 @@ export class PixiWidget {
         }
         
         this.containers.main.y = mainYOffset;        
-        container.addChild(this.containers.main);
+        this.widgetUi.addChild(this.containers.main);
 
         if(this.opts.knobs) {
             const uiKnobs = this.opts.knobs.map(k => k.ui);
             this.containers.knobs.removeChildren(0);
             console.log('drawing ui knobs');            
             const kContainer = UITools.DrawKnobs(uiKnobs);
-            kContainer.x = container.height - UIConstants.knob.height;
+            kContainer.x = this.widgetUi.height - UIConstants.knob.height;
             this.containers.knobs.addChild(kContainer);
-            container.addChild(this.containers.knobs);         
-        }        
-
-        return container;
+            this.widgetUi.addChild(this.containers.knobs);         
+        }
+        return this.widgetUi;
     }
 
+    drawTitlebar(): DisplayObject {        
+            const titleBar = UITools.DrawTitlebar({ title: this.opts.titlebar!.title, icon: this.opts.titlebar!.icon });
+            if(this.opts.options) {
+                titleBar.y = 35;
+            }        
+            return titleBar        
+    }
 }

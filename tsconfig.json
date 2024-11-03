@@ -19,7 +19,11 @@
       "resolveJsonModule": true,
       "resolvePackageJsonImports": true,
       "outDir": "dist/",
-      "rootDir": "src/"
+      "rootDir": ".",
+      "paths": {
+        "@/*": ["src/*"],
+        "@core/*": ["src/core/*"]
+      },
   },
   "include": [
       "./src/**/*.ts"

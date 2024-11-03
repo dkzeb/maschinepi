@@ -4,13 +4,16 @@ import 'dotenv/config';
 // src/index.ts
 import audioEngine from './AudioEngine/audioEngine';
 import { container } from 'tsyringe';
-import { DAW } from './Core/DAW';
+import { OldDAW } from './Core/OldDAW';
 import { UIController } from './UI/UIController';
 import { MK3Controller } from './Hardware/MK3Controller';
 import { StateController } from './Core/StateController';
 import { DevController } from './Hardware/DevController';
 import { EventBus } from './Core/EventBus';
 import { filter } from 'rxjs';
+import { PIXIUIController } from './UI/PIXIUIController';
+import { DAW } from './Core/DAW';
+import { ZPCWidget } from './Widgets/pixi/SamplerWidget';
 
 class Application {
 
@@ -30,10 +33,8 @@ class Application {
      * 
      */
     static async main(): Promise<void> {
-
-
         // set state for init env.
-        StateController.currentState.isDevMode = process.env.MPI_DEVMODE === 'true' ?? false;
+        StateController.currentState.isDevMode = process.env.MPI_DEVMODE === "true";
         StateController.currentState.dataDirectory = process.env.MPI_DATA_DIR ?? '';
 
         // Clear out the system console (for logging purposes)
@@ -50,9 +51,10 @@ class Application {
         }
 
         await audioEngine.initAudioEngine();
-        const UI = container.resolve(UIController);
+        const UI = container.resolve(PIXIUIController);
         if(StateController.currentState.isDevMode) {            
-            UI.createDevDisplays();             
+            //UI.createDevDisplays();             
+            
             const devCtrl = container.resolve(DevController);        
             console.info('Dev Info:');
             const filteredEnvs = {};
@@ -72,7 +74,9 @@ class Application {
         })
         
         const daw = await container.resolve(DAW);
-        await daw.init();
+        //await daw;            
+        const zpcWidget = new ZPCWidget();
+        UI.addWidget(zpcWidget, 'left');
     }
 }
 
