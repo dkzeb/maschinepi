@@ -11,6 +11,7 @@ import { StateController } from './Core/StateController';
 import { DevController } from './Hardware/DevController';
 import { EventBus } from './Core/EventBus';
 import { filter } from 'rxjs';
+import { DecentSampler } from './Plugins/DecentSampler';
 
 class Application {
 
@@ -33,8 +34,8 @@ class Application {
 
 
         // set state for init env.
-        StateController.currentState.isDevMode = process.env.MPI_DEVMODE === 'true' ?? false;
-        StateController.currentState.dataDirectory = process.env.MPI_DATA_DIR ?? '';
+        //StateController.currentState.isDevMode = (process.env.MPI_DEVMODE === 'true') ?? false;
+        //StateController.currentState.dataDirectory = process.env.MPI_DATA_DIR ?? '';
 
         // Clear out the system console (for logging purposes)
         console.clear();
@@ -73,6 +74,11 @@ class Application {
         
         const daw = await container.resolve(DAW);
         await daw.init();
+
+
+        // launch the decent sampelr
+        const smpler = new DecentSampler();
+
     }
 }
 
