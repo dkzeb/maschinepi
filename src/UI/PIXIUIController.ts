@@ -4,7 +4,7 @@ import * as jpeg from 'jpeg-js';
 import { MK3Controller } from '../Hardware/MK3Controller';
 import { container, singleton } from 'tsyringe';
 import { UITools } from './UITools';
-import { PixiWidget } from 'src/Widgets/pixi/PixiWidget';
+import { PixiWidget } from 'src/Widgets/PixiWidget';
 
 
 @singleton()
@@ -79,7 +79,7 @@ export class PIXIUIController {
 
     }
 
-    addWidget(w: PixiWidget, target: TargetDisplay) {
+    addWidget(w: PixiWidget, target: TargetDisplay = 'left') {
         const c = this.getDisplay(target);
         c.container.removeChildren();
         c.container.addChild(w.draw());

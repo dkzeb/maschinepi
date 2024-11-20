@@ -4,11 +4,12 @@ import { MK3Controller } from './Hardware/MK3Controller';
 import { PIXIUIController } from './UI/PIXIUIController';
 import { UITools } from './UI/UITools';
 import { Container, Text } from '@pixi/node';
-import { PixiWidget, WidgetOption } from './Widgets/pixi/PixiWidget';
+import { PixiWidget, WidgetOption } from './Widgets/PixiWidget';
 import { EventBus } from './Core/EventBus';
 import { filter } from 'rxjs';
-import { OscillatorWidget } from './Widgets/pixi/OscillatorWidget';
+import { OscillatorWidget } from './Widgets/OscillatorWidget';
 import Mixer from './AudioEngine/mixer';
+import { ListPickerWidget } from './Widgets/ListPickerWidget';
 
 let exitHandler: any;
 
@@ -56,7 +57,17 @@ process.on('SIGINT', async () => {
     }
 
     // async main loop        
-    
+    /*
     const oscWidget = new OscillatorWidget();
-    ui.addWidget(oscWidget, 'left');
+    ui.addWidget(oscWidget, 'left');*/
+
+    // add a list picker 
+    console.log('Add list');
+    const lp = new ListPickerWidget<{ value: number, label: string}>([
+        { label: 'Test 1', value: 1 },
+        { label: 'Test 2', value: 2 },
+        { label: 'Test 3', value: 3 },
+        { label: 'Test 4', value: 4 },
+    ], 'label');
+    ui.addWidget(lp);
 } )();

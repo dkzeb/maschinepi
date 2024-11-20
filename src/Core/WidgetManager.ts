@@ -1,4 +1,4 @@
-import { Widget } from "../Widgets/Widget";
+import { Widget } from "../old/Widgets/Widget";
 import { container, singleton } from "tsyringe";
 import * as crypto from 'crypto';
 import { UIController } from "../UI/UIController";

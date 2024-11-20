@@ -1,7 +1,7 @@
-import { UITools } from '../UI/UITools';
+import { UITools } from '../../UI/UITools';
 import { Widget } from './Widget';
 import * as os from 'os';
-import * as pkg from '../../package.json';
+import * as pkg from '../../../package.json';
 
 export class SysInfoWidget extends Widget<SysInfoWidget> {
     static readonly discriminator: string = 'SysInfoWidget';

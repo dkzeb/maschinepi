@@ -3,11 +3,11 @@ import { PixiWidget } from "./PixiWidget";
 import { Text } from '@pixi/node';
 import { filter, Subject } from "rxjs";
 import { AudioContext, GainNode, OscillatorNode, AnalyserNode } from "node-web-audio-api";
-import Channel from "../../AudioEngine/channel";
+import Channel from "../AudioEngine/channel";
 import { container } from "tsyringe";
-import Mixer from "../../AudioEngine/mixer";
-import { AudioTools } from "../../AudioEngine/AudioTools";
-import { UITools } from "../../UI/UITools";
+import Mixer from "../AudioEngine/mixer";
+import { AudioTools } from "../AudioEngine/AudioTools";
+import { UITools } from "../UI/UITools";
 
 
 export class OscillatorWidget extends PixiWidget {

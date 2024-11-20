@@ -1,9 +1,9 @@
 import { Canvas, CanvasRenderingContext2D } from "canvas";
 import { Widget, WidgetOptionButton } from "./Widget";
-import { Project } from "../Core/Project";
+import { Project } from "../../Core/Project";
 import { container } from "tsyringe";
-import { WidgetManager } from "../Core/WidgetManager";
-import { DisplayTarget } from "../Hardware/MK3Controller";
+import { WidgetManager } from "../../Core/WidgetManager";
+import { DisplayTarget } from "../../Hardware/MK3Controller";
 
 export class StartupWidget extends Widget<StartupWidget> {    
     static readonly discriminator: string = 'StartupWidget';

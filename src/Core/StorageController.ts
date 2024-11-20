@@ -5,7 +5,7 @@ import { container } from "tsyringe";
 import { StateController } from "./StateController";
 import * as path from 'path';
 import * as fs from 'fs';
-import { UILayer } from "src/Widgets/Widget";
+import { UILayer } from "src/old/Widgets/Widget";
 import { loadImage } from "canvas";
 
 export class StorageController {

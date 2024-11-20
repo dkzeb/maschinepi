@@ -1,8 +1,8 @@
 // src/widgets/SimpleOscillator.ts
 import { container } from 'tsyringe';
-import AudioEngine from '../AudioEngine/audioEngine';
-import Mixer from '../AudioEngine/mixer';
-import Channel from '../AudioEngine/channel';
+import AudioEngine from '../../AudioEngine/audioEngine';
+import Mixer from '../../AudioEngine/mixer';
+import Channel from '../../AudioEngine/channel';
 import { Instrument } from 'src/AudioEngine/instrument';
 
 class SimpleOscillator implements Instrument {

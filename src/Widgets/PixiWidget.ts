@@ -1,7 +1,7 @@
 import { Assets, Container, DisplayObject, Graphics, Sprite, Text } from "@pixi/node";
-import { Dims, PIXIUIController, UIKnob, UIOption } from "../../UI/PIXIUIController";
-import { UIConstants, UITools } from "../../UI/UITools";
-import { EventBus } from "../../Core/EventBus";
+import { Dims, PIXIUIController, UIKnob, UIOption } from "../UI/PIXIUIController";
+import { UIConstants, UITools } from "../UI/UITools";
+import { EventBus } from "../Core/EventBus";
 import { container } from "tsyringe";
 import { filter } from "rxjs";
 import * as path from 'path';

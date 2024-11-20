@@ -1,7 +1,7 @@
 import { CanvasRenderingContext2D } from "canvas";
 import { Graphics, Text, Container, DisplayObject, Application, Assets, Texture, Sprite } from "@pixi/node";
 import { UIKnob, UIOption } from "./PIXIUIController";
-import { WidgetOption } from "src/Widgets/pixi/PixiWidget";
+import { WidgetOption } from "src/Widgets/PixiWidget";
 import { AnalyserNode } from "node-web-audio-api";
 import * as fs from 'fs';
 import * as path from 'path';
@@ -36,6 +36,10 @@ export type Pad = {
     active: boolean
 }
 
+type ListItem = {
+    label: Text,
+    bg: Graphics
+}
 
 export class UITools {    
 
@@ -236,6 +240,55 @@ export class UITools {
             .beginFill('#000000', 1)
             .drawCircle(gfx.width / 2, gfx.height / 2, 25).endFill();                    
         return gfx;
+    }
+
+    public static DrawListPicker<T>(items: T[], labelKey?: keyof T) {
+        let selected: T | null;
+        let activeItem: ListItem;
+        const graphics = new Graphics();
+        const listItems: ListItem[] = [];
+
+        const setActive = (idx: number) => {
+            // deactivate currently active item
+            if(activeItem) {
+                activeItem.bg.clear().beginFill(0x000000).drawRect(0, 0, 480, 20).endFill();                    
+                activeItem.label.style.fill = 0xFFFFFF;
+            }
+
+            activeItem = listItems[idx];
+            // mark the new active item
+            activeItem.bg.clear().beginFill(0xFFFFFF).drawRect(0, 0, 480, 20).endFill();
+            activeItem.label.style.fill = 0x000000;
+
+        }            
+
+        for(let i = 0; i < items.length; i++) {
+            const item = items[i];                        
+            const background = new Graphics();
+            background.beginFill(0xFFFFFF);
+            background.y += i * 20;
+            
+            const labelText = (labelKey ? item[labelKey] : item) as string;
+            const itemLabel = new Text(labelText, {
+                fill: 0xFFFFFF,
+                fontSize: 16
+            });
+            itemLabel.anchor.set(0, .5);
+            itemLabel.y += (i * 20) + 10;
+            itemLabel.x += 10;
+
+            graphics.addChild(background, itemLabel);
+
+            listItems.push({
+                label: itemLabel,
+                bg: background
+            });
+        }
+
+        return {
+            graphics,
+            setActive
+        }
     }
 
     public static DrawAnalyzerWave(analyser: AnalyserNode, width: number, height: number, ): {graphics: Graphics, update: () => void} {

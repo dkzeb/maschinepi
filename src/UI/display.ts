@@ -1,6 +1,6 @@
 import { Canvas, CanvasRenderingContext2D } from 'canvas';
 import { DisplayTarget } from 'src/Hardware/MK3Controller';
-import { Widget } from '../Widgets/Widget';
+import { Widget } from '../old/Widgets/Widget';
 
 export type DisplayOptions = {
     name: string;    

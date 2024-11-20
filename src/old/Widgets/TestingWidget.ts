@@ -1,13 +1,13 @@
 import { container } from "tsyringe";
-import { Pad, UITools } from "../UI/UITools";
+import { Pad, UITools } from "../../UI/UITools";
 import { Widget } from "./Widget";
-import { EventBus } from "../Core/EventBus";
+import { EventBus } from "../../Core/EventBus";
 
 import { debounceTime, filter } from "rxjs";
-import { Instrument } from "../AudioEngine/instrument";
+import { Instrument } from "../../AudioEngine/instrument";
 import SimpleOscillator from "./SimpleOscillator";
-import { DisplayTarget, MK3Controller } from "../Hardware/MK3Controller";
-import { UIController } from "../UI/UIController";
+import { DisplayTarget, MK3Controller } from "../../Hardware/MK3Controller";
+import { UIController } from "../../UI/UIController";
 
 const noteFreqScales = {
     "C":   [16.35, 32.70, 65.41, 130.81, 261.63, 523.25, 1046.50, 2093.00, 4186.01],

@@ -6,7 +6,7 @@ import { EventBus, MPIEvent } from "../Core/EventBus";
 import { DisplayTarget, MK3Controller } from "../Hardware/MK3Controller";
 import { Display, TextOptions } from "./display";
 import { DevDisplay } from './devDisplay';
-import { Widget } from '../Widgets/Widget';
+import { Widget } from '../old/Widgets/Widget';
 import { registerFont } from 'canvas';
 
 import * as jpeg from 'jpeg-js';

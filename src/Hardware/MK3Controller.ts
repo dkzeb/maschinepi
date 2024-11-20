@@ -248,7 +248,7 @@ export class MK3Controller {
                         type: 'ButtonInput',
                         name: key+':pressed',                            
                     });
-                }
+                }                
             });
             this.hardware?.on(key +':released', (ev?: any) => {                
                 if(ev !== undefined && ev !== null) {
@@ -276,8 +276,7 @@ export class MK3Controller {
                 })
             });
         });
-        this.hardware.on('stepper:step', (dir) => {
-            console.log('stepper ev', dir);
+        this.hardware?.on('stepper:step', (dir) => {            
             this.ebus.processEvent({
                 type: 'KnobInput',
                 name: 'navStep',

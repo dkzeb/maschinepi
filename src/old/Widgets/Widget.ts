@@ -1,9 +1,9 @@
 import { Canvas, CanvasRenderingContext2D, Image } from "canvas";
 import { filter, Subscription } from "rxjs";
-import { EventBus, MPIEvent } from "../Core/EventBus";
+import { EventBus, MPIEvent } from "../../Core/EventBus";
 import { container } from "tsyringe";
-import { MK3Controller } from "../Hardware/MK3Controller";
-import { StorageController } from "../Core/StorageController";
+import { MK3Controller } from "../../Hardware/MK3Controller";
+import { StorageController } from "../../Core/StorageController";
 import * as zlib from 'zlib';
 
 export type WidgetEvent = MPIEvent & {

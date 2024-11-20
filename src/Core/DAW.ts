@@ -4,11 +4,11 @@ import { EventBus } from "./EventBus";
 import * as path from 'path';
 import * as pkg from '../../package.json';
 import { DisplayTarget, MK3Controller } from "../Hardware/MK3Controller";
-import { StartupWidget } from "../Widgets/StartupWidget";
-import { SysInfoWidget } from "../Widgets/SysInfoWidget";
+import { StartupWidget } from "../old/Widgets/StartupWidget";
+import { SysInfoWidget } from "../old/Widgets/SysInfoWidget";
 import { StateController } from "./StateController";
 import { WidgetManager } from "./WidgetManager";
-import { TestingWidget } from "../Widgets/TestingWidget";
+import { TestingWidget } from "../old/Widgets/TestingWidget";
 
 @singleton()
 export class DAW {
