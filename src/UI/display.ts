@@ -1,6 +1,6 @@
 import { Canvas, CanvasRenderingContext2D } from 'canvas';
 import { DisplayTarget } from 'src/Hardware/MK3Controller';
-import { Widget } from '../old/Widgets/Widget';
+//import { Widget } from '../old/Widgets/Widget';
 
 export type DisplayOptions = {
     name: string;    
@@ -36,7 +36,7 @@ export abstract class Display {
 
     displayTarget: DisplayTarget;
 
-    widgets: Set<Widget<any>> = new Set();
+    widgets: Set<any> = new Set();
 
     layers: UILayer[] = [];
 
@@ -91,7 +91,7 @@ export abstract class Display {
         }
     }
 
-    addWidget(w: Widget<unknown>) {        
+    addWidget(w: any) {        
         this.widgets.add(w);
     }
 
