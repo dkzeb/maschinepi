@@ -42,6 +42,7 @@ export class PixiWidget {
     
     containers: Record<string, Container> = {
         menu: new Container(),
+        titlebar: new Container(),
         main: new Container(),
         knobs: new Container()    
     }
@@ -178,12 +179,11 @@ export class PixiWidget {
             if(this.opts.options) {
                 titleBar.y = 35;
             }        
-            this.containers.menu.addChild(titleBar);
+            this.containers.titlebar.addChild(titleBar);
+            container.addChild(this.containers.titlebar);
         }
         
-        this.containers.main.y = mainYOffset;        
-        container.addChild(this.containers.main);
-
+        
         if(this.opts.knobs) {
             const uiKnobs = this.opts.knobs.map(k => k.ui);
             this.containers.knobs.removeChildren(0);
@@ -194,6 +194,8 @@ export class PixiWidget {
             container.addChild(this.containers.knobs);         
         }        
 
+        this.containers.main.y = mainYOffset;        
+        container.addChild(this.containers.main);
         return container;
     }
 
