@@ -10,6 +10,7 @@ import { filter } from 'rxjs';
 import { OscillatorWidget } from './Widgets/OscillatorWidget';
 import Mixer from './AudioEngine/mixer';
 import { ListPickerWidget } from './Widgets/ListPickerWidget';
+import { SamplerWidget } from './Widgets/SamplerWidget';
 
 let exitHandler: any;
 
@@ -57,17 +58,20 @@ process.on('SIGINT', async () => {
     }
 
     // async main loop        
-    /*
-    const oscWidget = new OscillatorWidget();
-    ui.addWidget(oscWidget, 'left');*/
+    
+    //const oscWidget = new OscillatorWidget();
+    //ui.addWidget(oscWidget, 'left');
 
     // add a list picker 
-    console.log('Add list');
+/*    console.log('Add list');
     const lp = new ListPickerWidget<{ value: number, label: string}>([
         { label: 'Test 1', value: 1 },
         { label: 'Test 2', value: 2 },
         { label: 'Test 3', value: 3 },
         { label: 'Test 4', value: 4 },
     ], 'label');
-    ui.addWidget(lp);
+    ui.addWidget(lp);*/
+
+    const samplerWidget = new SamplerWidget();
+    ui.addWidget(samplerWidget);
 } )();

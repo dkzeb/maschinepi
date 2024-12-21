@@ -1,4 +1,4 @@
-import { Assets, Container, DisplayObject, Graphics, Sprite, Text } from "@pixi/node";
+import { Assets, Container, DisplayObject, Graphics, Sprite, Text, Color } from "@pixi/node";
 import { Dims, PIXIUIController, UIKnob, UIOption } from "../UI/PIXIUIController";
 import { UIConstants, UITools } from "../UI/UITools";
 import { EventBus } from "../Core/EventBus";
@@ -29,7 +29,7 @@ export type PixiWidgetOptions = {
     themeBg?: boolean,
     modal?: boolean,
     titlebar?: {
-        color: string,
+        color: string | Color,
         title: string,
         icon?: string
     }
