@@ -11,6 +11,7 @@ import { OscillatorWidget } from './Widgets/OscillatorWidget';
 import Mixer from './AudioEngine/mixer';
 import { ListPickerWidget } from './Widgets/ListPickerWidget';
 import { SamplerWidget } from './Widgets/SamplerWidget';
+import { SampleBrowser } from './Widgets/BrowserWidget';
 
 let exitHandler: any;
 
@@ -72,6 +73,13 @@ process.on('SIGINT', async () => {
     ], 'label');
     ui.addWidget(lp);*/
 
-    const samplerWidget = new SamplerWidget();
-    ui.addWidget(samplerWidget);
+   // const samplerWidget = new SamplerWidget();
+    //ui.addWidget(samplerWidget);
+
+    const browse = new SampleBrowser();
+    ui.addWidget(browse);
+
+    browse.result.subscribe(r => {
+        console.log('browser set', r);
+    })
 } )();

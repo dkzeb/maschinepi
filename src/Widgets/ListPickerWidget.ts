@@ -15,8 +15,8 @@ export class ListPickerWidget<T> extends PixiWidget {
 
     constructor(items: T[], labelKey?: keyof T) {
         super({
-            name: 'ListPickerWidget'            
-        });        
+            name: 'ListPickerWidget',        
+        });
         this.items = items;        
         this.labelKey = labelKey;
         this.setupEvents();
@@ -32,10 +32,16 @@ export class ListPickerWidget<T> extends PixiWidget {
                 if(this.currentIndex < 0) {
                     this.currentIndex = 0;
                 }
+                
+                console.log('current index:', this.currentIndex);
                 if(this.activateItem) {
-                    this.activateItem(this.currentIndex);
-                    this.selected = this.items[this.currentIndex];
-                    this.itemActivated.next(this.selected);
+                    try {
+                        this.selected = this.items[this.currentIndex];
+                        this.itemActivated.next(this.selected);
+                        this.activateItem(this.currentIndex);
+                    } catch (e) {
+                        console.log('activate item error', e);
+                    }
                 }
             }
         });
@@ -60,13 +66,23 @@ export class ListPickerWidget<T> extends PixiWidget {
     }
 
     override draw(): DisplayObject {        
-        const ui = UITools.DrawListPicker<T>(this.items, this.labelKey);
-        if(!this.activateItem) {
-            ui.setActive(this.currentIndex);
-        }
-        this.activateItem = ui.setActive;
-        return ui.graphics;
+        const ui = UITools.DrawListPicker<T>(
+            { 
+                items: this.items, 
+                labelKey: this.labelKey, 
+                pagination: this.items.length > 10, 
+                itemsPerPage: 10 
+            });
 
+        if(!this.activateItem) {
+            this.activateItem = ui.setActive;
+        }
+        this.activateItem(this.currentIndex);
+        //return ui.graphics;
+
+        this.containers.main = ui.graphics;
+
+        return super.draw();
     }
 
 }

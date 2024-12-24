@@ -79,10 +79,10 @@ export class PIXIUIController {
 
     }
 
-    addWidget(w: PixiWidget, target: TargetDisplay = 'left') {
+    async addWidget(w: PixiWidget, target: TargetDisplay = 'left') {
         const c = this.getDisplay(target);
         c.container.removeChildren();
-        c.container.addChild(w.draw());
+        c.container.addChild(await w.draw());
     }
 
     getDisplay(id: TargetDisplay) {

@@ -1,12 +1,19 @@
-import { AudioContext, GainNode } from "node-web-audio-api";
+import { AudioContext, GainNode, AudioBuffer } from "node-web-audio-api";
 import Mixer from "./mixer";
 import { container } from "tsyringe";
+import { StorageController } from "../Core/StorageController";
+
 
 // src/audioEngine/AudioEngine.ts
 class AudioEngine {    
     private static _instance?: AudioEngine;
     private audioContext: AudioContext;
     private gainNode: GainNode;
+
+    private storage: StorageController = container.resolve(StorageController);
+
+    sources: Record<string, AudioBuffer> = {};
+
     //private workletNode: AudioWorkletNode;
     private mixer?: Mixer;
 
@@ -56,6 +63,14 @@ class AudioEngine {
 
     public getContext(): AudioContext {
         return this.audioContext;
+    }
+
+    public playSource(sourceName: string) {
+
+    }
+
+    private loadSource(sourceName: string) {
+        
     }
 }
 

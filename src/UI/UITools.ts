@@ -242,7 +242,15 @@ export class UITools {
         return gfx;
     }
 
-    public static DrawListPicker<T>(items: T[], labelKey?: keyof T) {
+    public static DrawListPicker2<T>(options: 
+        {
+            items: T[],
+            labelKey?: keyof T,
+            pagination?: boolean,
+            itemsPrPage?: number
+
+        }) {
+
         let selected: T | null;
         let activeItem: ListItem;
         const graphics = new Graphics();
@@ -259,16 +267,15 @@ export class UITools {
             // mark the new active item
             activeItem.bg.clear().beginFill(0xFFFFFF).drawRect(0, 0, 480, 20).endFill();
             activeItem.label.style.fill = 0x000000;
-
         }            
 
-        for(let i = 0; i < items.length; i++) {
-            const item = items[i];                        
+        for(let i = 0; i < options.items.length; i++) {
+            const item = options.items[i];                        
             const background = new Graphics();
             background.beginFill(0xFFFFFF);
             background.y += i * 20;
             
-            const labelText = (labelKey ? item[labelKey] : item) as string;
+            const labelText = (options.labelKey ? item[options.labelKey] : item) as string;
             const itemLabel = new Text(labelText, {
                 fill: 0xFFFFFF,
                 fontSize: 16
@@ -290,6 +297,139 @@ export class UITools {
             setActive
         }
     }
+
+
+    public static DrawListPicker<T>(options: {
+        items: T[];
+        labelKey?: keyof T;
+        pagination?: boolean;
+        itemsPerPage?: number;
+      }) {
+        // Pagination variables
+        let currentPage = 1;
+        const itemsPerPage = options.itemsPerPage || 10; // Default to 10 items per page
+        let internalCurrentIndex = 0; // Track internal index
+      
+        let selected: T | null;
+        let activeItem: ListItem | null = null; // Initialize with null
+        const graphics = new Graphics();
+        const allListItems: ListItem[] = []; // Store all list items for consistent indexing
+        const listItems: ListItem[] = [];
+
+        const setActive = (idx: number) => {
+          // Deactivate currently active item
+          if (activeItem) {
+            activeItem.bg.clear().beginFill(0x000000).drawRect(0, 0, 480, 20).endFill();
+            activeItem.label.style.fill = 0xffffff;
+          }
+      
+          // Calculate actual index based on pagination
+          const actualIndex = (currentPage - 1) * itemsPerPage + idx; 
+          internalCurrentIndex = actualIndex;
+      
+          // Check if the selected item is outside the current page
+          if (actualIndex < (currentPage - 1) * itemsPerPage || actualIndex >= currentPage * itemsPerPage) {
+            // Calculate the target page
+            const targetPage = Math.ceil((actualIndex + 1) / itemsPerPage); 
+            currentPage = targetPage;
+            drawCurrentPage(); 
+          } else {
+            // Mark the new active item within the current page
+            activeItem = allListItems[actualIndex]; // Directly reference from allListItems
+            activeItem.bg.clear().beginFill(0xffffff).drawRect(0, 0, 480, 20).endFill();
+            activeItem.label.style.fill = 0x000000;
+          }
+        };
+      
+        const drawCurrentPage = () => {
+          graphics.removeChildren(); 
+          listItems.length = 0; // Clear only the visible listItems
+      
+          const startIndex = (currentPage - 1) * itemsPerPage;
+          const endIndex = Math.min(startIndex + itemsPerPage, options.items.length);
+      
+          for (let i = startIndex; i < endIndex; i++) {
+            listItems.push(allListItems[i]); // Reference existing items from allListItems
+            graphics.addChild(allListItems[i].bg, allListItems[i].label);
+          }
+      
+          // Update activeItem if it's now within the visible range 
+          // and it wasn't previously active
+          if (activeItem === null && 
+              internalCurrentIndex >= startIndex && 
+              internalCurrentIndex < endIndex) {
+            const visibleIndex = internalCurrentIndex - startIndex;
+            activeItem = listItems[visibleIndex]; 
+            activeItem.bg.clear().beginFill(0xffffff).drawRect(0, 0, 480, 20).endFill();
+            activeItem.label.style.fill = 0x000000;
+          }
+        };
+      
+        if (options.pagination) {
+          for (let i = 0; i < options.items.length; i++) {
+            const item = options.items[i];
+            const background = new Graphics();
+            background.beginFill(0xffffff); 
+      
+            const labelText = (options.labelKey ? item[options.labelKey] : item) as string;
+            const itemLabel = new Text(labelText, {
+              fill: 0xffffff,
+              fontSize: 16,
+            });
+            itemLabel.anchor.set(0, 0.5);
+      
+            allListItems.push({
+              label: itemLabel,
+              bg: background,
+            });
+          }
+          drawCurrentPage(); // Draw initial page
+        } else {
+          // Draw entire list if pagination is disabled
+          for (let i = 0; i < options.items.length; i++) {
+            const item = options.items[i];
+            const background = new Graphics();
+            background.beginFill(0xffffff);
+            background.y += i * 20;
+      
+            const labelText = (options.labelKey ? item[options.labelKey] : item) as string;
+            const itemLabel = new Text(labelText, {
+              fill: 0xffffff,
+              fontSize: 16,
+            });
+            itemLabel.anchor.set(0, 0.5);
+            itemLabel.y += (i * 20) + 10;
+            itemLabel.x += 10;
+      
+            graphics.addChild(background, itemLabel);
+      
+            allListItems.push({
+              label: itemLabel,
+              bg: background,
+            });
+          }
+        }
+      
+        return {
+          graphics,
+          setActive,
+          nextPage: () => {
+            if (currentPage < Math.ceil(options.items.length / itemsPerPage)) {
+              currentPage++;
+              drawCurrentPage();
+            }
+          },
+          previousPage: () => {
+            if (currentPage > 1) {
+              currentPage--;
+              drawCurrentPage();
+            }
+          },
+          getCurrentIndex: () => {
+            return internalCurrentIndex; 
+          },
+        };
+      }
 
     public static DrawAnalyzerWave(analyser: AnalyserNode, width: number, height: number, ): {graphics: Graphics, update: () => void} {
         const graphics = new Graphics();        
@@ -565,7 +705,7 @@ export class UITools {
 
 export const UIConstants = {
     option: {
-        width: 480 / 4,
+        width: (480 / 4) - 1,
         height: 35,
         colors: {
             bg: '#000000',

@@ -1,21 +1,22 @@
 import { EventBus } from "./EventBus";
 import { PrismaClient } from "@prisma/client";
 //import {SoundEngine} from "./SoundEngine";
-import { container } from "tsyringe";
+import { container, singleton } from "tsyringe";
 import { StateController } from "./StateController";
 import * as path from 'path';
 import * as fs from 'fs';
-import { UILayer } from "src/old/Widgets/Widget";
+//import { UILayer } from "src/old/Widgets/Widget";
 import { loadImage } from "canvas";
 
+@singleton()
 export class StorageController {
 
     dataDir: string;
-    //prisma: PrismaClient;
+    prisma: PrismaClient;
     ebus: EventBus;
 
     constructor() {
-        //this.prisma = new PrismaClient();
+        this.prisma = new PrismaClient();
         this.ebus = container.resolve(EventBus);            
         this.dataDir = path.join(process.cwd(), StateController.currentState.dataDirectory);
     }
@@ -33,7 +34,7 @@ export class StorageController {
         return data;
     }
 
-    async loadWidgetUI(widgetName): Promise<UILayer[]> {
+    async loadWidgetUI(widgetName): Promise<any[]> {
         const widgetPath = path.join(this.dataDir, widgetName);    
         const isAssetAnImage = (fp: string): boolean => {
             const fpSplit = fp.split('.');
@@ -42,7 +43,7 @@ export class StorageController {
         }
         if(this.doesExist(widgetPath)) {
             const layers = fs.readdirSync(widgetPath).filter(fn => isAssetAnImage);            
-            const uiLayers: UILayer[] = [];
+            const uiLayers: any[] = [];
             
             layers.forEach(async (l, idx) => {
                 uiLayers.push({

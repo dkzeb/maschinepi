@@ -5,6 +5,7 @@ import { EventBus } from "../Core/EventBus";
 import { container } from "tsyringe";
 import { filter } from "rxjs";
 import * as path from 'path';
+import { Display } from "src/UI/display";
 
 export type WidgetOption = {
     ui: UIOption,
@@ -58,9 +59,7 @@ export class PixiWidget {
             this.opts.dims = {
                 x: 0, y: 0, w: 480, h: 272
             }
-        }
-
-        console.log(`PixiWidget ${opts.name} constructed`);                
+        }                
         
         this.setupBg().then(() => {
             this.init();
@@ -114,23 +113,6 @@ export class PixiWidget {
                             opt.ui.active = false;
                         }
                     }
-
-
-                    /* if(opt.toggleable) {
-                        if(action === 'pressed') {
-                            opt.toggleable.state = !opt.toggleable.state
-                            opt.ui.active = opt.toggleable.state;
-                            console.log('toggling', opt.buttonId, 'to', opt.ui.active );
-                            opt.cb(opt);
-                        }
-                    } else {
-                        if(action === 'pressed') {
-                            opt.ui.active = true;                            
-                            opt.cb(opt);
-                        } else {
-                            opt.ui.active = false;                        
-                        }
-                    } */
                 }
             });
 
@@ -149,7 +131,7 @@ export class PixiWidget {
         }
     }
 
-    draw(): DisplayObject {        
+    draw(): DisplayObject | Promise<DisplayObject> {        
         const container = new Container();        
         container.width = this.opts.dims!.w;
         container.height = this.opts.dims!.h;        
@@ -163,7 +145,6 @@ export class PixiWidget {
         }*/
 
         if(this.opts.options) {            
-            this.containers.menu.removeChildren(0);
             const menu = UITools.DrawMenu(this.opts.options);
             menu.x = 0;
             menu.y = 0;
