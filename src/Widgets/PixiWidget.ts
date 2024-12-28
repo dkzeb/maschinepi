@@ -131,7 +131,7 @@ export class PixiWidget {
         }
     }
 
-    draw(): DisplayObject | Promise<DisplayObject> {        
+    draw(): DisplayObject {        
         const container = new Container();        
         container.width = this.opts.dims!.w;
         container.height = this.opts.dims!.h;        

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node src/Application.ts",
-    "dev": "ts-node-dev src/PIXIPlayground.ts",
+    "dev": "ts-node-dev src/Application.ts",
     "ts": "ts-node",
     "ts-dev": "ts-node-dev",
     "build": "tsc"

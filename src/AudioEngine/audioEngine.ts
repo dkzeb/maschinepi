@@ -1,8 +1,14 @@
-import { AudioContext, GainNode, AudioBuffer } from "node-web-audio-api";
+import { AudioContext, GainNode, AudioBuffer, AnalyserNode } from "node-web-audio-api";
 import Mixer from "./mixer";
 import { container } from "tsyringe";
 import { StorageController } from "../Core/StorageController";
+import { WaveFile } from "wavefile";
 
+type AudioClip = {
+    buffer: AudioBuffer,
+    gain: GainNode,
+    analyzer: AnalyserNode
+}
 
 // src/audioEngine/AudioEngine.ts
 class AudioEngine {    
@@ -13,9 +19,16 @@ class AudioEngine {
     private storage: StorageController = container.resolve(StorageController);
 
     sources: Record<string, AudioBuffer> = {};
-
-    //private workletNode: AudioWorkletNode;
-    private mixer?: Mixer;
+    private _mixer?: Mixer;
+    public set mixer(m: Mixer) {
+        this._mixer = m;
+    }
+    public get mixer(): Mixer {
+        if(!this._mixer) {
+            throw new Error("NO MIXER TO GET!");
+        }
+        return this._mixer
+    }
 
     public static get instance(): AudioEngine {
         if(!this._instance)
@@ -65,11 +78,60 @@ class AudioEngine {
         return this.audioContext;
     }
 
-    public playSource(sourceName: string) {
+    public async playSource(sourceName: string) {
 
+        if(!this.sources[sourceName]) {
+            await this.loadSource(sourceName);    
+        }
+
+        const smpl = this.sources[sourceName];
+        const smplSource = this.audioContext.createBufferSource();
+        smplSource.buffer = smpl;
+        smplSource.connect(this.mixer.getChannel(0).gainNode);
+        smplSource.onended = () => smplSource.disconnect();
+        smplSource.start();
+        
     }
 
-    private loadSource(sourceName: string) {
+    async playSources(sampleNames: string[]) {
+        const buffers: AudioBufferSourceNode[] = [];  
+        
+        for(let sn of sampleNames) {
+            if(!this.sources[sn]) {
+                await this.loadSource(sn);
+            }
+            const output = this.audioContext.createBufferSource();
+            output.buffer = this.sources[sn];
+            output.connect(this.mixer.getChannel(0).gainNode);
+            output.onended = () => output.disconnect();
+            buffers.push(output);
+        }
+
+        buffers.forEach(output => output.start());
+    
+    }
+
+    private async loadSource(sourceName: string) {
+        
+        // check if source is already loaded, if so, abort
+        if(this.sources[sourceName]) {
+            return; 
+        }
+        console.log('snsn', sourceName)
+        const sourceData = this.storage.loadFile(
+            this.storage.joinPath(
+                this.storage.sampleDir,
+                sourceName
+            )
+        )
+
+        console.log('we have source data', sourceData);
+        const wav = new WaveFile(sourceData);                          
+        wav.toSampleRate(44100);
+        const waveBuff = Buffer.from(wav.toBuffer());
+        const audioBuff = await this.audioContext.decodeAudioData(waveBuff.buffer); 
+        this.sources[sourceName] = audioBuff;
+
         
     }
 }

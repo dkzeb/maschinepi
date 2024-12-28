@@ -1,7 +1,4 @@
 import { PIXIUIController } from "../UI/PIXIUIController";
-import { ListPickerWidget } from "./ListPickerWidget";
-import * as fs from 'fs';
-import * as path from 'path';
 import { container } from "tsyringe";
 import { PaginatedList } from "./PaginatedListWidget";
 import { PixiWidget } from "./PixiWidget";
@@ -9,6 +6,7 @@ import { DisplayObject } from "@pixi/node";
 import { Subject } from "rxjs";
 import AudioEngine from '../AudioEngine/audioEngine';
 import { StorageController } from "../Core/StorageController";
+import { UITools } from "src/UI/UITools";
 
 export class SampleBrowser extends PixiWidget {
     ui: PIXIUIController = container.resolve(PIXIUIController);
@@ -16,8 +14,6 @@ export class SampleBrowser extends PixiWidget {
     items: any[] = [];
 
     result: Subject<string> = new Subject();
-
-    private browserInit = false;
 
     private currentIndex = 0;
     private numberOfItems = 0;
@@ -44,35 +40,30 @@ export class SampleBrowser extends PixiWidget {
                 }
             }]
         });    
-    }
 
-    override async init(): Promise<void> {
-        if(!this.browserInit) {
-            const samples = await this.storage.prisma.sample.findMany()
-            this.numberOfItems = samples.length;
-            
-            this.items = samples.map(s => s.name);
-            this.list =  new PaginatedList({
-                items: this.items,
-            });
-            this.list.setActiveItem(0);    
-            this.setupEvents();
-    
-            // activated sub for preview handling and so on
-            this.list.activated.subscribe(item => {
-                if(this.previewActive) {
-                    this.handlePreview(item);
-                }
-            });        
-    
-            this.browserInit = true;
-        }
+
+        console.log('what is my sample dir?', this.storage.sampleDir);
+        this.items = this.storage.listDir(this.storage.sampleDir);
+
+        this.numberOfItems = this.items.length;
+        this.list =  new PaginatedList({
+            items: this.items,
+        });
+        this.list.setActiveItem(0);    
+        this.setupEvents();
+
+        // activated sub for preview handling and so on
+        this.list.activated.subscribe(item => {
+            if(this.previewActive) {
+                this.handlePreview(item);
+            }
+        });        
     }
     
     handlePreview(item: any) {
-        console.log('item', item);
-        const previewDisplay = this.ui.getDisplay('right');
-        //AudioEngine
+        console.log('preview', item);
+        // check if sample is loaded, else load and then play
+        AudioEngine.playSource(item);
     }
 
     setupEvents() {
@@ -105,13 +96,9 @@ export class SampleBrowser extends PixiWidget {
         this.list.activated.unsubscribe();
     }
 
-    override async draw(): Promise<DisplayObject> {
-
-        if(!this.browserInit) {
-            await this.init();
-        }
+    override draw(): DisplayObject {
                 
         this.containers.main = this.list.getGraphics();         
-        return await super.draw();
+        return super.draw();
     }
 }
