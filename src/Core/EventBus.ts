@@ -28,8 +28,7 @@ export class EventBus {
             regExFn = new RegExp(regEx);
         }
 
-        console.log('regExFn', regExFn.test, regExFn.test('d1'));
-        const sub = this.events.pipe(filter(e => e.type === type &&  regExFn.test(e.name ?? ''))).subscribe(
+        const sub = this.events.pipe(filter(e => e.type === type && regExFn.test(e.name ?? ''))).subscribe(
             (ev) => {
                 if(cb) {
                     cb(ev);

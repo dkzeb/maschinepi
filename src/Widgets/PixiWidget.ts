@@ -3,7 +3,7 @@ import { Dims, PIXIUIController, UIKnob, UIOption } from "../UI/PIXIUIController
 import { UIConstants, UITools } from "../UI/UITools";
 import { EventBus } from "../Core/EventBus";
 import { container } from "tsyringe";
-import { filter } from "rxjs";
+import { filter, Subject } from "rxjs";
 import * as path from 'path';
 import { Display } from "src/UI/display";
 
@@ -180,4 +180,8 @@ export class PixiWidget {
         return container;
     }
 
+}
+
+export class PixiModalWidget extends PixiWidget {
+    result: Subject<any> = new Subject();
 }

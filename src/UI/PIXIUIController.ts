@@ -4,7 +4,8 @@ import * as jpeg from 'jpeg-js';
 import { MK3Controller } from '../Hardware/MK3Controller';
 import { container, singleton } from 'tsyringe';
 import { UITools } from './UITools';
-import { PixiWidget } from 'src/Widgets/PixiWidget';
+import { PixiModalWidget, PixiWidget } from 'src/Widgets/PixiWidget';
+import { firstValueFrom } from 'rxjs';
 
 
 @singleton()
@@ -13,7 +14,9 @@ export class PIXIUIController {
     app: Application;
     mk3: MK3Controller = container.resolve(MK3Controller);
     private containers: Record<string, Container>;
-    private displayBuffers: Record<string, ArrayBuffer>;                    
+    private displayBuffers: Record<string, ArrayBuffer>;        
+    
+    private activeWidget?: PixiWidget;
 
     deltaTime: number = 0;
 
@@ -55,7 +58,7 @@ export class PIXIUIController {
        this.containers.left.x = 0;
        this.containers.left.y = 480;
 
-       this.containers.right.x = 480;
+       this.containers.right.x = 481;
        this.containers.right.y = 480;
        
        for(let c in this.containers) {        
@@ -80,9 +83,25 @@ export class PIXIUIController {
     }
 
     async addWidget(w: PixiWidget, target: TargetDisplay = 'left') {
+        this.activeWidget = w;
+
         const c = this.getDisplay(target);
         c.container.removeChildren();
         c.container.addChild(await w.draw());
+    }
+
+    async openModal(w: PixiModalWidget, target: TargetDisplay = 'left') {
+        if(!w.opts.modal) {
+            return;
+        }
+        this.addWidget(w, target)
+        
+        firstValueFrom(w.result).then((res) => {
+            if(this.activeWidget)
+                this.addWidget(this.activeWidget, target);
+            
+            return res;
+        });
     }
 
     getDisplay(id: TargetDisplay) {

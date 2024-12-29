@@ -77,13 +77,14 @@ process.on('SIGINT', async () => {
     ], 'label');
     ui.addWidget(lp);*/
 
-   // const samplerWidget = new SamplerWidget();
-    //ui.addWidget(samplerWidget);
+    const samplerWidget = new SamplerWidget();
+    ui.addWidget(samplerWidget);
 
+    /*
     const browse = new SampleBrowser();
     ui.addWidget(browse);
 
     browse.result.subscribe(r => {
         console.log('browser set', r);
-    })
+    })*/
 } )();

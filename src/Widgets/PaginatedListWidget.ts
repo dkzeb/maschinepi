@@ -78,6 +78,10 @@ export class PaginatedList {
         }
       }
     }
+
+    public getActiveItem() {
+        return this.items[this.activeItemIndex];
+    }
   
     public nextPage() {
       if (this.currentPage < this.totalPages) {
@@ -104,33 +108,4 @@ export class PaginatedList {
     public getGraphics() {
       return this.graphics;
     }
-  }
-/*
-// Example Usage
-const app = new Application({ 
-  width: 800, 
-  height: 600, 
-  backgroundAlpha: 0 
-}); 
-
-const items = [
-  { name: 'Item 1' },
-  { name: 'Item 2' },
-  // ... more items
-];
-
-const list = new PaginatedList({ 
-  items: items, 
-  labelKey: 'name',
-  app: app 
-});
-
-app.stage.addChild(list.getGraphics()); 
-
-// Set the active item (e.g., select the third item)
-list.setActiveItem(2); 
-
-// ... (Rest of your application logic)
-
-// Start the application
-app.start(); */
+}

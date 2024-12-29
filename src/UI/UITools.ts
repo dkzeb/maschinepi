@@ -1,8 +1,8 @@
 import { CanvasRenderingContext2D } from "canvas";
-import { Graphics, Text, Container, DisplayObject, Application, Assets, Texture, Sprite } from "@pixi/node";
+import { Graphics, Text, Container, DisplayObject, Application, Assets, Texture, Sprite, TextStyle } from "@pixi/node";
 import { UIKnob, UIOption } from "./PIXIUIController";
-import { WidgetOption } from "src/Widgets/PixiWidget";
-import { AnalyserNode } from "node-web-audio-api";
+import { WidgetOption } from "../Widgets/PixiWidget";
+import { AnalyserNode, AudioBuffer } from "node-web-audio-api";
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -41,7 +41,41 @@ type ListItem = {
     bg: Graphics
 }
 
+
+interface RgbColor {
+    r: number;
+    g: number;
+    b: number;
+  }
+  
+  function hexToRgb(hex: string, arr?: boolean): RgbColor {
+    // Remove the hash symbol if it exists
+    hex = hex.replace('#', '');
+  
+    // Handle shorthand hex (e.g., #fff)
+    if (hex.length === 3) {
+      hex = hex.split('').map(char => char + char).join('');
+    }
+  
+    // Validate hex string length
+    if (hex.length !== 6) {
+      throw new Error('Invalid hex color string. Must be 6 characters long.');
+    }
+  
+    // Extract red, green, and blue components
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+
+    return { r, g, b };
+  }
+  
+
 export class UITools {    
+
+    public static Hex2RGB(hexString: string) {
+        return hexToRgb(hexString);
+    }
 
     public static DrawModal(ctx: CanvasRenderingContext2D, opts: ModalOptions): void {        
 
@@ -77,7 +111,7 @@ export class UITools {
         ctx.strokeStyle = origStrokeStyle;
     }
 
-    public static DrawText(ctx: CanvasRenderingContext2D, opts: TextOptions): void {
+    public static DrawTextOld(ctx: CanvasRenderingContext2D, opts: TextOptions): void {
         const origFillstyle = ctx.fillStyle;            
         ctx.fillStyle = 'white';
 
@@ -203,6 +237,11 @@ export class UITools {
              // Alpha (regionRGBA[i + 3]) is ignored
          }
          return regionRGB;
+    }
+
+    public static DrawText(label: string, style: Partial<TextStyle>) {
+        const text = new Text(label, style);
+        return text;
     }
 
     public static DrawMenu(options: WidgetOption[]) {
@@ -517,6 +556,29 @@ export class UITools {
             }            
         }
         return;
+    }
+
+    public static DrawWaveform(audioBuffer: AudioBuffer, color: string = '0xFFFFFF', lineWidth: number = 2): Graphics {
+        const graphics = new Graphics();
+        const channelData = audioBuffer.getChannelData(0); // Get data from the first channel
+        const numSamples = audioBuffer.length;
+        const width = 480; // Adjust width as needed
+        const height = 272; // Adjust height as needed
+        const centerY = height / 2;
+
+        const sampleWidth = width / numSamples;
+
+        graphics.lineStyle(lineWidth, color);
+        graphics.moveTo(0, centerY); 
+
+        for (let i = 0; i < numSamples; i++) {
+            const sample = channelData[i];
+            const x = i * sampleWidth;
+            const y = centerY - (sample * centerY * 0.8); // Scale amplitude 
+            graphics.lineTo(x, y);
+        }
+
+        return graphics;
     }
 
     public static DrawOption(option: UIOption) {        

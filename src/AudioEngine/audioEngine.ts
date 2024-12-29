@@ -3,6 +3,8 @@ import Mixer from "./mixer";
 import { container } from "tsyringe";
 import { StorageController } from "../Core/StorageController";
 import { WaveFile } from "wavefile";
+import { Graphics } from "@pixi/node";
+import { UITools } from "../UI/UITools";
 
 type AudioClip = {
     buffer: AudioBuffer,
@@ -19,6 +21,8 @@ class AudioEngine {
     private storage: StorageController = container.resolve(StorageController);
 
     sources: Record<string, AudioBuffer> = {};
+    waveforms: Record<string, Graphics> = {};
+
     private _mixer?: Mixer;
     public set mixer(m: Mixer) {
         this._mixer = m;
@@ -93,6 +97,22 @@ class AudioEngine {
         
     }
 
+    public async getSource(sourceName): Promise<AudioBuffer> {
+        if(!this.sources[sourceName]) {
+            await this.loadSource(sourceName);
+        }
+
+        return this.sources[sourceName];
+    }
+
+    public async getWaveform(sourceName): Promise<Graphics> {
+        if(!this.waveforms[sourceName]) {
+            await this.loadSource(sourceName);
+        }
+
+        return this.waveforms[sourceName];
+    }
+
     async playSources(sampleNames: string[]) {
         const buffers: AudioBufferSourceNode[] = [];  
         
@@ -117,7 +137,6 @@ class AudioEngine {
         if(this.sources[sourceName]) {
             return; 
         }
-        console.log('snsn', sourceName)
         const sourceData = this.storage.loadFile(
             this.storage.joinPath(
                 this.storage.sampleDir,
@@ -125,14 +144,12 @@ class AudioEngine {
             )
         )
 
-        console.log('we have source data', sourceData);
         const wav = new WaveFile(sourceData);                          
         wav.toSampleRate(44100);
         const waveBuff = Buffer.from(wav.toBuffer());
         const audioBuff = await this.audioContext.decodeAudioData(waveBuff.buffer); 
         this.sources[sourceName] = audioBuff;
-
-        
+        this.waveforms[sourceName] = UITools.DrawWaveform(audioBuff);
     }
 }
 

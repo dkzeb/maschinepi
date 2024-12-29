@@ -6,7 +6,7 @@ import { DisplayObject } from "@pixi/node";
 import { Subject } from "rxjs";
 import AudioEngine from '../AudioEngine/audioEngine';
 import { StorageController } from "../Core/StorageController";
-import { UITools } from "src/UI/UITools";
+import { UITools } from "../UI/UITools";
 
 export class SampleBrowser extends PixiWidget {
     ui: PIXIUIController = container.resolve(PIXIUIController);
@@ -20,7 +20,10 @@ export class SampleBrowser extends PixiWidget {
 
     private storage: StorageController = container.resolve(StorageController);
 
+    private previewDisplay = this.ui.getDisplay('right');
     previewActive = false;
+
+    debouncedHandlePreview = debounce(this.handlePreview, 200);
 
     constructor() {    
         super({
@@ -36,13 +39,14 @@ export class SampleBrowser extends PixiWidget {
                     slot: 3
                 },
                 cb: (o) => {
-                    this.previewActive = o.ui.active;
+                    this.previewActive = o.ui.active;                
+                    if(this.previewActive && this.previewDisplay) {
+                        this.debouncedHandlePreview(this.list.getActiveItem(), this.previewDisplay, this.previewActive);       
+                    }
                 }
             }]
         });    
 
-
-        console.log('what is my sample dir?', this.storage.sampleDir);
         this.items = this.storage.listDir(this.storage.sampleDir);
 
         this.numberOfItems = this.items.length;
@@ -50,20 +54,29 @@ export class SampleBrowser extends PixiWidget {
             items: this.items,
         });
         this.list.setActiveItem(0);    
+        this.handlePreview(this.list.getActiveItem(), this.previewDisplay, this.previewActive);
+
         this.setupEvents();
 
         // activated sub for preview handling and so on
         this.list.activated.subscribe(item => {
-            if(this.previewActive) {
-                this.handlePreview(item);
-            }
+            this.handlePreview(item, this.previewDisplay, this.previewActive);
         });        
     }
     
-    handlePreview(item: any) {
-        console.log('preview', item);
-        // check if sample is loaded, else load and then play
-        AudioEngine.playSource(item);
+    handlePreview(item: any, previewDisplay: SampleBrowser['previewDisplay'], previewActive: boolean = false) {
+        
+        // play preview if preview is active
+        if(previewActive) {
+            AudioEngine.playSource(item);
+        }    
+        // draw the audio waveform
+        AudioEngine.getWaveform(item).then((gfx) => {
+            previewDisplay.container.removeChildren();
+            previewDisplay.container.addChild(
+                gfx
+            );
+        });
     }
 
     setupEvents() {
@@ -101,4 +114,21 @@ export class SampleBrowser extends PixiWidget {
         this.containers.main = this.list.getGraphics();         
         return super.draw();
     }
+}
+
+
+function debounce<T extends unknown[]>(
+    func: (...args: T) => void,
+    delay: number
+  ): (...args: T) => void {
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  
+    return (...args: T) => {
+        if(timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        timeoutId = setTimeout(() => {
+            func(...args);
+        }, delay);
+    };
 }
