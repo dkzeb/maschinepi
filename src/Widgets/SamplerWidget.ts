@@ -38,7 +38,14 @@ export class SamplerWidget extends PixiWidget {
             console.log('padEv', ev);
             const p = this.sampler.pads.find(p => p.padName === ev.name!.split(':')[0]);
             if(p) {
-                
+             if(ev.name!.indexOf('pressed')) {
+                Object.keys(this.buttonStates['padDown'].cbs!).forEach(e => {
+                    this.controller.setLED(e, 1);
+                    this.buttonStates['padDown'][e]();
+                });
+             } else {
+
+             } 
             }
         });
     }
